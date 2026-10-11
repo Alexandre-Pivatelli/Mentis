@@ -1,0 +1,296 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mentis – Perfil da professora</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="{% static 'css/professor.css' %}">
+</head>
+<body>
+
+  <!-- ÍCONES (sprite) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></symbol>
+    <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><polygon fill="currentColor" stroke="none" points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
+    <symbol id="i-award" viewBox="0 0 24 24"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></symbol>
+    <symbol id="i-layers" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></symbol>
+    <symbol id="i-flask" viewBox="0 0 24 24"><path d="M9 3h6M10 3v6L4.5 19a2 2 0 0 0 1.7 3h11.6a2 2 0 0 0 1.7-3L14 9V3M7 15h10"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+  </svg>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="wrap header__in">
+      <a href="{% url 'principal' %}" class="logo">
+        <strong>Mentis</strong>
+        <small>Sua aula, do seu jeito</small>
+      </a>
+
+      <nav class="nav">
+        <a href="#">Disciplinas</a>
+        <a href="{% url 'professor' %}">Professores</a>
+        <a href="#">Materiais</a>
+        <a href="#">Informações</a>
+      </nav>
+
+      <a href="{% url 'login' %}" class="btn btn--outline">Entrar</a>
+    </div>
+  </header>
+
+  <!-- HERO: PERFIL DA PROFESSORA -->
+  <section class="hero">
+    <div class="wrap hero__in">
+
+      <div class="profile">
+        <div class="profile__photo" aria-label="Foto de Marina Alves">MA</div>
+
+        <div>
+          <div class="tags">
+            <span class="tag tag--verified"><svg class="i"><use href="#i-check"/></svg> Verificado</span>
+            <span class="tag tag--highlight"><svg class="i"><use href="#i-bulb"/></svg> Em destaque</span>
+          </div>
+          <h1>Marina Alves</h1>
+          <p class="profile__role">Professora de Química · 5 anos de experiência</p>
+
+          <ul class="profile__stats">
+            <li><svg class="i star"><use href="#i-star"/></svg> <strong>4,9</strong> (189 avaliações)</li>
+            <li><svg class="i"><use href="#i-users"/></svg> 320 aulas dadas</li>
+            <li><svg class="i"><use href="#i-book"/></svg> 18 materiais</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="book">
+        <p class="book__label">Aula particular de 50 minutos</p>
+        <p class="book__price">R$ 75</p>
+        <p class="book__next"><svg class="i"><use href="#i-calendar"/></svg> Próximo horário: terça, 16h</p>
+        <button type="button" class="btn btn--primary btn--block">Agendar aula</button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CONTEÚDO -->
+  <main class="wrap layout">
+
+    <div class="content">
+
+      <!-- SOBRE -->
+      <section class="section about">
+        <p class="eyebrow">Sobre</p>
+        <h2 class="title">Química visual, organizada e sem decoreba</h2>
+        <p>Mestra em Química Orgânica, Marina transforma fórmulas e reações em raciocínios visuais fáceis de acompanhar. Suas aulas usam esquemas, experimentos seguros e comparações do cotidiano para construir uma base sólida.</p>
+        <p>Seu trabalho é voltado a estudantes do ensino médio e candidatos ao ENEM e vestibulares, com acompanhamento personalizado e revisão dos pontos de maior dificuldade.</p>
+
+        <ul class="chips">
+          <li>ENEM</li>
+          <li>Química Orgânica</li>
+          <li>Estequiometria</li>
+          <li>Tabela Periódica</li>
+          <li>Vestibulares</li>
+        </ul>
+      </section>
+
+      <!-- MATERIAIS -->
+      <section class="section">
+        <div class="section__head">
+          <div>
+            <p class="eyebrow">Conteúdo</p>
+            <h2 class="title">Materiais publicados</h2>
+          </div>
+          <span class="count">4 de 18 materiais</span>
+        </div>
+
+        <div class="materials">
+          <article class="material">
+            <span class="badge badge--free">Grátis</span>
+            <span class="material__icon"><svg class="i"><use href="#i-layers"/></svg></span>
+            <p class="material__kind">Flashcards</p>
+            <h3>Tabela periódica sem decoreba</h3>
+            <p>Famílias, propriedades e tendências organizadas para revisão rápida.</p>
+            <div class="material__foot">
+              <span>84 cartões</span>
+              <b><svg class="i"><use href="#i-star"/></svg> 4,9 · 265</b>
+            </div>
+          </article>
+
+          <article class="material">
+            <span class="badge badge--sub">Assinatura</span>
+            <span class="material__icon"><svg class="i"><use href="#i-play"/></svg></span>
+            <p class="material__kind">Vídeo</p>
+            <h3>Estequiometria passo a passo</h3>
+            <p>Do balanceamento ao cálculo de rendimento com exemplos resolvidos.</p>
+            <div class="material__foot">
+              <span>31 min</span>
+              <b><svg class="i"><use href="#i-star"/></svg> 4,9 · 174</b>
+            </div>
+          </article>
+
+          <article class="material">
+            <span class="badge badge--sub">Assinatura</span>
+            <span class="material__icon"><svg class="i"><use href="#i-flask"/></svg></span>
+            <p class="material__kind">Apostila</p>
+            <h3>Química orgânica em mapas</h3>
+            <p>Funções, nomenclatura e reações reunidas em mapas visuais.</p>
+            <div class="material__foot">
+              <span>PDF · 44 pág.</span>
+              <b><svg class="i"><use href="#i-star"/></svg> 4,8 · 143</b>
+            </div>
+          </article>
+
+          <article class="material">
+            <span class="badge badge--free">Grátis</span>
+            <span class="material__icon"><svg class="i"><use href="#i-file"/></svg></span>
+            <p class="material__kind">Lista de exercícios</p>
+            <h3>Soluções e concentração</h3>
+            <p>Questões progressivas com resolução comentada e revisão final.</p>
+            <div class="material__foot">
+              <span>32 exercícios</span>
+              <b><svg class="i"><use href="#i-star"/></svg> 5,0 · 88</b>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- AVALIAÇÕES -->
+      <section class="section">
+        <p class="eyebrow">Experiências reais</p>
+        <h2 class="title">Avaliações dos estudantes</h2>
+
+        <div class="rating-card">
+          <div class="rating-card__score">
+            <div class="score">4,9</div>
+            <div class="stars" aria-label="5 estrelas">★★★★★</div>
+            <small>189 avaliações</small>
+          </div>
+
+          <div class="bars">
+            <div class="bar-row"><span>5</span><div class="bar"><i style="width:91%"></i></div><span>91%</span></div>
+            <div class="bar-row"><span>4</span><div class="bar"><i style="width:7%"></i></div><span>7%</span></div>
+            <div class="bar-row"><span>3</span><div class="bar"><i style="width:2%"></i></div><span>2%</span></div>
+            <div class="bar-row"><span>2</span><div class="bar"><i style="width:0%"></i></div><span>0%</span></div>
+            <div class="bar-row"><span>1</span><div class="bar"><i style="width:0%"></i></div><span>0%</span></div>
+          </div>
+        </div>
+
+        <div class="reviews">
+          <article class="review">
+            <div class="review__head">
+              <div>
+                <strong>Júlia Mendes</strong>
+                <p class="review__meta">Aula de Química · há 1 semana</p>
+              </div>
+              <span class="stars" aria-label="5 estrelas">★★★★★</span>
+            </div>
+            <blockquote>“A Marina tornou estequiometria muito mais simples. Ela percebe rápido onde está a dúvida e explica de outro jeito.”</blockquote>
+          </article>
+
+          <article class="review">
+            <div class="review__head">
+              <div>
+                <strong>Enzo Carvalho</strong>
+                <p class="review__meta">Flashcards de Tabela Periódica · há 3 semanas</p>
+              </div>
+              <span class="stars" aria-label="5 estrelas">★★★★★</span>
+            </div>
+            <blockquote>“Os cartões são objetivos e bonitos. Usei na semana da prova e consegui revisar tudo sem ficar decorando listas.”</blockquote>
+          </article>
+
+          <article class="review">
+            <div class="review__head">
+              <div>
+                <strong>Larissa Souza</strong>
+                <p class="review__meta">Aula particular · há 1 mês</p>
+              </div>
+              <span class="stars" aria-label="5 estrelas">★★★★★</span>
+            </div>
+            <blockquote>“A aula é muito organizada e a Marina sempre reserva tempo para praticarmos questões de vestibular.”</blockquote>
+          </article>
+
+          <article class="review">
+            <div class="review__head">
+              <div>
+                <strong>Renato Dias</strong>
+                <p class="review__meta">Apostila de Química Orgânica · há 2 meses</p>
+              </div>
+              <span class="stars" aria-label="4 estrelas">★★★★<span class="off">★</span></span>
+            </div>
+            <blockquote>“Os mapas visuais ajudam bastante a diferenciar as funções. Material completo e fácil de consultar.”</blockquote>
+          </article>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- SIDEBAR -->
+    <aside class="aside">
+      <section>
+        <p class="eyebrow">Formação</p>
+        <h2 class="title">Certificados</h2>
+
+        <div class="certs">
+          <article class="cert">
+            <svg class="i"><use href="#i-award"/></svg>
+            <h3>Mestrado em Química Orgânica</h3>
+            <p>Universidade Federal de Minas Gerais (UFMG)</p>
+            <span class="cert__year">2021</span>
+          </article>
+
+          <article class="cert">
+            <svg class="i"><use href="#i-award"/></svg>
+            <h3>Formação em Ensino Investigativo</h3>
+            <p>Instituto de Química Educacional</p>
+            <span class="cert__year">2022</span>
+          </article>
+
+          <article class="cert">
+            <svg class="i"><use href="#i-award"/></svg>
+            <h3>Tutora em Destaque Mentis</h3>
+            <p>Reconhecimento dos estudantes</p>
+            <span class="cert__year">2025</span>
+          </article>
+
+          <article class="cert">
+            <svg class="i"><use href="#i-award"/></svg>
+            <h3>Preparação para ENEM e Vestibulares</h3>
+            <p>Centro de Formação Docente</p>
+            <span class="cert__year">2023</span>
+          </article>
+        </div>
+      </section>
+
+      <section class="schedule">
+        <svg class="i"><use href="#i-clock"/></svg>
+        <h3>Horários desta semana</h3>
+        <ul>
+          <li><span>Terça-feira</span><strong>15h · 16h</strong></li>
+          <li><span>Quinta-feira</span><strong>16h · 17h</strong></li>
+          <li><span>Sábado</span><strong>9h · 11h</strong></li>
+        </ul>
+        <button type="button" class="btn btn--green btn--block">Escolher um horário</button>
+      </section>
+    </aside>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="wrap footer__in">
+      <strong>Mentis</strong>
+      <span>Aprenda com quem entende de verdade.</span>
+    </div>
+  </footer>
+
+</body>
+</html>

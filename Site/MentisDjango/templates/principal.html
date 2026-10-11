@@ -1,0 +1,136 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mentis – Sua aula, do seu jeito</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="{% static 'css/principal.css' %}">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <a href="{% url 'principal' %}" class="logo">Mentis</a>
+
+    <nav class="nav">
+      <a href="#">Disciplinas</a>
+      <a href="{% url 'professor' %}">Professores</a>
+      <a href="#">Materiais</a>
+      <a href="#">Informações</a>
+    </nav>
+
+    <div class="auth">
+      <a href="{% url 'login' %}">Entrar</a> <span>|</span> <a href="{% url 'login' %}">Cadastrar</a>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero">
+      <h1>Sua aula, do seu jeito</h1>
+      <p class="hero__subtitle">Encontre professores a qualquer distância</p>
+
+      <form class="search" action="#" onsubmit="return false;">
+        <input type="text" placeholder="Procure por professor ou disciplina..." aria-label="Buscar professor ou disciplina">
+        <button type="submit" class="btn btn--primary">Buscar</button>
+      </form>
+
+      <div class="chips">
+        <a href="#" class="chip">Matemática</a>
+        <a href="#" class="chip">Português</a>
+        <a href="#" class="chip">História</a>
+      </div>
+    </section>
+
+    <!-- PROFESSORES -->
+    <section class="teachers">
+      <h2 class="section-title">
+        Mais de <span>XX professores</span> para você <span>escolher</span>
+      </h2>
+
+      <div class="cards">
+        <!-- Troque o background-image de .card__photo por foto real de cada professor -->
+        <article class="card">
+          <div class="card__photo"><span class="card__name">Nome</span></div>
+          <div class="card__info">
+            <strong>R$XXX,XX / h</strong>
+            <span class="card__rating">5.0 <i>★</i></span>
+          </div>
+          <p class="card__text">Lorem Ipsum is simply text of the printing and tynaknasinn...</p>
+        </article>
+
+        <article class="card">
+          <div class="card__photo"><span class="card__name">Nome</span></div>
+          <div class="card__info">
+            <strong>R$XXX,XX / h</strong>
+            <span class="card__rating">5.0 <i>★</i></span>
+          </div>
+          <p class="card__text">Lorem Ipsum is simply text of the printing and tynaknasinn...</p>
+        </article>
+
+        <article class="card">
+          <div class="card__photo"><span class="card__name">Nome</span></div>
+          <div class="card__info">
+            <strong>R$XXX,XX / h</strong>
+            <span class="card__rating">5.0 <i>★</i></span>
+          </div>
+          <p class="card__text">Lorem Ipsum is simply text of the printing and tynaknasinn...</p>
+        </article>
+
+        <article class="card">
+          <div class="card__photo"><span class="card__name">Nome</span></div>
+          <div class="card__info">
+            <strong>R$XXX,XX / h</strong>
+            <span class="card__rating">5.0 <i>★</i></span>
+          </div>
+          <p class="card__text">Lorem Ipsum is simply text of the printing and tynaknasinn...</p>
+        </article>
+      </div>
+
+      <div class="dots" role="tablist" aria-label="Páginas do carrossel">
+        <button class="dot is-active" aria-label="Página 1"></button>
+        <button class="dot" aria-label="Página 2"></button>
+        <button class="dot" aria-label="Página 3"></button>
+      </div>
+    </section>
+
+    <!-- COMO FUNCIONA -->
+    <section class="how">
+      <h2 class="section-title">Como funciona a <span>Mentis</span></h2>
+
+      <div class="steps">
+        <div class="step">
+          <span class="step__num">01.</span>
+          <h3>Defina seu <span>objetivo</span></h3>
+          <p>Estabeleça no seu perfil sua meta</p>
+        </div>
+        <div class="step">
+          <span class="step__num">02.</span>
+          <h3>Encontre um <span>professor</span></h3>
+          <p>Filtre e encontre o professor que mais se encaixa com você</p>
+        </div>
+        <div class="step">
+          <span class="step__num">03.</span>
+          <h3>Faça sua <span>aula</span></h3>
+          <p>Entre na sala virtual e tenha aula com o seu professor</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta">
+      <h2>Venha fazer parte da Mentis</h2>
+      <div class="cta__buttons">
+        <a href="#" class="btn btn--white">Começar como estudante</a>
+        <a href="#" class="btn btn--outline">Sou professor</a>
+      </div>
+    </section>
+  </main>
+
+</body>
+</html>
