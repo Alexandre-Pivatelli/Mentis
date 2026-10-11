@@ -1,0 +1,194 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mentis - Cadastro</title>
+  <link rel="stylesheet" href="{% static 'css/login.css' %}" />
+  <!-- Font Awesome para ícones -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
+  <!-- Fonte Google (Poppins) -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+</head>
+<body>
+  <!-- Cabeçalho / Navbar -->
+  <header class="navbar">
+    <div class="logo">
+      <img src="{% static 'img/logo-r.png' %}" alt="Logo Mentis" class="logo-img" />
+    </div>
+    <nav class="nav-links">
+      <a href="#">Disciplinas</a>
+      <a href="#">Professores</a>
+      <a href="#">Materiais</a>
+      <a href="#">Informações</a>
+    </nav>
+    <div class="auth-links">
+      <a href="index.html">Entrar</a>
+      <span>|</span>
+      <a href="#" class="active">Cadastrar</a>
+    </div>
+  </header>
+
+  <!-- Conteúdo Principal -->
+  <main class="container">
+    <!-- Lado Esquerdo: Formulário -->
+    <section class="register-section">
+      <h1 class="welcome-title">Crie sua Conta</h1>
+
+      <!-- Alternador de Tipo de Usuário -->
+      <div class="toggle-container">
+        <button type="button" class="toggle-btn active" id="btnEstudante">
+          <i class="fa-regular fa-user"></i>
+          Estudante
+        </button>
+        <button type="button" class="toggle-btn" id="btnProfessor">
+          <i class="fa-solid fa-graduation-cap"></i>
+          Professor
+        </button>
+      </div>
+
+      <!-- Formulário de Cadastro -->
+      <form class="register-form" id="signupForm">
+        <!-- Nome Completo -->
+        <div class="input-group">
+          <label for="nome">
+            <i class="fa-regular fa-address-card"></i>
+            Nome Completo
+          </label>
+          <input type="text" id="nome" name="nome" placeholder="Digite seu nome completo" required />
+        </div>
+
+        <!-- Nome de Usuário -->
+        <div class="input-group">
+          <label for="usuario">
+            <i class="fa-regular fa-user"></i>
+            Nome de Usuário
+          </label>
+          <input type="text" id="usuario" name="usuario" placeholder="Escolha um nome de usuário" required />
+        </div>
+
+        <!-- E-mail -->
+        <div class="input-group">
+          <label for="email">
+            <i class="fa-regular fa-envelope"></i>
+            E-mail
+          </label>
+          <input type="email" id="email" name="email" placeholder="seuemail@exemplo.com" required />
+        </div>
+
+        <!-- Senha -->
+        <div class="input-group">
+          <label for="senha">
+            <i class="fa-solid fa-key"></i>
+            Senha
+          </label>
+          <input type="password" id="senha" name="senha" placeholder="Sua senha" required />
+        </div>
+
+        <!-- Nível / Status de Estudo -->
+        <div class="input-group">
+          <label for="statusEstudo">
+            <i class="fa-solid fa-book-open"></i>
+            Status de Estudo
+          </label>
+          <select id="statusEstudo" name="statusEstudo" required>
+            <option value="" disabled selected>Selecione seu nível de ensino</option>
+            <option value="Ensino Fundamental">Ensino Fundamental</option>
+            <option value="Ensino Médio">Ensino Médio</option>
+            <option value="Ensino Técnico">Ensino Técnico</option>
+            <option value="Faculdade / Graduação">Faculdade / Graduação</option>
+            <option value="Pós-Graduação / Mestrado / Doutorado">Pós-Graduação / Mestrado / Doutorado</option>
+            <option value="Outro">Outro</option>
+          </select>
+        </div>
+
+        <!-- Botão Cadastrar -->
+        <button type="submit" class="submit-btn">Criar Conta</button>
+
+        <!-- Mensagem de Sucesso/Aviso -->
+        <p id="mensagem" class="message-text"></p>
+
+        <!-- Já tem conta -->
+        <p class="login-text">
+          Já tem uma conta? <a href="index.html">Entrar</a>
+        </p>
+      </form>
+    </section>
+
+    <!-- Lado Direito: Banner Roxo -->
+    <section class="brand-section">
+      <div class="brand-content">
+        <div class="big-logo-icon">
+          <img src="{% static 'img/logo-b.png' %}" alt="Logo Mentis Grande" class="big-logo-img" />
+        </div>
+        <h1 class="brand-title">MENTIS</h1>
+      </div>
+    </section>
+  </main>
+
+  <!-- Script para Armazenar os Dados no LocalStorage -->
+  <script>
+    let tipoPerfil = "Estudante";
+
+    const btnEstudante = document.getElementById("btnEstudante");
+    const btnProfessor = document.getElementById("btnProfessor");
+
+    btnEstudante.addEventListener("click", () => {
+      tipoPerfil = "Estudante";
+      btnEstudante.classList.add("active");
+      btnProfessor.classList.remove("active");
+    });
+
+    btnProfessor.addEventListener("click", () => {
+      tipoPerfil = "Professor";
+      btnProfessor.classList.add("active");
+      btnEstudante.classList.remove("active");
+    });
+
+    // Capturar o envio do formulário e armazenar no localStorage
+    document.getElementById("signupForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const novoUsuario = {
+        tipo: tipoPerfil,
+        nome: document.getElementById("nome").value,
+        usuario: document.getElementById("usuario").value,
+        email: document.getElementById("email").value,
+        senha: document.getElementById("senha").value,
+        statusEstudo: document.getElementById("statusEstudo").value,
+        dataCadastro: new Date().toISOString()
+      };
+
+      // Recuperar lista de usuários existentes ou criar array vazio
+      let usuarios = JSON.parse(localStorage.getItem("usuariosMentis")) || [];
+
+      // Adicionar o novo usuário
+      usuarios.push(novoUsuario);
+
+      // Salvar no localStorage
+      localStorage.setItem("usuariosMentis", JSON.stringify(usuarios));
+
+      // Exibir mensagem de confirmação
+      const msg = document.getElementById("mensagem");
+      msg.textContent = "Conta criada com sucesso! Redirecionando...";
+      msg.style.color = "green";
+
+      // Limpar formulário
+      document.getElementById("signupForm").reset();
+
+      // Opcional: Redirecionar após 2 segundos
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 2000);
+    });
+  </script>
+</body>
+</html>
