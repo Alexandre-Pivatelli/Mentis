@@ -10,6 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   
   <link rel="stylesheet" href="{% static 'css/principal.css' %}">
+<link rel="stylesheet" href="{% static 'css/dados.css' %}">
 </head>
 <body>
 
@@ -18,15 +19,13 @@
     <a href="{% url 'principal' %}" class="logo">Mentis</a>
 
     <nav class="nav">
-      <a href="#">Disciplinas</a>
+      <a href="{% url 'principal' %}#disciplinas">Disciplinas</a>
       <a href="{% url 'professor' %}">Professores</a>
       <a href="#">Materiais</a>
       <a href="#">Informações</a>
     </nav>
 
-    <div class="auth">
-      <a href="{% url 'login' %}">Entrar</a> <span>|</span> <a href="{% url 'login' %}">Cadastrar</a>
-    </div>
+    <div class="auth">{% if request.user.is_authenticated %}<a href="{% url 'perfil_aluno' %}">Meu perfil</a>{% if request.user.is_staff %} · <a href="{% url 'usuarios' %}">Usuários</a>{% endif %}<form action="{% url 'logout' %}" method="post">{% csrf_token %}<button type="submit">Sair</button></form>{% else %}<a href="{% url 'login' %}">Entrar</a>{% endif %}</div>
   </header>
 
   <main>
@@ -35,68 +34,36 @@
       <h1>Sua aula, do seu jeito</h1>
       <p class="hero__subtitle">Encontre professores a qualquer distância</p>
 
-      <form class="search" action="#" onsubmit="return false;">
-        <input type="text" placeholder="Procure por professor ou disciplina..." aria-label="Buscar professor ou disciplina">
+      <form class="search" action="{% url 'principal' %}" method="get">
+        <input name="q" value="{{ busca }}" aria-label="Buscar professor ou disciplina" type="search" placeholder="Procure por professor ou disciplina..." aria-label="Buscar professor ou disciplina">
         <button type="submit" class="btn btn--primary">Buscar</button>
       </form>
 
-      <div class="chips">
-        <a href="#" class="chip">Matemática</a>
-        <a href="#" class="chip">Português</a>
-        <a href="#" class="chip">História</a>
-      </div>
+      <div class="chips" id="disciplinas">{% for disciplina in disciplinas %}<a class="chip" href="?disciplina={{ disciplina.pk }}">{{ disciplina.nome }}</a>{% empty %}<p>Nenhuma disciplina cadastrada.</p>{% endfor %}</div>
     </section>
 
     <!-- PROFESSORES -->
     <section class="teachers">
       <h2 class="section-title">
-        Mais de <span>XX professores</span> para você <span>escolher</span>
+        Mais de <span>{{ total_professores }} professores</span> para você <span>escolher</span>
       </h2>
 
-      <div class="cards">
-        <!-- Troque o background-image de .card__photo por foto real de cada professor -->
-        <article class="card">
-          <div class="card__photo"><span class="card__name">Nome</span></div>
-          <div class="card__info">
-            <strong>R$XXX,XX / h</strong>
-            <span class="card__rating">5.0 <i>★</i></span>
-          </div>
-          <p class="card__text">Lorem Ipsum is simply text of the printing and tynaknasinn...</p>
-        </article>
-
-        <article class="card">
-          <div class="card__photo"><span class="card__name">Nome</span></div>
-          <div class="card__info">
-            <strong>R$XXX,XX / h</strong>
-            <span class="card__rating">5.0 <i>★</i></span>
-          </div>
-          <p class="card__text">Lorem Ipsum is simply text of the printing and tynaknasinn...</p>
-        </article>
-
-        <article class="card">
-          <div class="card__photo"><span class="card__name">Nome</span></div>
-          <div class="card__info">
-            <strong>R$XXX,XX / h</strong>
-            <span class="card__rating">5.0 <i>★</i></span>
-          </div>
-          <p class="card__text">Lorem Ipsum is simply text of the printing and tynaknasinn...</p>
-        </article>
-
-        <article class="card">
-          <div class="card__photo"><span class="card__name">Nome</span></div>
-          <div class="card__info">
-            <strong>R$XXX,XX / h</strong>
-            <span class="card__rating">5.0 <i>★</i></span>
-          </div>
-          <p class="card__text">Lorem Ipsum is simply text of the printing and tynaknasinn...</p>
-        </article>
-      </div>
-
-      <div class="dots" role="tablist" aria-label="Páginas do carrossel">
-        <button class="dot is-active" aria-label="Página 1"></button>
-        <button class="dot" aria-label="Página 2"></button>
-        <button class="dot" aria-label="Página 3"></button>
-      </div>
+<div class="cards" id="professores">
+{% for professor in professores %}
+<article class="card">
+  <a href="{% url 'professor_detalhe' professor.pk %}" aria-label="Ver perfil de {{ professor.nome_exibicao }}">
+    <div class="card__photo"><span class="card__name">{{ professor.nome_exibicao }}</span></div>
+  </a>
+  <div class="card__info"><strong>R$ {{ professor.valor_hora|floatformat:2 }} / h</strong>
+  <span class="card__rating">{% if professor.nota_media != None %}{{ professor.nota_media|floatformat:1 }} <i aria-hidden="true">★</i>{% else %}Sem avaliações{% endif %}</span></div>
+  <p class="card__text">{{ professor.bio|truncatechars:130 }}</p>
+</article>
+{% empty %}<p>Nenhum professor encontrado.</p>{% endfor %}
+</div>
+<nav class="pagination" aria-label="Paginação">
+{% if professores.has_previous %}<a class="page-btn" href="?q={{ busca|urlencode }}&amp;disciplina={{ disciplina_selecionada|urlencode }}&amp;page={{ professores.previous_page_number }}">‹</a>{% endif %}
+<span>Página {{ professores.number }} de {{ professores.paginator.num_pages }}</span>
+{% if professores.has_next %}<a class="page-btn" href="?q={{ busca|urlencode }}&amp;disciplina={{ disciplina_selecionada|urlencode }}&amp;page={{ professores.next_page_number }}">›</a>{% endif %}</nav>
     </section>
 
     <!-- COMO FUNCIONA -->

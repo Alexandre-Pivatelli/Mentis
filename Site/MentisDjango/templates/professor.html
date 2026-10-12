@@ -10,6 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
   <link rel="stylesheet" href="{% static 'css/professor.css' %}">
+<link rel="stylesheet" href="{% static 'css/dados.css' %}">
 </head>
 <body>
 
@@ -38,252 +39,22 @@
       </a>
 
       <nav class="nav">
-        <a href="#">Disciplinas</a>
+        <a href="{% url 'principal' %}#disciplinas">Disciplinas</a>
         <a href="{% url 'professor' %}">Professores</a>
         <a href="#">Materiais</a>
         <a href="#">Informações</a>
       </nav>
 
-      <a href="{% url 'login' %}" class="btn btn--outline">Entrar</a>
+      {% if request.user.is_authenticated %}<a href="{% url 'perfil_aluno' %}" class="btn btn--outline">Meu perfil</a>{% else %}<a href="{% url 'login' %}" class="btn btn--outline">Entrar</a>{% endif %}
     </div>
   </header>
 
-  <!-- HERO: PERFIL DA PROFESSORA -->
-  <section class="hero">
-    <div class="wrap hero__in">
-
-      <div class="profile">
-        <div class="profile__photo" aria-label="Foto de Marina Alves">MA</div>
-
-        <div>
-          <div class="tags">
-            <span class="tag tag--verified"><svg class="i"><use href="#i-check"/></svg> Verificado</span>
-            <span class="tag tag--highlight"><svg class="i"><use href="#i-bulb"/></svg> Em destaque</span>
-          </div>
-          <h1>Marina Alves</h1>
-          <p class="profile__role">Professora de Química · 5 anos de experiência</p>
-
-          <ul class="profile__stats">
-            <li><svg class="i star"><use href="#i-star"/></svg> <strong>4,9</strong> (189 avaliações)</li>
-            <li><svg class="i"><use href="#i-users"/></svg> 320 aulas dadas</li>
-            <li><svg class="i"><use href="#i-book"/></svg> 18 materiais</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="book">
-        <p class="book__label">Aula particular de 50 minutos</p>
-        <p class="book__price">R$ 75</p>
-        <p class="book__next"><svg class="i"><use href="#i-calendar"/></svg> Próximo horário: terça, 16h</p>
-        <button type="button" class="btn btn--primary btn--block">Agendar aula</button>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- CONTEÚDO -->
-  <main class="wrap layout">
-
-    <div class="content">
-
-      <!-- SOBRE -->
-      <section class="section about">
-        <p class="eyebrow">Sobre</p>
-        <h2 class="title">Química visual, organizada e sem decoreba</h2>
-        <p>Mestra em Química Orgânica, Marina transforma fórmulas e reações em raciocínios visuais fáceis de acompanhar. Suas aulas usam esquemas, experimentos seguros e comparações do cotidiano para construir uma base sólida.</p>
-        <p>Seu trabalho é voltado a estudantes do ensino médio e candidatos ao ENEM e vestibulares, com acompanhamento personalizado e revisão dos pontos de maior dificuldade.</p>
-
-        <ul class="chips">
-          <li>ENEM</li>
-          <li>Química Orgânica</li>
-          <li>Estequiometria</li>
-          <li>Tabela Periódica</li>
-          <li>Vestibulares</li>
-        </ul>
-      </section>
-
-      <!-- MATERIAIS -->
-      <section class="section">
-        <div class="section__head">
-          <div>
-            <p class="eyebrow">Conteúdo</p>
-            <h2 class="title">Materiais publicados</h2>
-          </div>
-          <span class="count">4 de 18 materiais</span>
-        </div>
-
-        <div class="materials">
-          <article class="material">
-            <span class="badge badge--free">Grátis</span>
-            <span class="material__icon"><svg class="i"><use href="#i-layers"/></svg></span>
-            <p class="material__kind">Flashcards</p>
-            <h3>Tabela periódica sem decoreba</h3>
-            <p>Famílias, propriedades e tendências organizadas para revisão rápida.</p>
-            <div class="material__foot">
-              <span>84 cartões</span>
-              <b><svg class="i"><use href="#i-star"/></svg> 4,9 · 265</b>
-            </div>
-          </article>
-
-          <article class="material">
-            <span class="badge badge--sub">Assinatura</span>
-            <span class="material__icon"><svg class="i"><use href="#i-play"/></svg></span>
-            <p class="material__kind">Vídeo</p>
-            <h3>Estequiometria passo a passo</h3>
-            <p>Do balanceamento ao cálculo de rendimento com exemplos resolvidos.</p>
-            <div class="material__foot">
-              <span>31 min</span>
-              <b><svg class="i"><use href="#i-star"/></svg> 4,9 · 174</b>
-            </div>
-          </article>
-
-          <article class="material">
-            <span class="badge badge--sub">Assinatura</span>
-            <span class="material__icon"><svg class="i"><use href="#i-flask"/></svg></span>
-            <p class="material__kind">Apostila</p>
-            <h3>Química orgânica em mapas</h3>
-            <p>Funções, nomenclatura e reações reunidas em mapas visuais.</p>
-            <div class="material__foot">
-              <span>PDF · 44 pág.</span>
-              <b><svg class="i"><use href="#i-star"/></svg> 4,8 · 143</b>
-            </div>
-          </article>
-
-          <article class="material">
-            <span class="badge badge--free">Grátis</span>
-            <span class="material__icon"><svg class="i"><use href="#i-file"/></svg></span>
-            <p class="material__kind">Lista de exercícios</p>
-            <h3>Soluções e concentração</h3>
-            <p>Questões progressivas com resolução comentada e revisão final.</p>
-            <div class="material__foot">
-              <span>32 exercícios</span>
-              <b><svg class="i"><use href="#i-star"/></svg> 5,0 · 88</b>
-            </div>
-          </article>
-        </div>
-      </section>
-
-      <!-- AVALIAÇÕES -->
-      <section class="section">
-        <p class="eyebrow">Experiências reais</p>
-        <h2 class="title">Avaliações dos estudantes</h2>
-
-        <div class="rating-card">
-          <div class="rating-card__score">
-            <div class="score">4,9</div>
-            <div class="stars" aria-label="5 estrelas">★★★★★</div>
-            <small>189 avaliações</small>
-          </div>
-
-          <div class="bars">
-            <div class="bar-row"><span>5</span><div class="bar"><i style="width:91%"></i></div><span>91%</span></div>
-            <div class="bar-row"><span>4</span><div class="bar"><i style="width:7%"></i></div><span>7%</span></div>
-            <div class="bar-row"><span>3</span><div class="bar"><i style="width:2%"></i></div><span>2%</span></div>
-            <div class="bar-row"><span>2</span><div class="bar"><i style="width:0%"></i></div><span>0%</span></div>
-            <div class="bar-row"><span>1</span><div class="bar"><i style="width:0%"></i></div><span>0%</span></div>
-          </div>
-        </div>
-
-        <div class="reviews">
-          <article class="review">
-            <div class="review__head">
-              <div>
-                <strong>Júlia Mendes</strong>
-                <p class="review__meta">Aula de Química · há 1 semana</p>
-              </div>
-              <span class="stars" aria-label="5 estrelas">★★★★★</span>
-            </div>
-            <blockquote>“A Marina tornou estequiometria muito mais simples. Ela percebe rápido onde está a dúvida e explica de outro jeito.”</blockquote>
-          </article>
-
-          <article class="review">
-            <div class="review__head">
-              <div>
-                <strong>Enzo Carvalho</strong>
-                <p class="review__meta">Flashcards de Tabela Periódica · há 3 semanas</p>
-              </div>
-              <span class="stars" aria-label="5 estrelas">★★★★★</span>
-            </div>
-            <blockquote>“Os cartões são objetivos e bonitos. Usei na semana da prova e consegui revisar tudo sem ficar decorando listas.”</blockquote>
-          </article>
-
-          <article class="review">
-            <div class="review__head">
-              <div>
-                <strong>Larissa Souza</strong>
-                <p class="review__meta">Aula particular · há 1 mês</p>
-              </div>
-              <span class="stars" aria-label="5 estrelas">★★★★★</span>
-            </div>
-            <blockquote>“A aula é muito organizada e a Marina sempre reserva tempo para praticarmos questões de vestibular.”</blockquote>
-          </article>
-
-          <article class="review">
-            <div class="review__head">
-              <div>
-                <strong>Renato Dias</strong>
-                <p class="review__meta">Apostila de Química Orgânica · há 2 meses</p>
-              </div>
-              <span class="stars" aria-label="4 estrelas">★★★★<span class="off">★</span></span>
-            </div>
-            <blockquote>“Os mapas visuais ajudam bastante a diferenciar as funções. Material completo e fácil de consultar.”</blockquote>
-          </article>
-        </div>
-      </section>
-
-    </div>
-
-    <!-- SIDEBAR -->
-    <aside class="aside">
-      <section>
-        <p class="eyebrow">Formação</p>
-        <h2 class="title">Certificados</h2>
-
-        <div class="certs">
-          <article class="cert">
-            <svg class="i"><use href="#i-award"/></svg>
-            <h3>Mestrado em Química Orgânica</h3>
-            <p>Universidade Federal de Minas Gerais (UFMG)</p>
-            <span class="cert__year">2021</span>
-          </article>
-
-          <article class="cert">
-            <svg class="i"><use href="#i-award"/></svg>
-            <h3>Formação em Ensino Investigativo</h3>
-            <p>Instituto de Química Educacional</p>
-            <span class="cert__year">2022</span>
-          </article>
-
-          <article class="cert">
-            <svg class="i"><use href="#i-award"/></svg>
-            <h3>Tutora em Destaque Mentis</h3>
-            <p>Reconhecimento dos estudantes</p>
-            <span class="cert__year">2025</span>
-          </article>
-
-          <article class="cert">
-            <svg class="i"><use href="#i-award"/></svg>
-            <h3>Preparação para ENEM e Vestibulares</h3>
-            <p>Centro de Formação Docente</p>
-            <span class="cert__year">2023</span>
-          </article>
-        </div>
-      </section>
-
-      <section class="schedule">
-        <svg class="i"><use href="#i-clock"/></svg>
-        <h3>Horários desta semana</h3>
-        <ul>
-          <li><span>Terça-feira</span><strong>15h · 16h</strong></li>
-          <li><span>Quinta-feira</span><strong>16h · 17h</strong></li>
-          <li><span>Sábado</span><strong>9h · 11h</strong></li>
-        </ul>
-        <button type="button" class="btn btn--green btn--block">Escolher um horário</button>
-      </section>
-    </aside>
-
-  </main>
-
+<main>
+<section class="hero"><div class="wrap hero__in"><div class="profile"><div class="profile__photo" role="img" aria-label="Iniciais de {{ professor.nome_exibicao }}">{{ professor.iniciais }}</div><div><div class="tags">{% if professor.verificado %}<span class="tag tag--verified">Verificado</span>{% endif %}</div><h1>{{ professor.nome_exibicao }}</h1><p class="profile__role">{% for disciplina in professor.disciplinas.all %}{{ disciplina.nome }}{% if not forloop.last %} · {% endif %}{% endfor %}</p><ul class="profile__stats"><li>{{ professor.nota_media|floatformat:1|default:"Sem nota" }} ({{ professor.total_avaliacoes }} avaliações)</li><li>{{ professor.aulas_realizadas }} aulas realizadas</li><li>{{ professor.total_materiais }} materiais</li></ul></div></div><div class="book"><p class="book__label">Valor por hora · {{ professor.modalidade }}</p><p class="book__price">R$ {{ professor.valor_hora|floatformat:2 }}</p><a class="btn btn--primary btn--block" href="#horarios">Consultar horários</a></div></div></section>
+<div class="wrap layout"><div class="content"><section class="section about"><p class="eyebrow">Sobre</p><h2 class="title">Conheça {{ professor.nome_exibicao }}</h2><p>{{ professor.bio|linebreaksbr|default:"Biografia não informada." }}</p></section>
+<section class="section" id="materiais"><h2 class="title">Materiais publicados</h2><div class="materials">{% for material in materiais %}<article class="material"><p class="material__kind">{{ material.get_tipo_display }}</p><h3>{{ material.titulo }}</h3><p>{{ material.descricao }}</p><div class="material__foot"><a href="{{ material.url }}" rel="noopener noreferrer">Abrir material</a><span>{{ material.data_publicacao|date:"d/m/Y" }}</span></div></article>{% empty %}<p>Nenhum material publicado.</p>{% endfor %}</div></section>
+<section class="section"><h2 class="title">Avaliações das aulas</h2><div class="reviews">{% for avaliacao in avaliacoes %}<article class="review"><div class="review__head"><strong>{{ avaliacao.aula.aluno.usuario.first_name|default:"Estudante" }}</strong><span>{{ avaliacao.nota }}/5</span></div><p class="review__meta">{{ avaliacao.aula.disciplina.nome }} · {{ avaliacao.data|date:"d/m/Y" }}</p><blockquote>{{ avaliacao.comentario }}</blockquote></article>{% empty %}<p>Nenhuma avaliação disponível.</p>{% endfor %}</div></section></div>
+<aside class="aside"><section><p class="eyebrow">Formação</p><h2 class="title">Formação acadêmica</h2><article class="cert"><p>{{ professor.formacao|default:"Formação não informada." }}</p></article></section><section class="schedule" id="horarios"><h2>Disponibilidade semanal</h2><ul>{% for disponibilidade in disponibilidades %}<li><span>{% if disponibilidade.dia_semana == 0 %}Segunda-feira{% elif disponibilidade.dia_semana == 1 %}Terça-feira{% elif disponibilidade.dia_semana == 2 %}Quarta-feira{% elif disponibilidade.dia_semana == 3 %}Quinta-feira{% elif disponibilidade.dia_semana == 4 %}Sexta-feira{% elif disponibilidade.dia_semana == 5 %}Sábado{% else %}Domingo{% endif %}</span><strong>{{ disponibilidade.hora_inicio|time:"H:i" }}–{{ disponibilidade.hora_fim|time:"H:i" }}</strong></li>{% empty %}<li>Sem horários informados.</li>{% endfor %}</ul></section></aside></div></main>
   <!-- FOOTER -->
   <footer class="footer">
     <div class="wrap footer__in">
