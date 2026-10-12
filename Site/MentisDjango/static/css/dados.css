@@ -1,0 +1,13 @@
+/* Ajustes dos componentes que agora recebem dados do banco. */
+.avatar { background: #6430d8; }
+.pagination { display: flex; align-items: center; justify-content: center; gap: 12px; margin-block: 20px; }
+.page-btn { display: inline-flex; align-items: center; justify-content: center; min-width: 40px; min-height: 40px; color: #6430d8; }
+.auth form { display: inline; margin-left: 12px; }
+.auth button { border: 0; background: transparent; font: inherit; color: inherit; cursor: pointer; }
+.table-wrap { overflow-x: auto; }
+.table-wrap table { min-width: 760px; }
+.search-wrap { display: flex; align-items: center; gap: 8px; }
+.review, .material, .content { min-width: 0; }
+.profile__name, .card__name, .review, .material { overflow-wrap: anywhere; }
+.errorlist { color: #b91c1c; margin-block: 8px; }
+.pagination a:focus-visible, .auth button:focus-visible { outline: 3px solid #6430d8; outline-offset: 3px; }
