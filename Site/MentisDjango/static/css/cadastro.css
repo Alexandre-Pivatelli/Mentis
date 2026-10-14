@@ -1,0 +1,79 @@
+.register-section {
+  padding: 30px 20px;
+}
+
+.register-form {
+  width: 100%;
+  max-width: 380px;
+}
+
+.input-group {
+  margin-bottom: 14px;
+}
+
+.input-group label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.input-group input[type="text"],
+.input-group input[type="email"],
+.input-group input[type="password"],
+.input-group select {
+  width: 100%;
+  padding: 10px 16px;
+  border: 1px solid #dcdcdc;
+  border-radius: 20px;
+  font-size: 14px;
+  outline: none;
+  background-color: #fff;
+  color: #333;
+  transition: border-color 0.2s;
+}
+
+.input-group select {
+  cursor: pointer;
+}
+
+.input-group input:focus,
+.input-group select:focus {
+  border-color: #6a35d9;
+}
+
+/* Tratamento das mensagens de erro do Django */
+.form-errors,
+.field-error {
+  color: #d93025;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.form-errors {
+  margin-bottom: 12px;
+  background-color: #fce8e6;
+  padding: 8px 12px;
+  border-radius: 10px;
+}
+
+/* Botão do Formulário */
+.submit-btn {
+  margin-top: 10px;
+}
+
+.login-text {
+  text-align: center;
+  font-size: 13px;
+  color: #333;
+  margin-top: 10px;
+}
+
+.login-text a {
+  color: #6a35d9;
+  text-decoration: none;
+  font-weight: 600;
+}

@@ -135,3 +135,46 @@ def cadastro_view(request):
         form = UserCreationForm()
 
     return render(request, 'cadastro.html', {'form': form})
+
+def cadastro_view(request):
+    if request.user.is_authenticated:
+        return redirect('principal')
+
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        tipo_usuario = request.POST.get('user_type', 'estudante')  # Captura 'estudante' ou 'professor'
+
+        if form.is_valid():
+            usuario = form.save()
+            
+            # Salva o nome completo no modelo do usuário
+            nome_completo = request.POST.get('nome', '')
+            if nome_completo:
+                usuario.nome = nome_completo
+                usuario.email = request.POST.get('email', '')
+                usuario.save()
+
+            # Cria o vínculo com a tabela de Professor ou Aluno
+            if tipo_usuario == 'professor':
+                Professor.objects.create(usuario=usuario)
+            else:
+                Aluno.objects.create(usuario=usuario)
+
+            # Efetua o login automático e redireciona
+            login(request, usuario)
+            return redirect('principal')
+    else:
+        form = UserCreationForm()
+
+    return render(request, 'cadastro.html', {'form': form})
+
+@login_required(login_url='login')
+def editar_perfil_view(request):
+    if request.method == 'POST':
+        request.user.nome = request.POST.get('nome')
+        request.user.username = request.POST.get('username')
+        request.user.email = request.POST.get('email')
+        request.user.save()
+        return redirect('perfil_aluno')
+
+    return render(request, 'editar_perfil.html')
