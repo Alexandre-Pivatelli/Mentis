@@ -246,3 +246,36 @@ body {
     display: none;
   }
 }
+
+.toggle-container {
+  display: flex;
+  border: 1px solid #dcdcdc;
+  border-radius: 25px;
+  padding: 3px;
+  width: 100%;
+  max-width: 360px;
+  margin-bottom: 25px;
+  background-color: #fff;
+}
+
+.toggle-btn {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 10px 15px;
+  border-radius: 20px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #333;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.toggle-btn.active {
+  background-color: #6a35d9;
+  color: #fff;
+}

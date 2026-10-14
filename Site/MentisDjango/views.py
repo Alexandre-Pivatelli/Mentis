@@ -8,6 +8,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_POST
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
 from .models import Aluno, Aula, Avaliacao, Disciplina, Professor, StatusAula, Usuario
 
@@ -109,3 +110,28 @@ def professor_view(request, pk=None):
     return render(request, 'professor.html', {'professor': professor,
         'materiais': professor.materiais.select_related('disciplina').order_by('-data_publicacao', '-pk')[:12],
         'avaliacoes': avaliacoes[:10], 'disponibilidades': professor.disponibilidades.order_by('dia_semana', 'hora_inicio')})
+
+def cadastro_view(request):
+    if request.user.is_authenticated:
+        return redirect('principal')
+
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        tipo_usuario = request.POST.get('user_type', 'estudante')  # Pega o tipo vindo do botão 'userTypeInput'
+
+        if form.is_valid():
+            usuario = form.save()
+            
+            # Vincula o perfil conforme a escolha (Aluno ou Professor)
+            if tipo_usuario == 'professor':
+                Professor.objects.create(usuario=usuario)
+            else:
+                Aluno.objects.create(usuario=usuario)
+
+            # Efetua o login automático e redireciona para a tela principal
+            login(request, usuario)
+            return redirect('principal')
+    else:
+        form = UserCreationForm()
+
+    return render(request, 'cadastro.html', {'form': form})
