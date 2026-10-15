@@ -10,13 +10,16 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   
   <link rel="stylesheet" href="{% static 'css/principal.css' %}">
-<link rel="stylesheet" href="{% static 'css/dados.css' %}">
+  <link rel="stylesheet" href="{% static 'css/dados.css' %}">
+  <meta name="description" content="Encontre professores particulares de qualquer disciplina, a qualquer distância.">
+  <meta name="theme-color" content="#6430D8">
+  <script src="{% static 'js/principal.js' %}" defer></script>
 </head>
 <body>
 
   <!-- HEADER -->
   <header class="header">
-    <a href="{% url 'principal' %}" class="logo">Mentis</a>
+    <a href="{% url 'principal' %}" class="logo"><img src="{% static 'img/logo-r.png' %}" alt="Mentis" class="logo__img" fetchpriority="high"></a>
 
     <nav class="nav">
       <a href="{% url 'principal' %}#disciplinas">Disciplinas</a>
@@ -35,7 +38,7 @@
       <p class="hero__subtitle">Encontre professores a qualquer distância</p>
 
       <form class="search" action="{% url 'principal' %}" method="get">
-        <input name="q" value="{{ busca }}" aria-label="Buscar professor ou disciplina" type="search" placeholder="Procure por professor ou disciplina..." aria-label="Buscar professor ou disciplina">
+        <input name="q" value="{{ busca }}" type="search" autocomplete="off" placeholder="Procure por professor ou disciplina..." aria-label="Buscar professor ou disciplina">
         <button type="submit" class="btn btn--primary">Buscar</button>
       </form>
 
@@ -48,22 +51,24 @@
         Mais de <span>{{ total_professores }} professores</span> para você <span>escolher</span>
       </h2>
 
-<div class="cards" id="professores">
-{% for professor in professores %}
-<article class="card">
-  <a href="{% url 'professor_detalhe' professor.pk %}" aria-label="Ver perfil de {{ professor.nome_exibicao }}">
-    <div class="card__photo"><span class="card__name">{{ professor.nome_exibicao }}</span></div>
-  </a>
-  <div class="card__info"><strong>R$ {{ professor.valor_hora|floatformat:2 }} / h</strong>
-  <span class="card__rating">{% if professor.nota_media != None %}{{ professor.nota_media|floatformat:1 }} <i aria-hidden="true">★</i>{% else %}Sem avaliações{% endif %}</span></div>
-  <p class="card__text">{{ professor.bio|truncatechars:130 }}</p>
-</article>
-{% empty %}<p>Nenhum professor encontrado.</p>{% endfor %}
+<div class="carousel" data-carousel>
+  <button class="carousel__arrow carousel__arrow--prev" type="button" aria-label="Professores anteriores" data-prev>‹</button>
+  <div class="cards" id="professores" tabindex="0" aria-label="Professores em destaque" data-track>
+  {% for professor in professores %}
+  <article class="card">
+    <a href="{% url 'professor_detalhe' professor.pk %}" class="card__link" aria-label="Ver perfil de {{ professor.nome_exibicao }}">
+      <div class="card__photo"><span class="card__initials" aria-hidden="true">{{ professor.iniciais }}</span><span class="card__name">{{ professor.nome_exibicao }}</span></div>
+    </a>
+    <div class="card__info"><strong>R$ {{ professor.valor_hora|floatformat:2 }} / h</strong>
+    <span class="card__rating">{% if professor.nota_media != None %}{{ professor.nota_media|floatformat:1 }} <i aria-hidden="true">★</i>{% else %}Sem avaliações{% endif %}</span></div>
+    <p class="card__text">{{ professor.bio|truncatechars:130 }}</p>
+  </article>
+  {% empty %}<p class="cards__empty">Nenhum professor encontrado.</p>{% endfor %}
+  </div>
+  <button class="carousel__arrow carousel__arrow--next" type="button" aria-label="Próximos professores" data-next>›</button>
 </div>
-<nav class="pagination" aria-label="Paginação">
-{% if professores.has_previous %}<a class="page-btn" href="?q={{ busca|urlencode }}&amp;disciplina={{ disciplina_selecionada|urlencode }}&amp;page={{ professores.previous_page_number }}">‹</a>{% endif %}
-<span>Página {{ professores.number }} de {{ professores.paginator.num_pages }}</span>
-{% if professores.has_next %}<a class="page-btn" href="?q={{ busca|urlencode }}&amp;disciplina={{ disciplina_selecionada|urlencode }}&amp;page={{ professores.next_page_number }}">›</a>{% endif %}</nav>
+<div class="dots" data-dots></div>
+<div class="teachers__more"><a href="{% url 'professor' %}" class="btn btn--ghost">Ver todos os professores</a></div>
     </section>
 
     <!-- COMO FUNCIONA -->
