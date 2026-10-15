@@ -1,0 +1,20 @@
+{% load static %}
+<header class="mentis-header">
+  <a href="{% url 'principal' %}" class="mentis-header__logo" aria-label="Mentis — página inicial"><img src="{% static 'img/logo-r.png' %}" alt="Mentis" width="104" height="40" fetchpriority="high"></a>
+  <nav class="mentis-header__nav" aria-label="Navegação principal">
+    <a href="{% url 'principal' %}#disciplinas">Disciplinas</a>
+    <a href="{% url 'principal' %}#resultados">Professores</a>
+    <a href="{% url 'professor' %}#materiais">Materiais</a>
+    <a href="{% url 'principal' %}#como-funciona">Informações</a>
+  </nav>
+  <div class="mentis-header__auth">
+    {% if request.user.is_authenticated %}
+      {% if request.user.professor %}<a href="{% url 'professor_detalhe' request.user.pk %}">Meu perfil</a>{% else %}<a href="{% url 'perfil_aluno' %}">Meu perfil</a>{% endif %}
+      {% if request.user.is_staff %}<a href="{% url 'usuarios' %}">Usuários</a>{% endif %}
+      <form action="{% url 'logout' %}" method="post">{% csrf_token %}<button type="submit">Sair</button></form>
+    {% else %}
+      <a href="{% url 'login' %}">Entrar</a>
+      <a href="{% url 'cadastro' %}" class="mentis-header__signup">Cadastrar</a>
+    {% endif %}
+  </div>
+</header>

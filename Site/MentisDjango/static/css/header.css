@@ -1,0 +1,53 @@
+/* Cabeçalho único para todas as páginas. Não depende das variáveis de cada tela. */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+.mentis-header {
+  box-sizing: border-box;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: grid;
+  flex: 0 0 auto;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 24px;
+  width: 100%;
+  min-height: 80px;
+  margin: 0;
+  padding: 16px max(32px, calc((100% - 1200px) / 2));
+  border-bottom: 1px solid #e6defb;
+  background: #fafafa;
+  color: #1e1208;
+  font: 400 .9rem/1.5 'Poppins', system-ui, sans-serif;
+  letter-spacing: normal;
+  text-transform: none;
+  -webkit-font-smoothing: antialiased;
+}
+.mentis-header *, .mentis-header *::before, .mentis-header *::after { box-sizing: border-box; }
+.mentis-header * { font-family: inherit; }
+.mentis-header a { color: inherit; font: inherit; text-decoration: none; }
+.mentis-header__logo { display: inline-flex; align-items: center; justify-self: start; }
+.mentis-header__logo img { display: block; width: 104px; height: 40px; max-width: none; margin: 0; object-fit: cover; }
+.mentis-header__nav, .mentis-header__auth { display: flex; align-items: center; min-width: 0; margin: 0; }
+.mentis-header__nav { justify-content: center; gap: 24px; }
+.mentis-header__auth { justify-content: flex-end; gap: 16px; color: #6430d8; }
+.mentis-header__nav a, .mentis-header__auth a, .mentis-header__auth button { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 8px 0; white-space: nowrap; }
+.mentis-header__auth .mentis-header__signup { padding-inline: 16px; border: 1px solid #e6defb; border-radius: 10px; }
+.mentis-header__auth form { display: inline-flex; margin: 0; padding: 0; }
+.mentis-header__auth button { margin: 0; border: 0; border-radius: 0; background: transparent; font: inherit; color: inherit; cursor: pointer; }
+.mentis-header a:focus-visible, .mentis-header button:focus-visible { outline: 3px solid #6430d8; outline-offset: 4px; border-radius: 4px; }
+@media (hover: hover) {
+  .mentis-header__nav a:hover, .mentis-header__auth a:hover, .mentis-header__auth button:hover { text-decoration: underline; text-underline-offset: 6px; color: #4a1fa3; }
+}
+@media (max-width: 1100px) {
+  .mentis-header { grid-template-columns: minmax(0, 1fr) auto; gap: 8px 20px; padding: 12px 32px; }
+  .mentis-header__nav { grid-column: 1 / -1; grid-row: 2; width: 100%; flex-wrap: wrap; }
+  .mentis-header__auth { grid-column: 2; grid-row: 1; flex-wrap: wrap; }
+}
+@media (max-width: 600px) {
+  .mentis-header { gap: 4px 12px; padding: 10px 20px; font-size: .8rem; }
+  .mentis-header__logo img { width: 88px; height: 34px; }
+  .mentis-header__auth { gap: 2px 12px; max-width: 190px; }
+  .mentis-header__auth .mentis-header__signup { padding-inline: 10px; }
+  .mentis-header__nav { gap: 0 16px; font-size: .75rem; }
+}

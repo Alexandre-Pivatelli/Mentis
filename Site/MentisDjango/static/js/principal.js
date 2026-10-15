@@ -1,86 +1,83 @@
-// Carrossel de professores: scroll nativo + scroll-snap, sem dependências.
+// Carrossel manual: teclado, rolagem nativa e controles com limites visíveis.
 (() => {
   const root = document.querySelector('[data-carousel]');
   if (!root) return;
-
   const track = root.querySelector('[data-track]');
   const prev = root.querySelector('[data-prev]');
   const next = root.querySelector('[data-next]');
-  const dotsWrap = document.querySelector('[data-dots]');
-  const cards = track.querySelectorAll('.card');
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  let pages = 1;
+  const dots = document.querySelector('[data-dots]');
+  if (!track || !prev || !next || !dots) return;
+  const cards = [...track.querySelectorAll('.card')];
+  const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let offsets = [0];
   let current = 0;
-  let timer = null;
-
-  const perView = () => {
-    if (!cards.length) return 1;
-    return Math.max(1, Math.round(track.clientWidth / cards[0].getBoundingClientRect().width));
+  const sync = () => {
+    current = offsets.reduce((best, offset, index) =>
+      Math.abs(offset - track.scrollLeft) < Math.abs(offsets[best] - track.scrollLeft) ? index : best, 0);
+    prev.disabled = track.scrollLeft < 2;
+    next.disabled = track.scrollLeft >= track.scrollWidth - track.clientWidth - 2;
+    [...dots.children].forEach((dot, index) => {
+      if (dot.classList.contains('carousel__status')) {
+        dot.textContent = `${current + 1} de ${offsets.length}`;
+        return;
+      }
+      dot.classList.toggle('is-active', index === current);
+      if (index === current) dot.setAttribute('aria-current', 'true');
+      else dot.removeAttribute('aria-current');
+    });
   };
-
-  const goTo = (page) => {
-    current = (page + pages) % pages;
-    track.scrollTo({ left: current * track.clientWidth, behavior: reduceMotion ? 'auto' : 'smooth' });
+  const goTo = (index) => {
+    const target = Math.max(0, Math.min(index, offsets.length - 1));
+    track.scrollTo({ left: offsets[target], behavior: motion.matches ? 'instant' : 'smooth' });
   };
-
-  const buildDots = () => {
-    pages = Math.max(1, Math.ceil(cards.length / perView()));
-    root.classList.toggle('is-static', pages <= 1);
-    dotsWrap.innerHTML = '';
-    if (pages <= 1) return;
-    for (let i = 0; i < pages; i++) {
+  const layout = () => {
+    const limit = Math.max(0, track.scrollWidth - track.clientWidth);
+    const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
+    const width = cards[0]?.getBoundingClientRect().width || track.clientWidth;
+    const visible = Math.max(1, Math.floor((track.clientWidth + gap + 1) / (width + gap)));
+    offsets = [0];
+    for (let index = visible; index < cards.length; index += visible) {
+      const left = Math.min(cards[index].offsetLeft - cards[0].offsetLeft, limit);
+      if (left > offsets.at(-1) + 2) offsets.push(left);
+    }
+    const interactive = offsets.length > 1;
+    prev.hidden = next.hidden = !interactive;
+    const photo = cards[0]?.querySelector('.card__photo');
+    if (photo) prev.style.top = next.style.top = `${photo.clientHeight / 2}px`;
+    dots.replaceChildren();
+    if (interactive && offsets.length > 7) {
+      const status = document.createElement('span');
+      status.className = 'carousel__status';
+      status.setAttribute('role', 'status');
+      status.setAttribute('aria-label', 'Grupo de professores');
+      dots.append(status);
+    } else if (interactive) offsets.forEach((_, index) => {
       const dot = document.createElement('button');
       dot.type = 'button';
       dot.className = 'dot';
-      dot.setAttribute('aria-label', `Ir para o grupo ${i + 1}`);
-      dot.addEventListener('click', () => { goTo(i); restart(); });
-      dotsWrap.appendChild(dot);
-    }
+      dot.setAttribute('aria-label', `Ir para o grupo ${index + 1} de ${offsets.length}`);
+      dot.setAttribute('aria-controls', track.id);
+      dot.addEventListener('click', () => goTo(index));
+      dots.append(dot);
+    });
     sync();
   };
-
-  const sync = () => {
-    current = Math.min(pages - 1, Math.round(track.scrollLeft / Math.max(1, track.clientWidth)));
-    dotsWrap.querySelectorAll('.dot').forEach((d, i) => {
-      d.classList.toggle('is-active', i === current);
-      d.setAttribute('aria-current', i === current ? 'true' : 'false');
-    });
-  };
-
-  const stop = () => { clearInterval(timer); timer = null; };
-  const restart = () => {
-    stop();
-    if (!reduceMotion && pages > 1) timer = setInterval(() => goTo(current + 1), 6000);
-  };
-
-  prev.addEventListener('click', () => { goTo(current - 1); restart(); });
-  next.addEventListener('click', () => { goTo(current + 1); restart(); });
-
-  let ticking = false;
+  prev.addEventListener('click', () => goTo(current - 1));
+  next.addEventListener('click', () => goTo(current + 1));
+  let frame;
   track.addEventListener('scroll', () => {
-    if (ticking) return;
-    ticking = true;
-    requestAnimationFrame(() => { sync(); ticking = false; });
+    cancelAnimationFrame(frame);
+    frame = requestAnimationFrame(sync);
   }, { passive: true });
-
-  track.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowRight') { e.preventDefault(); goTo(current + 1); restart(); }
-    if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(current - 1); restart(); }
+  track.addEventListener('keydown', (event) => {
+    if (event.target !== track) return;
+    const targets = { ArrowRight: current + 1, ArrowLeft: current - 1, Home: 0, End: offsets.length - 1 };
+    if (!(event.key in targets)) return;
+    event.preventDefault();
+    goTo(targets[event.key]);
   });
-
-  root.addEventListener('mouseenter', stop);
-  root.addEventListener('mouseleave', restart);
-  root.addEventListener('focusin', stop);
-  root.addEventListener('focusout', restart);
-  document.addEventListener('visibilitychange', () => (document.hidden ? stop() : restart()));
-
-  let resizeId;
-  window.addEventListener('resize', () => {
-    clearTimeout(resizeId);
-    resizeId = setTimeout(() => { buildDots(); goTo(Math.min(current, pages - 1)); }, 150);
-  }, { passive: true });
-
-  buildDots();
-  restart();
+  if ('ResizeObserver' in window) new ResizeObserver(layout).observe(track);
+  else window.addEventListener('resize', layout, { passive: true });
+  document.fonts?.ready.then(layout);
+  layout();
 })();

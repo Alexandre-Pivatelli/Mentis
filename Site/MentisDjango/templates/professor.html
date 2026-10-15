@@ -11,6 +11,7 @@
   
   <link rel="stylesheet" href="{% static 'css/professor.css' %}">
 <link rel="stylesheet" href="{% static 'css/dados.css' %}">
+  <link rel="stylesheet" href="{% static 'css/header.css' %}">
 </head>
 <body>
 
@@ -31,23 +32,7 @@
   </svg>
 
   <!-- HEADER -->
-  <header class="header">
-    <div class="wrap header__in">
-      <a href="{% url 'principal' %}" class="logo">
-        <strong>Mentis</strong>
-        <small>Sua aula, do seu jeito</small>
-      </a>
-
-      <nav class="nav">
-        <a href="{% url 'principal' %}#disciplinas">Disciplinas</a>
-        <a href="{% url 'professor' %}">Professores</a>
-        <a href="#">Materiais</a>
-        <a href="#">Informações</a>
-      </nav>
-
-      {% if request.user.is_authenticated %}<a href="{% url 'perfil_aluno' %}" class="btn btn--outline">Meu perfil</a>{% else %}<a href="{% url 'login' %}" class="btn btn--outline">Entrar</a>{% endif %}
-    </div>
-  </header>
+  {% include 'includes/header.html' %}
 
 <main>
 <section class="hero"><div class="wrap hero__in"><div class="profile"><div class="profile__photo" role="img" aria-label="Iniciais de {{ professor.nome_exibicao }}">{{ professor.iniciais }}</div><div><div class="tags">{% if professor.verificado %}<span class="tag tag--verified">Verificado</span>{% endif %}</div><h1>{{ professor.nome_exibicao }}</h1><p class="profile__role">{% for disciplina in professor.disciplinas.all %}{{ disciplina.nome }}{% if not forloop.last %} · {% endif %}{% endfor %}</p><ul class="profile__stats"><li>{{ professor.nota_media|floatformat:1|default:"Sem nota" }} ({{ professor.total_avaliacoes }} avaliações)</li><li>{{ professor.aulas_realizadas }} aulas realizadas</li><li>{{ professor.total_materiais }} materiais</li></ul></div></div><div class="book"><p class="book__label">Valor por hora · {{ professor.modalidade }}</p><p class="book__price">R$ {{ professor.valor_hora|floatformat:2 }}</p><a class="btn btn--primary btn--block" href="#horarios">Consultar horários</a></div></div></section>

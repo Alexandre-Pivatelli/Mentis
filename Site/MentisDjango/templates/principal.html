@@ -1,4 +1,5 @@
-{% load static %}
+{% load static i18n %}
+{% language 'pt-br' %}
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -9,47 +10,46 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="{% static 'css/principal.css' %}">
-  <link rel="stylesheet" href="{% static 'css/dados.css' %}">
+  <link rel="stylesheet" href="{% static 'css/principal.css' %}?v=principal-8">
+  <link rel="stylesheet" href="{% static 'css/header.css' %}?v=header-4">
   <meta name="description" content="Encontre professores particulares de qualquer disciplina, a qualquer distância.">
   <meta name="theme-color" content="#6430D8">
-  <script src="{% static 'js/principal.js' %}" defer></script>
+  <script src="{% static 'js/principal.js' %}?v=principal-6" defer></script>
 </head>
-<body>
+<body class="principal-page">
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
 
   <!-- HEADER -->
-  <header class="header">
-    <a href="{% url 'principal' %}" class="logo"><img src="{% static 'img/logo-r.png' %}" alt="Mentis" class="logo__img" fetchpriority="high"></a>
+  {% include 'includes/header.html' %}
 
-    <nav class="nav">
-      <a href="{% url 'principal' %}#disciplinas">Disciplinas</a>
-      <a href="{% url 'professor' %}">Professores</a>
-      <a href="#">Materiais</a>
-      <a href="#">Informações</a>
-    </nav>
-
-    <div class="auth">{% if request.user.is_authenticated %}<a href="{% url 'perfil_aluno' %}">Meu perfil</a>{% if request.user.is_staff %} · <a href="{% url 'usuarios' %}">Usuários</a>{% endif %}<form action="{% url 'logout' %}" method="post">{% csrf_token %}<button type="submit">Sair</button></form>{% else %}<a href="{% url 'login' %}">Entrar</a>{% endif %}</div>
-  </header>
-
-  <main>
+  <main id="conteudo" tabindex="-1">
     <!-- HERO -->
     <section class="hero">
       <h1>Sua aula, do seu jeito</h1>
       <p class="hero__subtitle">Encontre professores a qualquer distância</p>
 
       <form class="search" action="{% url 'principal' %}" method="get">
+        {% if disciplina_selecionada %}<input type="hidden" name="disciplina" value="{{ disciplina_selecionada }}">{% endif %}
         <input name="q" value="{{ busca }}" type="search" autocomplete="off" placeholder="Procure por professor ou disciplina..." aria-label="Buscar professor ou disciplina">
         <button type="submit" class="btn btn--primary">Buscar</button>
       </form>
 
-      <div class="chips" id="disciplinas">{% for disciplina in disciplinas %}<a class="chip" href="?disciplina={{ disciplina.pk }}">{{ disciplina.nome }}</a>{% empty %}<p>Nenhuma disciplina cadastrada.</p>{% endfor %}</div>
+      <nav class="chips" id="disciplinas" aria-label="Filtrar por disciplina">
+        <a class="chip{% if not disciplina_selecionada %} is-selected{% endif %}" href="?q={{ busca|urlencode }}#resultados"{% if not disciplina_selecionada %} aria-current="true"{% endif %}>Todas</a>
+        {% for disciplina in disciplinas %}<a class="chip{% if disciplina_selecionada == disciplina.pk|stringformat:'s' %} is-selected{% endif %}" href="?disciplina={{ disciplina.pk }}&amp;q={{ busca|urlencode }}#resultados"{% if disciplina_selecionada == disciplina.pk|stringformat:'s' %} aria-current="true"{% endif %}>{{ disciplina.nome }}</a>{% endfor %}
+      </nav>
     </section>
 
     <!-- PROFESSORES -->
-    <section class="teachers">
-      <h2 class="section-title">
-        Mais de <span>{{ total_professores }} professores</span> para você <span>escolher</span>
+    <section class="teachers" id="resultados" aria-labelledby="teachers-title">
+      {% if busca or disciplina_selecionada %}
+      <h2 class="section-title" id="teachers-title">Encontre seu <span>professor</span></h2>
+      <div class="results-summary"><p>{{ professores.paginator.count }} professor{{ professores.paginator.count|pluralize:'es' }} encontrado{{ professores.paginator.count|pluralize }}{% if busca %} para “{{ busca }}”{% endif %}</p><a href="{% url 'principal' %}#resultados">Limpar filtros</a></div>
+      {% else %}
+      <h2 class="section-title" id="teachers-title">
+        Encontre seu próximo <span>professor</span>
       </h2>
+      {% endif %}
 
 <div class="carousel" data-carousel>
   <button class="carousel__arrow carousel__arrow--prev" type="button" aria-label="Professores anteriores" data-prev>‹</button>
@@ -61,18 +61,25 @@
     </a>
     <div class="card__info"><strong>R$ {{ professor.valor_hora|floatformat:2 }} / h</strong>
     <span class="card__rating">{% if professor.nota_media != None %}{{ professor.nota_media|floatformat:1 }} <i aria-hidden="true">★</i>{% else %}Sem avaliações{% endif %}</span></div>
-    <p class="card__text">{{ professor.bio|truncatechars:130 }}</p>
+    <p class="card__subjects">{% for disciplina in professor.disciplinas.all %}{{ disciplina.nome }}{% if not forloop.last %} · {% endif %}{% empty %}Professor particular{% endfor %}</p>
+    <p class="card__text">{{ professor.bio|default:'Conheça o perfil e saiba mais sobre as aulas deste professor.'|truncatechars:130 }}</p>
   </article>
-  {% empty %}<p class="cards__empty">Nenhum professor encontrado.</p>{% endfor %}
+  {% empty %}<div class="cards__empty"><h3>Nenhum professor encontrado</h3><p>Tente outro nome ou disciplina, ou remova os filtros para explorar os perfis.</p><a class="btn btn--ghost" href="{% url 'principal' %}#resultados">Ver professores</a></div>{% endfor %}
   </div>
   <button class="carousel__arrow carousel__arrow--next" type="button" aria-label="Próximos professores" data-next>›</button>
 </div>
 <div class="dots" data-dots></div>
-<div class="teachers__more"><a href="{% url 'professor' %}" class="btn btn--ghost">Ver todos os professores</a></div>
+{% if professores.has_other_pages %}
+<nav class="pagination" aria-label="Páginas de professores">
+  {% if professores.has_previous %}<a class="page-btn" href="?q={{ busca|urlencode }}&amp;disciplina={{ disciplina_selecionada|urlencode }}&amp;page={{ professores.previous_page_number }}#resultados">Anterior</a>{% endif %}
+  <span>Página {{ professores.number }} de {{ professores.paginator.num_pages }}</span>
+  {% if professores.has_next %}<a class="page-btn" href="?q={{ busca|urlencode }}&amp;disciplina={{ disciplina_selecionada|urlencode }}&amp;page={{ professores.next_page_number }}#resultados">Próxima</a>{% endif %}
+</nav>
+{% endif %}
     </section>
 
     <!-- COMO FUNCIONA -->
-    <section class="how">
+    <section class="how" id="como-funciona">
       <h2 class="section-title">Como funciona a <span>Mentis</span></h2>
 
       <div class="steps">
@@ -98,11 +105,23 @@
     <section class="cta">
       <h2>Venha fazer parte da Mentis</h2>
       <div class="cta__buttons">
-        <a href="#" class="btn btn--white">Começar como estudante</a>
-        <a href="#" class="btn btn--outline">Sou professor</a>
+        {% if request.user.is_authenticated %}
+        <a href="{% url 'principal' %}#resultados" class="btn btn--white">Encontrar um professor</a>
+        {% if request.user.professor %}<a href="{% url 'professor_detalhe' request.user.pk %}" class="btn btn--outline">Meu perfil</a>{% else %}<a href="{% url 'perfil_aluno' %}" class="btn btn--outline">Meu perfil</a>{% endif %}
+        {% else %}
+        <a href="{% url 'cadastro' %}" class="btn btn--white">Começar como estudante</a>
+        <a href="{% url 'cadastro' %}?tipo=professor" class="btn btn--outline">Sou professor</a>
+        {% endif %}
       </div>
     </section>
   </main>
+  <footer class="principal-footer">
+    <div class="principal-footer__inner">
+      <small>© {% now 'Y' %} Mentis</small>
+      <nav aria-label="Navegação do rodapé"><a href="#como-funciona">Como funciona</a><a href="#conteudo">Voltar ao início</a></nav>
+    </div>
+  </footer>
 
 </body>
 </html>
+{% endlanguage %}
