@@ -1,8 +1,16 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.db.models.functions import Lower
 
 
 # ---------- Enumerações ----------
+class TentativaAutenticacao(models.Model):
+    """Contador por endereço e operação; a chave não armazena o IP em claro."""
+    chave = models.CharField(max_length=64, unique=True)
+    inicio = models.DateTimeField()
+    quantidade = models.PositiveIntegerField(default=0)
+
+
 class StatusAula(models.TextChoices):
     AGENDADA = 'AGENDADA', 'Agendada'
     CONFIRMADA = 'CONFIRMADA', 'Confirmada'
@@ -25,6 +33,10 @@ class Usuario(AbstractUser):
     email = models.EmailField(unique=True)
     telefone = models.CharField(max_length=20, blank=True)
 
+    class Meta(AbstractUser.Meta):
+        abstract = False
+        constraints = [models.UniqueConstraint(Lower('email'), name='usuario_email_ci_unique')]
+
     def __str__(self):
         return self.nome or self.username
 
@@ -42,9 +54,9 @@ class Responsavel(models.Model):
 class Aluno(models.Model):
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, primary_key=True)
     responsavel = models.ForeignKey(Responsavel, on_delete=models.PROTECT,
-                                    related_name='alunos')          # 1 responde por 1..*
-    serie = models.CharField(max_length=50)
-    escola = models.CharField(max_length=150)
+                                    related_name='alunos', null=True, blank=True)
+    serie = models.CharField(max_length=50, blank=True)
+    escola = models.CharField(max_length=150, blank=True)
 
     def __str__(self):
         return str(self.usuario)

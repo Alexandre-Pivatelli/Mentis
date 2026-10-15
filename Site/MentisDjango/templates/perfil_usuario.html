@@ -11,22 +11,12 @@
   
   <link rel="stylesheet" href="{% static 'css/perfil_aluno.css' %}">
 <link rel="stylesheet" href="{% static 'css/dados.css' %}">
+  <link rel="stylesheet" href="{% static 'css/header.css' %}">
 </head>
 <body>
 
   <!-- HEADER -->
-  <header class="header">
-    <a href="{% url 'principal' %}" class="logo">Mentis</a>
-
-    <nav class="nav">
-      <a href="{% url 'principal' %}#disciplinas">Disciplinas</a>
-      <a href="{% url 'professor' %}">Professores</a>
-      <a href="#">Materiais</a>
-      <a href="#">Informações</a>
-    </nav>
-
-    <div class="auth">{% if request.user.is_authenticated %}<a href="{% url 'perfil_aluno' %}">Meu perfil</a>{% if request.user.is_staff %} · <a href="{% url 'usuarios' %}">Usuários</a>{% endif %}<form action="{% url 'logout' %}" method="post">{% csrf_token %}<button type="submit">Sair</button></form>{% else %}<a href="{% url 'login' %}">Entrar</a>{% endif %}</div>
-  </header>
+  {% include 'includes/header.html' %}
 
 <main class="page">
 {% if aluno %}

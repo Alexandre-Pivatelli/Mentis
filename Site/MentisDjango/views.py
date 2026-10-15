@@ -1,14 +1,18 @@
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import AuthenticationForm
 from django.core.paginator import Paginator
+from django.db import IntegrityError
 from django.db.models import Avg, Count, Q
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.http import url_has_allowed_host_and_scheme
-from django.views.decorators.http import require_POST
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.views.decorators.http import require_POST, require_http_methods
+from django.views.decorators.cache import never_cache
+from django.views.decorators.debug import sensitive_post_parameters
+
+from .auth_limits import permitir_tentativa
+from .forms import CadastroForm, LoginForm
 
 from .models import Aluno, Aula, Avaliacao, Disciplina, Professor, StatusAula, Usuario
 
@@ -39,7 +43,7 @@ def principal_view(request):
             | Q(bio__icontains=busca)).distinct()
     if disciplina.isdigit():
         professores = professores.filter(disciplinas__pk=int(disciplina))
-    pagina = Paginator(professores, 8).get_page(request.GET.get('page'))
+    pagina = Paginator(professores, 15).get_page(request.GET.get('page'))
     for professor in pagina:
         identificar(professor)
     return render(request, 'principal.html', {'professores': pagina, 'busca': busca,
@@ -47,17 +51,29 @@ def principal_view(request):
         'total_professores': Professor.objects.count()})
 
 
+@sensitive_post_parameters('password')
+@never_cache
+@require_http_methods(['GET', 'POST'])
 def login_view(request):
     if request.user.is_authenticated:
         return redirect('principal')
-    form = AuthenticationForm(request, data=request.POST if request.method == 'POST' else None)
-    if request.method == 'POST' and form.is_valid():
-        login(request, form.get_user())
-        destino = request.POST.get('next') or request.GET.get('next', '')
-        if not url_has_allowed_host_and_scheme(destino, {request.get_host()}, require_https=request.is_secure()):
-            destino = reverse('principal')
-        return redirect(destino or reverse('principal'))
-    return render(request, 'login.html', {'form': form, 'next': request.GET.get('next', '')})
+    destino = request.POST.get('next') or request.GET.get('next', '')
+    if not url_has_allowed_host_and_scheme(destino, {request.get_host()}, require_https=request.is_secure()):
+        destino = reverse('principal')
+    form = LoginForm(request, data=request.POST if request.method == 'POST' else None)
+    if request.method == 'POST':
+        permitido, espera = permitir_tentativa(request, 'login')
+        if not permitido:
+            form = LoginForm(request, data={})
+            form.full_clean()
+            form.add_error(None, 'Muitas tentativas. Aguarde 15 minutos antes de tentar novamente.')
+            response = render(request, 'login.html', {'form': form, 'next': destino}, status=429)
+            response['Retry-After'] = str(espera)
+            return response
+        if form.is_valid():
+            login(request, form.get_user())
+            return redirect(destino or reverse('principal'))
+    return render(request, 'login.html', {'form': form, 'next': destino})
 
 
 @require_POST
@@ -111,62 +127,33 @@ def professor_view(request, pk=None):
         'materiais': professor.materiais.select_related('disciplina').order_by('-data_publicacao', '-pk')[:12],
         'avaliacoes': avaliacoes[:10], 'disponibilidades': professor.disponibilidades.order_by('dia_semana', 'hora_inicio')})
 
+@sensitive_post_parameters('password1', 'password2')
+@never_cache
+@require_http_methods(['GET', 'POST'])
 def cadastro_view(request):
     if request.user.is_authenticated:
         return redirect('principal')
-
+    tipo = 'professor' if request.GET.get('tipo') == 'professor' else 'estudante'
+    form = CadastroForm(request.POST if request.method == 'POST' else None, initial={'user_type': tipo})
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        tipo_usuario = request.POST.get('user_type', 'estudante')  # Pega o tipo vindo do botão 'userTypeInput'
-
+        permitido, espera = permitir_tentativa(request, 'cadastro')
+        if not permitido:
+            form = CadastroForm(data={}, initial={'user_type': tipo})
+            form.full_clean()
+            form.add_error(None, 'Muitas tentativas de cadastro. Aguarde uma hora antes de tentar novamente.')
+            response = render(request, 'cadastro.html', {'form': form}, status=429)
+            response['Retry-After'] = str(espera)
+            return response
         if form.is_valid():
-            usuario = form.save()
-            
-            # Vincula o perfil conforme a escolha (Aluno ou Professor)
-            if tipo_usuario == 'professor':
-                Professor.objects.create(usuario=usuario)
+            try:
+                usuario = form.save()
+            except IntegrityError:
+                form.add_error(None, 'Não foi possível criar a conta com estes dados. Confira o usuário e o e-mail.')
             else:
-                Aluno.objects.create(usuario=usuario)
-
-            # Efetua o login automático e redireciona para a tela principal
-            login(request, usuario)
-            return redirect('principal')
-    else:
-        form = UserCreationForm()
-
+                login(request, usuario)
+                return redirect('principal')
     return render(request, 'cadastro.html', {'form': form})
 
-def cadastro_view(request):
-    if request.user.is_authenticated:
-        return redirect('principal')
-
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        tipo_usuario = request.POST.get('user_type', 'estudante')  # Captura 'estudante' ou 'professor'
-
-        if form.is_valid():
-            usuario = form.save()
-            
-            # Salva o nome completo no modelo do usuário
-            nome_completo = request.POST.get('nome', '')
-            if nome_completo:
-                usuario.nome = nome_completo
-                usuario.email = request.POST.get('email', '')
-                usuario.save()
-
-            # Cria o vínculo com a tabela de Professor ou Aluno
-            if tipo_usuario == 'professor':
-                Professor.objects.create(usuario=usuario)
-            else:
-                Aluno.objects.create(usuario=usuario)
-
-            # Efetua o login automático e redireciona
-            login(request, usuario)
-            return redirect('principal')
-    else:
-        form = UserCreationForm()
-
-    return render(request, 'cadastro.html', {'form': form})
 
 @login_required(login_url='login')
 def editar_perfil_view(request):
