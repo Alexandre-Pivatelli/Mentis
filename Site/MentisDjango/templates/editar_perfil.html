@@ -1,0 +1,143 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mentis - Editar Perfil</title>
+
+  <!-- CSS Estático -->
+  <link rel="stylesheet" href="{% static 'css/login.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/editar_perfil.css' %}" />
+
+  <!-- Font Awesome para ícones -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
+  <!-- Fonte Google (Poppins) -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+</head>
+<body>
+  <!-- Cabeçalho / Navbar -->
+  <header class="navbar">
+    <div class="logo">
+      <img src="{% static 'img/logo-r.png' %}" id="logo-roxo" alt="Mentis Logo" />
+    </div>
+    <nav class="nav-links">
+      <a href="{% url 'principal' %}#disciplinas">Disciplinas</a>
+      <a href="#">Professores</a>
+      <a href="#">Materiais</a>
+      <a href="#">Informações</a>
+    </nav>
+    <div class="auth">
+      {% if request.user.is_authenticated %}
+        <a href="{% url 'perfil_aluno' %}">Meu perfil</a>
+        {% if request.user.is_staff %} · <a href="{% url 'usuarios' %}">Usuários</a>{% endif %}
+        <form action="{% url 'logout' %}" method="post">
+          {% csrf_token %}
+          <button type="submit">Sair</button>
+        </form>
+      {% else %}
+        <a href="{% url 'login' %}">Entrar</a> | <a href="{% url 'cadastro' %}">Cadastrar</a>
+      {% endif %}
+    </div>
+  </header>
+
+  <!-- Conteúdo Principal -->
+  <main class="container">
+    <!-- Lado Esquerdo: Formulário de Edição -->
+    <section class="edit-section">
+      <h1 class="welcome-title">Editar Perfil</h1>
+
+      <form class="edit-form" method="post" enctype="multipart/form-data" action="">
+        {% csrf_token %}
+
+        <!-- Alterar Foto de Perfil -->
+        <div class="avatar-upload-container">
+          <div class="avatar-preview">
+            <i class="fa-solid fa-user avatar-icon"></i>
+          </div>
+          <label for="foto" class="upload-btn">
+            <i class="fa-solid fa-camera"></i> Alterar Foto
+          </label>
+          <input type="file" id="foto" name="foto" accept="image/*" style="display: none;" />
+        </div>
+
+        <!-- Nome Completo -->
+        <div class="input-group">
+          <label for="nome">
+            <i class="fa-regular fa-address-card"></i>
+            Nome Completo
+          </label>
+          <input 
+            type="text" 
+            id="nome" 
+            name="nome" 
+            value="{{ request.user.nome|default:request.user.username }}" 
+            required 
+          />
+        </div>
+
+        <!-- Nome de Usuário -->
+        <div class="input-group">
+          <label for="username">
+            <i class="fa-regular fa-user"></i>
+            Nome de Usuário
+          </label>
+          <input 
+            type="text" 
+            id="username" 
+            name="username" 
+            value="{{ request.user.username }}" 
+            required 
+          />
+        </div>
+
+        <!-- E-mail -->
+        <div class="input-group">
+          <label for="email">
+            <i class="fa-regular fa-envelope"></i>
+            E-mail
+          </label>
+          <input 
+            type="email" 
+            id="email" 
+            name="email" 
+            value="{{ request.user.email }}" 
+            required 
+          />
+        </div>
+
+        <!-- Biografia / Sobre você -->
+        <div class="input-group">
+          <label for="bio">
+            <i class="fa-regular fa-comment-dots"></i>
+            Sobre Você / Biografia
+          </label>
+          <textarea id="bio" name="bio" rows="3" placeholder="Conte um pouco sobre si..."></textarea>
+        </div>
+
+        <!-- Botões de Ação -->
+        <div class="button-group">
+          <button type="submit" class="submit-btn">Salvar Alterações</button>
+          <a href="{% url 'perfil_aluno' %}" class="cancel-btn">Cancelar</a>
+        </div>
+      </form>
+    </section>
+
+    <!-- Lado Direito: Banner Roxo -->
+    <section class="brand-section">
+      <div class="brand-content">
+        <div class="big-logo-icon">
+          <img src="{% static 'img/logo-b.png' %}" id="logo-branco" alt="Logo Mentis Grande" />
+        </div>
+        <h1 class="brand-title">MENTIS</h1>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

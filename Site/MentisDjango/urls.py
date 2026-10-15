@@ -10,4 +10,5 @@ urlpatterns = [
     path("perfil-aluno/", views.perfil_aluno_view, name="perfil_aluno"),
     path("professor/", views.professor_view, name="professor"),
     path("professor/<int:pk>/", views.professor_view, name="professor_detalhe"),
+    path('perfil/editar/', views.editar_perfil_view, name='editar_perfil'),
 ]

@@ -1,0 +1,94 @@
+.edit-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 20px;
+}
+
+.edit-form {
+  width: 100%;
+  max-width: 380px;
+}
+
+/* Upload de Foto de Perfil */
+.avatar-upload-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.avatar-preview {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background-color: #f0e6ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid #6a35d9;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+.avatar-icon {
+  font-size: 40px;
+  color: #6a35d9;
+}
+
+.upload-btn {
+  font-size: 13px;
+  color: #6a35d9;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.upload-btn:hover {
+  text-decoration: underline;
+}
+
+/* Estilização do Textarea */
+.input-group textarea {
+  width: 100%;
+  padding: 10px 16px;
+  border: 1px solid #dcdcdc;
+  border-radius: 15px;
+  font-size: 14px;
+  outline: none;
+  resize: vertical;
+}
+
+.input-group textarea:focus {
+  border-color: #6a35d9;
+}
+
+/* Botões de Ação */
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.cancel-btn {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+  color: #666;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 10px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  transition: all 0.3s ease;
+}
+
+.cancel-btn:hover {
+  background-color: #f5f5f5;
+  color: #333;
+}
