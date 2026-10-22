@@ -1,6 +1,7 @@
 def multiplicaf(x, y):
     return x * y
 
+
 def main():
     assert multiplicaf(3, 2) == 6, "Erro"
     assert multiplicaf(2.5, 2.5) == 6.25, "Erro"
@@ -10,6 +11,7 @@ def main():
     assert multiplicaf(1.1, 1) == 1.1, "Erro"
     print("Todos os testes passaram com sucesso!")
     return
+
 
 if __name__ == "__main__":
     main()
