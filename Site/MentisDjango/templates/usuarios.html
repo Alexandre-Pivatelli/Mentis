@@ -1,0 +1,57 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mentis — Usuários</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  
+  <link rel="stylesheet" href="{% static 'css/usuarios.css' %}">
+<link rel="stylesheet" href="{% static 'css/dados.css' %}">
+  <link rel="stylesheet" href="{% static 'css/header.css' %}">
+</head>
+<body>
+
+{% include 'includes/header.html' %}
+
+<main class="container">
+  <h1 class="page-title">Usuários</h1>
+  <p class="page-subtitle">Gerencie todos os usuários cadastrados na plataforma</p>
+
+  <div class="toolbar">
+    <form class="search-wrap" method="get">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input type="text" id="search" name="q" value="{{ busca }}" aria-label="Buscar usuários" placeholder="Buscar por nome ou e-mail…" />
+<button type="submit" class="page-btn" aria-label="Buscar">⌕</button></form>
+<a class="btn-add" href="{% url 'admin:MentisDjango_usuario_add' %}">+ Novo usuário</a>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Usuário</th>
+          <th>Tipo</th>
+          <th>Cadastro</th>
+          <th>Status</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody id="user-table">{% for usuario in usuarios %}<tr>
+<td><div class="user-cell"><div class="avatar" aria-hidden="true">{{ usuario.iniciais }}</div><div><div class="user-name">{{ usuario.nome_exibicao }}</div><div class="user-email">{{ usuario.email }}</div></div></div></td>
+<td><span class="badge">{{ usuario.tipo_exibicao }}</span></td>
+<td>{{ usuario.date_joined|date:"d/m/Y" }}</td>
+<td>{% if usuario.is_active %}<span class="badge badge--ativo">Ativo</span>{% else %}<span class="badge badge--inativo">Inativo</span>{% endif %}</td>
+<td><div class="actions"><a href="{% url 'admin:MentisDjango_usuario_change' usuario.pk %}" aria-label="Editar {{ usuario.nome_exibicao }}">Editar</a><a href="{% url 'admin:MentisDjango_usuario_delete' usuario.pk %}" aria-label="Excluir {{ usuario.nome_exibicao }}">Excluir</a></div></td>
+</tr>{% empty %}<tr><td colspan="5">Nenhum usuário encontrado.</td></tr>{% endfor %}</tbody>
+    </table>
+
+<div class="table-footer"><span>{{ usuarios.paginator.count }} usuários encontrados</span>
+<nav class="pagination" aria-label="Paginação">
+{% if usuarios.has_previous %}<a class="page-btn" href="?q={{ busca|urlencode }}&amp;disciplina={{ disciplina_selecionada|urlencode }}&amp;page={{ usuarios.previous_page_number }}">‹</a>{% endif %}
+<span>Página {{ usuarios.number }} de {{ usuarios.paginator.num_pages }}</span>
+{% if usuarios.has_next %}<a class="page-btn" href="?q={{ busca|urlencode }}&amp;disciplina={{ disciplina_selecionada|urlencode }}&amp;page={{ usuarios.next_page_number }}">›</a>{% endif %}</nav></div></div></main></body></html>

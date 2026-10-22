@@ -1,0 +1,173 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mentis - Cadastrar</title>
+
+  <!-- CSS Estático do Django -->
+  <link rel="stylesheet" href="{% static 'css/login.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/cadastro.css' %}" />
+
+  <!-- Font Awesome para ícones -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
+  <!-- Fonte Google (Poppins) -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="{% static 'css/header.css' %}">
+</head>
+<body>
+  <!-- Cabeçalho / Navbar -->
+  {% include 'includes/header.html' %}
+
+  <!-- Conteúdo Principal -->
+  <main class="container">
+    <!-- Lado Esquerdo: Formulário de Cadastro -->
+    <section class="register-section">
+      <h1 class="welcome-title">Crie sua Conta</h1>
+
+      <!-- Alternador de Tipo de Perfil -->
+      <div class="toggle-container">
+        <button type="button" class="toggle-btn active" id="btnEstudante">
+          <i class="fa-regular fa-user"></i>
+          Estudante
+        </button>
+        <button type="button" class="toggle-btn" id="btnProfessor">
+          <i class="fa-solid fa-graduation-cap"></i>
+          Professor
+        </button>
+      </div>
+
+      <!-- Formulário de Cadastro -->
+      <form class="register-form" method="post" action="{% url 'cadastro' %}">
+        {% csrf_token %}
+        
+        <!-- Campo oculto para enviar o tipo de conta (estudante ou professor) ao Django -->
+        <input type="hidden" name="user_type" id="userTypeInput" value="estudante">
+
+        {% if form.non_field_errors %}
+          <div class="form-errors">
+            {{ form.non_field_errors }}
+          </div>
+        {% endif %}
+
+        <!-- Nome Completo -->
+        <div class="input-group">
+          <label for="nome">
+            <i class="fa-regular fa-address-card"></i>
+            Nome Completo
+          </label>
+          <input type="text" id="nome" name="nome" placeholder="Digite seu nome completo" required />
+        </div>
+
+        <!-- Nome de Usuário -->
+        <div class="input-group">
+          <label for="username">
+            <i class="fa-regular fa-user"></i>
+            Nome de Usuário
+          </label>
+          <input type="text" id="username" name="username" placeholder="Escolha um usuário para login" required />
+          {% if form.username.errors %}<div class="field-error">{{ form.username.errors }}</div>{% endif %}
+        </div>
+
+        <!-- E-mail -->
+        <div class="input-group">
+          <label for="email">
+            <i class="fa-regular fa-envelope"></i>
+            E-mail
+          </label>
+          <input type="email" id="email" name="email" placeholder="seuemail@exemplo.com" required />
+        </div>
+
+        <!-- Senha -->
+        <div class="input-group">
+          <label for="password1">
+            <i class="fa-solid fa-key"></i>
+            Senha
+          </label>
+          <input type="password" id="password1" name="password1" placeholder="Sua senha" required />
+          {% if form.password1.errors %}<div class="field-error">{{ form.password1.errors }}</div>{% endif %}
+        </div>
+
+        <!-- Confirmar Senha -->
+        <div class="input-group">
+          <label for="password2">
+            <i class="fa-solid fa-check-double"></i>
+            Confirmar Senha
+          </label>
+          <input type="password" id="password2" name="password2" placeholder="Repita a senha" required />
+          {% if form.password2.errors %}<div class="field-error">{{ form.password2.errors }}</div>{% endif %}
+        </div>
+
+        <!-- Status de Estudo / Formação -->
+        <div class="input-group">
+          <label for="status_estudo" id="statusLabel">
+            <i class="fa-solid fa-book-open"></i>
+            Nível de Ensino
+          </label>
+          <select id="status_estudo" name="status_estudo" required>
+            <option value="" disabled selected>Selecione uma opção</option>
+            <option value="Ensino Fundamental">Ensino Fundamental</option>
+            <option value="Ensino Médio">Ensino Médio</option>
+            <option value="Ensino Técnico">Ensino Técnico</option>
+            <option value="Graduação">Graduação / Faculdade</option>
+            <option value="Pós-Graduação">Pós-Graduação / Mestrado / Doutorado</option>
+          </select>
+        </div>
+
+        <!-- Botão Criar Conta -->
+        <button type="submit" class="submit-btn">Criar Conta</button>
+
+        <!-- Já tem conta -->
+        <p class="login-text">
+          Já tem uma conta? <a href="{% url 'login' %}">Entrar</a>
+        </p>
+      </form>
+    </section>
+
+    <!-- Lado Direito: Banner Roxo -->
+    <section class="brand-section">
+      <div class="brand-content">
+        <div class="big-logo-icon">
+          <img src="{% static 'img/logo-b.png' %}" id="logo-branco" alt="Logo Mentis Grande" />
+        </div>
+        <h1 class="brand-title">MENTIS</h1>
+      </div>
+    </section>
+  </main>
+
+  <!-- Script para alternar botões e adaptar o rótulo do status -->
+  <script>
+    const btnEstudante = document.getElementById('btnEstudante');
+    const btnProfessor = document.getElementById('btnProfessor');
+    const userTypeInput = document.getElementById('userTypeInput');
+    const statusLabel = document.getElementById('statusLabel');
+    if (new URLSearchParams(window.location.search).get('tipo') === 'professor') {
+      btnEstudante.classList.remove('active');
+      btnProfessor.classList.add('active');
+      userTypeInput.value = 'professor';
+      statusLabel.innerHTML = '<i class="fa-solid fa-graduation-cap"></i> Titulação Acadêmica';
+    }
+
+    btnEstudante.addEventListener('click', () => {
+      btnEstudante.classList.add('active');
+      btnProfessor.classList.remove('active');
+      userTypeInput.value = 'estudante';
+      statusLabel.innerHTML = '<i class="fa-solid fa-book-open"></i> Nível de Ensino';
+    });
+
+    btnProfessor.addEventListener('click', () => {
+      btnProfessor.classList.add('active');
+      btnEstudante.classList.remove('active');
+      userTypeInput.value = 'professor';
+      statusLabel.innerHTML = '<i class="fa-solid fa-graduation-cap"></i> Titulação Acadêmica';
+    });
+  </script>
+</body>
+</html>

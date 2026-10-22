@@ -1,0 +1,8 @@
+<div class="auth-field{% if field.errors %} auth-field--invalid{% endif %}">
+  {{ field.label_tag }}
+  {% if field.field.widget.input_type == 'password' %}
+  <div class="auth-password">{{ field }}<button type="button" data-password="{{ field.auto_id }}" aria-controls="{{ field.auto_id }}" aria-pressed="false" hidden>Mostrar</button></div>
+  {% else %}{{ field }}{% endif %}
+  {% if field.help_text %}<div class="auth-help" id="{{ field.auto_id }}_helptext">{{ field.help_text|safe }}</div>{% endif %}
+  {{ field.errors }}
+</div>

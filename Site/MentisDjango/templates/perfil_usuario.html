@@ -1,0 +1,29 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mentis – Perfil do aluno</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="{% static 'css/perfil_aluno.css' %}">
+<link rel="stylesheet" href="{% static 'css/dados.css' %}">
+  <link rel="stylesheet" href="{% static 'css/header.css' %}">
+</head>
+<body>
+
+  <!-- HEADER -->
+  {% include 'includes/header.html' %}
+
+<main class="page">
+{% if aluno %}
+<section class="content"><h2 class="section-heading">Sobre</h2><p class="about">Estudante da {{ aluno.escola|default:"escola não informada" }}, {{ aluno.serie }}.</p>
+<h2 class="section-heading">Disciplinas das suas aulas</h2><div class="chips">{% for disciplina in disciplinas %}<a class="chip" href="{% url 'principal' %}?disciplina={{ disciplina.pk }}">{{ disciplina.nome }}</a>{% empty %}<p>Nenhuma aula cadastrada.</p>{% endfor %}</div>
+<h2 class="section-heading" id="agenda">Agenda</h2>{% for aula in agenda %}<article class="review"><h3>{{ aula.disciplina.nome }}</h3><p>{{ aula.professor.usuario.nome }} · {{ aula.data_hora|date:"d/m/Y H:i" }} · {{ aula.get_status_display }}</p></article>{% empty %}<p>Nenhuma aula agendada.</p>{% endfor %}
+<h2 class="section-heading">Suas avaliações de aulas</h2><div class="reviews">{% for avaliacao in avaliacoes %}<article class="review"><h3>{{ avaliacao.aula.professor.usuario.nome }}</h3><p>{{ avaliacao.aula.disciplina.nome }} · {{ avaliacao.nota }}/5</p><p>{{ avaliacao.comentario }}</p></article>{% empty %}<p>Você ainda não avaliou aulas.</p>{% endfor %}</div></section>
+<aside class="profile"><div class="profile__photo" aria-hidden="true"></div><div class="profile__body"><h1 class="profile__name">{{ aluno.usuario.nome|default:aluno.usuario.username }}</h1><p class="profile__role">Estudante | {{ aluno.serie }}</p><div class="stats"><div class="stat"><strong>{{ aulas_realizadas }}</strong><span>Aulas realizadas</span></div><div class="stat"><strong>{{ nota_media|floatformat:1|default:"—" }}</strong><span>Média das suas notas</span></div></div></div></aside>
+{% else %}<section class="content"><h1>Perfil do aluno</h1><p>Sua conta ainda não possui um perfil de aluno cadastrado.</p></section>{% endif %}
+</main></body></html>

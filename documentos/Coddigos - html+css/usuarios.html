@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mentis — Usuários</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --purple:       #6430D8;
+      --purple-dark:  #4A1FA3;
+      --purple-light: #E6DEFB;
+      --lavender:     #F0EBFD;
+      --text:         #1E1208;
+      --muted:        #6B6B6B;
+      --bg:           #FAFAFA;
+      --radius:       28px;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    /* HEADER */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      height: 72px;
+      background: #fff;
+      box-shadow: 0 1px 0 #E8E3F5;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--purple);
+      text-decoration: none;
+    }
+
+    .header-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    /* CONTEÚDO */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    .page-title {
+      font-size: 1.6rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .page-subtitle {
+      font-size: 0.875rem;
+      color: var(--muted);
+      margin-bottom: 32px;
+    }
+
+    /* BARRA ACIMA DA TABELA */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .search-wrap {
+      position: relative;
+    }
+
+    .search-wrap svg {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      pointer-events: none;
+    }
+
+    .search-wrap input {
+      padding: 10px 16px 10px 40px;
+      border: 2px solid #E8E3F5;
+      border-radius: 50px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.85rem;
+      color: var(--text);
+      background: #fff;
+      outline: none;
+      width: 260px;
+      transition: border-color .2s;
+    }
+
+    .search-wrap input:focus { border-color: var(--purple); }
+
+    .btn-add {
+      padding: 10px 22px;
+      background: var(--purple);
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .2s;
+    }
+
+    .btn-add:hover { background: var(--purple-dark); }
+
+    /* TABELA */
+    .table-wrap {
+      background: #fff;
+      border-radius: var(--radius);
+      border: 1.5px solid #EEE9FA;
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead {
+      background: var(--lavender);
+    }
+
+    thead th {
+      padding: 14px 20px;
+      text-align: left;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--purple);
+    }
+
+    tbody tr {
+      border-top: 1px solid #F0EBF8;
+      transition: background .15s;
+    }
+
+    tbody tr:hover { background: #FAFAFF; }
+
+    tbody td {
+      padding: 16px 20px;
+      font-size: 0.875rem;
+      color: var(--text);
+      vertical-align: middle;
+    }
+
+    /* AVATAR */
+    .user-cell {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .user-name  { font-weight: 600; font-size: 0.9rem; }
+    .user-email { font-size: 0.78rem; color: var(--muted); }
+
+    /* BADGES */
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .badge--professor {
+      background: var(--lavender);
+      color: var(--purple);
+    }
+
+    .badge--aluno {
+      background: #E6F7F0;
+      color: #15803D;
+    }
+
+    .badge--ativo {
+      background: #E6F7F0;
+      color: #15803D;
+    }
+
+    .badge--inativo {
+      background: #FEE2E2;
+      color: #DC2626;
+    }
+
+    /* AÇÕES */
+    .actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1.5px solid #E8E3F5;
+      background: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .2s;
+      color: var(--muted);
+    }
+
+    .btn-icon:hover { border-color: var(--purple); color: var(--purple); background: var(--lavender); }
+    .btn-icon.delete:hover { border-color: #DC2626; color: #DC2626; background: #FEE2E2; }
+
+    /* RODAPÉ DA TABELA */
+    .table-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-top: 1px solid #F0EBF8;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .pagination {
+      display: flex;
+      gap: 6px;
+    }
+
+    .page-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1.5px solid #E8E3F5;
+      background: #fff;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .2s;
+    }
+
+    .page-btn:hover,
+    .page-btn.active {
+      background: var(--purple);
+      border-color: var(--purple);
+      color: #fff;
+    }
+
+    @media (max-width: 640px) {
+      .header { padding: 0 20px; }
+      .container { padding: 24px 16px 60px; }
+      table thead th:nth-child(3),
+      table tbody td:nth-child(3) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <a href="#" class="logo">mentis</a>
+  <span class="header-title">Painel administrativo</span>
+</header>
+
+<div class="container">
+  <h1 class="page-title">Usuários</h1>
+  <p class="page-subtitle">Gerencie todos os usuários cadastrados na plataforma</p>
+
+  <div class="toolbar">
+    <div class="search-wrap">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input type="text" id="search" placeholder="Buscar por nome ou e-mail…" />
+    </div>
+    <button class="btn-add">+ Novo usuário</button>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Usuário</th>
+          <th>Tipo</th>
+          <th>Cadastro</th>
+          <th>Status</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody id="user-table">
+
+        <tr>
+          <td>
+            <div class="user-cell">
+              <div class="avatar" style="background: linear-gradient(135deg,#6430D8,#9B6BF2)">AL</div>
+              <div>
+                <div class="user-name">Ana Lima</div>
+                <div class="user-email">ana.lima@email.com</div>
+              </div>
+            </div>
+          </td>
+          <td><span class="badge badge--professor">Professor</span></td>
+          <td>03/09/2025</td>
+          <td><span class="badge badge--ativo">Ativo</span></td>
+          <td>
+            <div class="actions">
+              <button class="btn-icon" title="Editar">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+              </button>
+              <button class="btn-icon delete" title="Excluir">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/>
+                  <path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
+                </svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="user-cell">
+              <div class="avatar" style="background: linear-gradient(135deg,#059669,#34D399)">CM</div>
+              <div>
+                <div class="user-name">Carlos Mendes</div>
+                <div class="user-email">carlos.m@email.com</div>
+              </div>
+            </div>
+          </td>
+          <td><span class="badge badge--aluno">Aluno</span></td>
+          <td>10/09/2025</td>
+          <td><span class="badge badge--ativo">Ativo</span></td>
+          <td>
+            <div class="actions">
+              <button class="btn-icon" title="Editar">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+              </button>
+              <button class="btn-icon delete" title="Excluir">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/>
+                  <path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
+                </svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="user-cell">
+              <div class="avatar" style="background: linear-gradient(135deg,#DC2626,#F87171)">JS</div>
+              <div>
+                <div class="user-name">Juliana Santos</div>
+                <div class="user-email">ju.santos@email.com</div>
+              </div>
+            </div>
+          </td>
+          <td><span class="badge badge--professor">Professor</span></td>
+          <td>15/08/2025</td>
+          <td><span class="badge badge--inativo">Inativo</span></td>
+          <td>
+            <div class="actions">
+              <button class="btn-icon" title="Editar">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+              </button>
+              <button class="btn-icon delete" title="Excluir">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/>
+                  <path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
+                </svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="user-cell">
+              <div class="avatar" style="background: linear-gradient(135deg,#D97706,#FCD34D)">RF</div>
+              <div>
+                <div class="user-name">Rafael Ferreira</div>
+                <div class="user-email">rafa.f@email.com</div>
+              </div>
+            </div>
+          </td>
+          <td><span class="badge badge--aluno">Aluno</span></td>
+          <td>22/09/2025</td>
+          <td><span class="badge badge--ativo">Ativo</span></td>
+          <td>
+            <div class="actions">
+              <button class="btn-icon" title="Editar">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+              </button>
+              <button class="btn-icon delete" title="Excluir">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/>
+                  <path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
+                </svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="user-cell">
+              <div class="avatar" style="background: linear-gradient(135deg,#7C3AED,#C4B5FD)">MB</div>
+              <div>
+                <div class="user-name">Marina Barros</div>
+                <div class="user-email">marina.b@email.com</div>
+              </div>
+            </div>
+          </td>
+          <td><span class="badge badge--professor">Professor</span></td>
+          <td>01/10/2025</td>
+          <td><span class="badge badge--ativo">Ativo</span></td>
+          <td>
+            <div class="actions">
+              <button class="btn-icon" title="Editar">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+              </button>
+              <button class="btn-icon delete" title="Excluir">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/>
+                  <path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
+                </svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+
+    <div class="table-footer">
+      <span>Mostrando <strong>5</strong> de <strong>5</strong> usuários</span>
+      <div class="pagination">
+        <button class="page-btn">‹</button>
+        <button class="page-btn active">1</button>
+        <button class="page-btn">›</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.getElementById('search').addEventListener('input', function () {
+    const q = this.value.toLowerCase();
+    document.querySelectorAll('#user-table tr').forEach(row => {
+      row.style.display = row.innerText.toLowerCase().includes(q) ? '' : 'none';
+    });
+  });
+</script>
+
+</body>
+</html>
