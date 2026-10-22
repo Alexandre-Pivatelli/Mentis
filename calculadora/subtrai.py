@@ -1,5 +1,6 @@
-def subtraif(x,y):
-  return x-y
+def subtraif(x, y):
+    return x - y
+
 
 def main():
     assert subtraif(3, 2) == 1, "Erro"
@@ -10,6 +11,7 @@ def main():
     assert subtraif(1.1, 1.1) == 0, "Erro"
     print("Todos os testes passaram com sucesso!")
     return
+
 
 if __name__ == "__main__":
     main()
