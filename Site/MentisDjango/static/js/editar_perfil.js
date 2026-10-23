@@ -1,6 +1,6 @@
 // Confirma a sessão atual antes de enviar um formulário aberto há algum tempo.
 (() => {
-  const form = document.querySelector('.edit-form[data-session-url]');
+  const form = document.querySelector('form[data-session-url]');
   if (!form) return;
   const button = form.querySelector('[type="submit"]');
   const message = form.querySelector('[data-session-message]');

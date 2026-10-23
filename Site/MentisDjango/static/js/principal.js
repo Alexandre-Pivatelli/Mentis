@@ -81,3 +81,6 @@
   document.fonts?.ready.then(layout);
   layout();
 })();
+
+const reviewErrors = document.querySelector('[data-review-errors]');
+if (reviewErrors) reviewErrors.focus();

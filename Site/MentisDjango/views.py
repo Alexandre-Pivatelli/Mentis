@@ -14,9 +14,9 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.debug import sensitive_post_parameters
 
 from .auth_limits import permitir_tentativa
-from .forms import CadastroForm, LoginForm, EditarPerfilForm
+from .forms import CadastroForm, LoginForm, EditarPerfilForm, AvaliacaoSiteForm
 
-from .models import Aluno, Aula, Avaliacao, Disciplina, Professor, StatusAula, Usuario
+from .models import Aluno, Aula, Avaliacao, Disciplina, Professor, StatusAula, Usuario, AvaliacaoSite
 
 
 def professores_queryset():
@@ -35,7 +35,8 @@ def identificar(professor):
     return professor
 
 
-def principal_view(request):
+@never_cache
+def principal_view(request, avaliacao_form=None, status=200):
     busca = request.GET.get('q', '').strip()[:200]
     disciplina = request.GET.get('disciplina', '')
     professores = professores_queryset().order_by('usuario__nome', 'pk')
@@ -52,9 +53,18 @@ def principal_view(request):
     pagina = Paginator(professores, 15).get_page(request.GET.get('page'))
     for professor in pagina:
         identificar(professor)
+    avaliacoes_site = AvaliacaoSite.objects.select_related('usuario')
+    resumo = avaliacoes_site.aggregate(media=Avg('nota'), total=Count('pk'))
+    reviews = Paginator(avaliacoes_site, 6).get_page(request.GET.get('review_page'))
+    propria = avaliacoes_site.filter(usuario=request.user).first() if request.user.is_authenticated else None
+    if avaliacao_form is None:
+        avaliacao_form = AvaliacaoSiteForm(instance=propria)
     return render(request, 'principal.html', {'professores': pagina, 'busca': busca,
+        'avaliacoes_site': reviews, 'resumo_site': resumo, 'avaliacao_site_form': avaliacao_form,
+        'propria_avaliacao': propria, 'avaliacao_status': status,
+        'avaliacao_login_next': reverse('principal') + '#avaliacoes',
         'disciplina_selecionada': disciplina, 'disciplinas': Disciplina.objects.order_by('nome'),
-        'total_professores': Professor.objects.count()})
+        'total_professores': Professor.objects.count()}, status=status)
 
 
 @sensitive_post_parameters('password')
@@ -185,3 +195,16 @@ def editar_perfil_view(request):
         else:
             return redirect(perfil_url)
     return render(request, 'editar_perfil.html', {'form': form, 'perfil_url': perfil_url})
+
+
+@never_cache
+@login_required(login_url='login')
+@require_POST
+def avaliar_site_view(request):
+    propria = AvaliacaoSite.objects.filter(usuario=request.user).first()
+    form = AvaliacaoSiteForm(request.POST, instance=propria)
+    if not form.is_valid():
+        return principal_view(request, avaliacao_form=form, status=400)
+    AvaliacaoSite.objects.update_or_create(usuario=request.user, defaults={
+        'nota': form.cleaned_data['nota'], 'comentario': form.cleaned_data['comentario']})
+    return redirect(reverse('principal') + '?avaliacao=salva#avaliacoes')
