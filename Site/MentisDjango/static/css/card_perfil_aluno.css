@@ -1,0 +1,60 @@
+/* Exclusivo de /perfil-aluno/. */
+.profile.perfil-card {
+  width: 100%;
+  max-width: 380px;
+  min-width: 0;
+  justify-self: center;
+  overflow: hidden;
+  padding: 0;
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: 0 8px 28px rgb(48 26 84 / 7%);
+}
+
+.perfil-card__media {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 1.38;
+  overflow: hidden;
+  background: #eee8fa;
+}
+
+.perfil-card__media::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0;
+  height: 26%;
+  background: linear-gradient(to bottom, rgb(255 255 255 / 0%), #fff);
+  pointer-events: none;
+}
+
+.perfil-card .perfil-card__image {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  object-fit: cover;
+  object-position: center 35%;
+}
+
+.perfil-card__initials { font-size: 64px; font-weight: 700; color: #6430d8; }
+.perfil-card__body { padding: 8px 20px 20px; text-align: center; }
+.perfil-card__name { margin: 0; font-size: 24px; font-weight: 700; line-height: 1.25; letter-spacing: -.02em; overflow-wrap: anywhere; }
+.perfil-card__role { margin-top: 5px; font-size: 13px; line-height: 1.5; color: #615769; overflow-wrap: anywhere; }
+.perfil-card__stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin: 22px 0 0; }
+.perfil-card__stats div { display: grid; grid-template-rows: 38px auto; min-width: 0; }
+.perfil-card__stats dt { grid-row: 2; margin-top: 3px; font-size: 12px; line-height: 1.5; color: #51475d; }
+.perfil-card__stats dd { grid-row: 1; margin: 0; color: #6430d8; font-size: 34px; font-weight: 700; line-height: 1.1; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.perfil-aluno-page .about { text-align: left; }
+.perfil-card__tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 7px; list-style: none; margin: 20px 0 0; padding: 0; }
+.perfil-card__tags li { max-width: 100%; padding: 6px 10px; border: 1px solid #d3c1f5; border-radius: 999px; background: #f5f0ff; font-size: 11px; line-height: 1.4; color: #4a1fa3; overflow-wrap: anywhere; }
+.perfil-card__edit { display: flex; align-items: center; justify-content: center; gap: 9px; width: 100%; min-height: 46px; margin-top: 20px; padding: 12px 16px; border-radius: 999px; background: #6430d8; color: #fff; font-size: 14px; font-weight: 600; line-height: 1.5; text-decoration: none; transition: background-color 150ms ease; }
+.perfil-card__edit svg { flex: none; width: 19px; height: 19px; }
+.perfil-card__edit:hover { background: #4a1fa3; }
+.perfil-card__edit:focus-visible { outline: 3px solid #6430d8; outline-offset: 4px; }
+@media (prefers-reduced-motion: reduce) { .perfil-card__edit { transition: none; } }

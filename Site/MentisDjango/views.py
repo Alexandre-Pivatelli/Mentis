@@ -3,16 +3,18 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db import IntegrityError
 from django.db.models import Avg, Count, Q
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, JsonResponse
+from django.middleware.csrf import get_token
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.http import url_has_allowed_host_and_scheme
-from django.views.decorators.http import require_POST, require_http_methods
+from django.utils import timezone
+from django.views.decorators.http import require_POST, require_http_methods, require_GET
 from django.views.decorators.cache import never_cache
 from django.views.decorators.debug import sensitive_post_parameters
 
 from .auth_limits import permitir_tentativa
-from .forms import CadastroForm, LoginForm
+from .forms import CadastroForm, LoginForm, EditarPerfilForm
 
 from .models import Aluno, Aula, Avaliacao, Disciplina, Professor, StatusAula, Usuario
 
@@ -41,8 +43,12 @@ def principal_view(request):
         professores = professores.filter(Q(usuario__nome__icontains=busca)
             | Q(usuario__username__icontains=busca) | Q(disciplinas__nome__icontains=busca)
             | Q(bio__icontains=busca)).distinct()
-    if disciplina.isdigit():
+    if (disciplina.isascii() and disciplina.isdecimal() and len(disciplina) <= 19
+            and 0 < int(disciplina) <= 9223372036854775807):
+        disciplina = str(int(disciplina))
         professores = professores.filter(disciplinas__pk=int(disciplina))
+    else:
+        disciplina = ''
     pagina = Paginator(professores, 15).get_page(request.GET.get('page'))
     for professor in pagina:
         identificar(professor)
@@ -114,7 +120,7 @@ def perfil_aluno_view(request):
         'aulas_realizadas': aulas.filter(status=StatusAula.REALIZADA).count(),
         'avaliacoes': avaliacoes[:10], 'nota_media': avaliacoes.aggregate(media=Avg('nota'))['media'],
         'disciplinas': Disciplina.objects.filter(aulas__aluno=aluno).distinct().order_by('nome'),
-        'agenda': aulas.filter(status__in=[StatusAula.AGENDADA, StatusAula.CONFIRMADA]).order_by('data_hora')[:10]})
+        'agenda': aulas.filter(status__in=[StatusAula.AGENDADA, StatusAula.CONFIRMADA], data_hora__gte=timezone.now()).order_by('data_hora', 'pk')[:10]})
 
 
 def professor_view(request, pk=None):
@@ -134,11 +140,12 @@ def cadastro_view(request):
     if request.user.is_authenticated:
         return redirect('principal')
     tipo = 'professor' if request.GET.get('tipo') == 'professor' else 'estudante'
-    form = CadastroForm(request.POST if request.method == 'POST' else None, initial={'user_type': tipo})
+    form = CadastroForm(request.POST if request.method == 'POST' else None,
+                        request.FILES if request.method == 'POST' else None,
+                        initial={'user_type': tipo})
     if request.method == 'POST':
         permitido, espera = permitir_tentativa(request, 'cadastro')
         if not permitido:
-            form = CadastroForm(data={}, initial={'user_type': tipo})
             form.full_clean()
             form.add_error(None, 'Muitas tentativas de cadastro. Aguarde uma hora antes de tentar novamente.')
             response = render(request, 'cadastro.html', {'form': form}, status=429)
@@ -155,13 +162,26 @@ def cadastro_view(request):
     return render(request, 'cadastro.html', {'form': form})
 
 
+@never_cache
 @login_required(login_url='login')
-def editar_perfil_view(request):
-    if request.method == 'POST':
-        request.user.nome = request.POST.get('nome')
-        request.user.username = request.POST.get('username')
-        request.user.email = request.POST.get('email')
-        request.user.save()
-        return redirect('perfil_aluno')
+@require_GET
+def sessao_perfil_view(request):
+    return JsonResponse({'csrfToken': get_token(request), 'userId': request.user.pk})
 
-    return render(request, 'editar_perfil.html')
+
+@never_cache
+@login_required(login_url='login')
+@require_http_methods(['GET', 'POST'])
+def editar_perfil_view(request):
+    perfil_url = (reverse('professor_detalhe', args=[request.user.pk])
+                  if hasattr(request.user, 'professor') else reverse('perfil_aluno'))
+    form = EditarPerfilForm(request.POST if request.method == 'POST' else None,
+                           request.FILES if request.method == 'POST' else None, instance=request.user)
+    if request.method == 'POST' and form.is_valid():
+        try:
+            form.save()
+        except IntegrityError:
+            form.add_error(None, 'Não foi possível salvar. Confira se o usuário e o e-mail já estão em uso.')
+        else:
+            return redirect(perfil_url)
+    return render(request, 'editar_perfil.html', {'form': form, 'perfil_url': perfil_url})

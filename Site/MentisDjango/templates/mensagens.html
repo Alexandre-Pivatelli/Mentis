@@ -1,0 +1,32 @@
+{% extends 'area_estudante.html' %}{% load static aluno_extras %}
+{% block title %}Mensagens · Mentis{% endblock %}
+{% block student_content %}
+{% include 'includes/navegacao_aluno.html' with active='mensagens' %}
+<div class="messenger{% if conversa %} has-conversation{% endif %}">
+  <aside class="conversation-sidebar" aria-label="Conversas">
+    <label class="sr-only" for="contact-search">Buscar conversa</label><input id="contact-search" type="search" placeholder="Buscar conversa…" data-contact-search>
+    {% if aluno %}<details class="new-conversation"><summary>Nova conversa</summary><form method="post">{% csrf_token %}<input type="hidden" name="acao" value="nova"><label for="teacher">Escolha um professor</label><select id="teacher" name="professor" required><option value="">Selecione um professor</option>{% for p in professores_contato %}<option value="{{ p.pk }}">{{ p.usuario.nome|default:p.usuario.username }}</option>{% endfor %}</select><button class="purple-button" type="submit">Iniciar conversa</button></form></details>{% endif %}
+    <div class="conversation-list">
+    {% for c in conversas %}<a class="contact{% if c.pk == conversa.pk %} is-active{% endif %}" href="?conversa={{ c.pk }}" data-contact="{{ c.contato.nome|default:c.contato.username }}"{% if c.pk == conversa.pk %} aria-current="true"{% endif %}>
+      {% if c.contato.foto %}<img class="contact-avatar" src="{{ c.contato.foto.url }}" alt="">{% else %}<span class="contact-avatar initials" aria-hidden="true">{{ c.contato.nome|default:c.contato.username|iniciais }}</span>{% endif %}
+      <span class="contact-copy"><strong>{{ c.contato.nome|default:c.contato.username }}</strong><span>{{ c.ultima_texto|default:'Conversa iniciada. Diga olá!'|truncatechars:44 }}</span></span>
+      {% if c.nao_lidas %}<span class="unread" aria-label="{{ c.nao_lidas }} mensagens não lidas">{{ c.nao_lidas }}</span>{% endif %}
+    </a>{% empty %}<p class="quiet sidebar-empty">Suas conversas aparecerão aqui.</p>{% endfor %}
+    <p class="quiet" data-search-empty hidden>Nenhuma conversa encontrada.</p>
+    </div>
+  </aside>
+  <section class="chat" aria-label="Mensagens da conversa">
+    {% if conversa %}
+    <header class="chat-header"><a href="{% url 'mensagens_aluno' %}" class="back-conversations" aria-label="Voltar às conversas">‹</a>{% if contato.foto %}<img class="contact-avatar" src="{{ contato.foto.url }}" alt="">{% else %}<span class="contact-avatar initials" aria-hidden="true">{{ contato.nome|default:contato.username|iniciais }}</span>{% endif %}<div><h1>{{ contato.nome|default:contato.username }}</h1><p class="quiet">Conversa particular</p></div></header>
+    <div class="chat-history" data-history data-poll-url="{% if not request.GET.antes %}?conversa={{ conversa.pk }}&amp;format=json{% endif %}" role="log" aria-label="Histórico de mensagens" aria-live="polite">
+      {% if tem_anteriores %}<a class="text-button" href="?conversa={{ conversa.pk }}&amp;antes={{ mensagens.0.pk }}">Ver mensagens anteriores</a>{% endif %}
+      {% if request.GET.antes %}<a class="text-button" href="?conversa={{ conversa.pk }}">Voltar às mensagens recentes</a>{% endif %}
+      <p class="conversation-note" data-empty-history{% if mensagens %} hidden{% endif %}>Este é o início da conversa. Combine os detalhes da próxima aula por aqui.</p>
+      {% for m in mensagens %}<article class="message{% if m.autor_id == request.user.pk %} message--own{% endif %}" data-message-id="{{ m.pk }}"><p>{{ m.texto }}</p><time datetime="{{ m.enviada_em|date:'c' }}">{{ m.enviada_em|date:'d/m · H:i' }}</time></article>{% endfor %}
+    </div>
+    <form class="message-composer" method="post">{% csrf_token %}{{ form.texto.errors }}<div class="composer-row">{{ form.texto }}<button type="submit" aria-label="Enviar mensagem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m3 3 19 9-19 9 4-9-4-9Z M7 12h15"/></svg></button></div><p class="quiet">Até 3.000 caracteres. Use Shift + Enter para uma nova linha.</p></form>
+    {% else %}<div class="chat-empty"><h1>Uma boa aula começa com uma conversa.</h1><p>Escolha uma conversa{% if aluno %} ou inicie uma com seu professor{% endif %}.</p></div>{% endif %}
+  </section>
+</div>
+<script src="{% static 'js/mensagens.js' %}?v=1" defer></script>
+{% endblock %}

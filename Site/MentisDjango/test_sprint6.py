@@ -1,5 +1,6 @@
 from datetime import timedelta
 from decimal import Decimal
+from io import StringIO
 
 from django.core.management import call_command
 from django.test import TestCase
@@ -35,10 +36,10 @@ class AmbienteAlunoTests(TestCase):
 
 class PopularProfessoresTests(TestCase):
     def test_cria_professores_sem_duplicar(self):
-        call_command('popular_professores', stdout=open('/dev/null', 'w'))
+        call_command('popular_professores', stdout=StringIO())
         total = Professor.objects.count()
         self.assertEqual(total, 6)
-        call_command('popular_professores', stdout=open('/dev/null', 'w'))  # rodar de novo
+        call_command('popular_professores', stdout=StringIO())  # rodar de novo
         self.assertEqual(Professor.objects.count(), total)
         helena = Professor.objects.get(usuario__username='demo_prof_helena')
         self.assertEqual(helena.disciplinas.count(), 2)
@@ -46,5 +47,5 @@ class PopularProfessoresTests(TestCase):
         self.assertEqual(helena.materiais.count(), 4)
 
     def test_dry_run_nao_grava(self):
-        call_command('popular_professores', '--dry-run', stdout=open('/dev/null', 'w'))
+        call_command('popular_professores', '--dry-run', stdout=StringIO())
         self.assertEqual(Professor.objects.count(), 0)

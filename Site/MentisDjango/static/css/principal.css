@@ -56,6 +56,7 @@ main:focus { outline: none; }
 .card__link { display: block; border-radius: 16px; }
 .card__link:focus-visible { outline-offset: -4px; }
 .card__photo { position: relative; display: flex; align-items: flex-end; aspect-ratio: 1; overflow: hidden; border-radius: 16px; background: #6430d8; }
+.card__image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .card:nth-child(3n + 2) .card__photo { background: #4a3687; }
 .card:nth-child(3n + 3) .card__photo { background: #725491; }
 .card__photo::after { content: ''; position: absolute; inset: 40% 0 0; background: linear-gradient(transparent, rgb(30 18 50 / 70%)); }

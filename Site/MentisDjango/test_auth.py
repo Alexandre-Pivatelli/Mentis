@@ -11,7 +11,7 @@ from .models import Aluno, Professor, TentativaAutenticacao, Usuario
 class CadastroLoginTests(TestCase):
     def dados(self, **changes):
         data = {'nome': 'Maria da Silva', 'username': 'maria', 'email': 'maria@example.com',
-                'password1': 'UmaSenhaForte!9284', 'password2': 'UmaSenhaForte!9284', 'user_type': 'estudante'}
+                'password1': 'UmaSenhaForte!9284', 'password2': 'UmaSenhaForte!9284', 'user_type': 'estudante', 'nivel_estudo': 'MEDIO', 'serie': 'M2'}
         data.update(changes)
         return data
 
