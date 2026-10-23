@@ -109,27 +109,7 @@
     </section>
 
     <!-- ===== CARD DO PERFIL (lado direito) ===== -->
-    <aside class="profile">
-      <div class="profile__photo">{% if aluno.usuario.foto %}<img class="profile-photo" src="{{ aluno.usuario.foto.url }}" alt="Foto de {{ aluno.usuario.nome }}">{% else %}
-        <span class="profile__iniciais">{{ aluno.usuario.nome|default:aluno.usuario.username|iniciais }}</span>{% endif %}
-      </div>
-      <div class="profile__body">
-        <h1 class="profile__name">{{ aluno.usuario.nome|default:aluno.usuario.username }}</h1>
-        <p class="profile__role">Estudante{% if aluno.serie %} | {{ aluno.serie }}{% endif %}</p>
-
-        <div class="stats">
-          <div class="stat"><strong>{{ aulas_realizadas }}</strong><span>Aulas realizadas</span></div>
-          <div class="stat"><strong>{{ nota_media|floatformat:1|default:"—" }}</strong><span>Média das suas notas</span></div>
-        </div>
-
-        <div class="badges">
-          <span class="badge">{{ aluno.serie|default:"Série não informada" }}</span>
-          <span class="badge">{{ aluno.escola|default:"Escola não informada" }}</span>
-        </div>
-
-        <a class="btn-edit" href="{% url 'editar_perfil' %}">Editar perfil</a>
-      </div>
-    </aside>
+    {% include 'includes/card_estudante.html' %}
 
   {% else %}
     <section class="content">

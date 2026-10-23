@@ -22,3 +22,6 @@
 .brand-section { min-width: 0; }
 .big-logo-icon img, #logo-branco { max-width: 100%; }
 .edit-photo { display: block; width: 96px; height: 96px; object-fit: cover; border-radius: 16px; margin-block: 20px; }
+.photo-current { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-bottom: 8px; }
+.photo-current a { display: inline-flex; align-items: center; min-height: 44px; color: #6430d8; }
+.photo-current label { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; margin: 0; cursor: pointer; }

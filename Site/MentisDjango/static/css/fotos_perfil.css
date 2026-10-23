@@ -1,0 +1,76 @@
+/* A imagem nunca participa do cálculo do tamanho do perfil. */
+.profile__photo {
+  position: relative;
+  overflow: hidden;
+}
+
+.profile__photo > .profile-photo {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Mesmo cartão nas duas páginas do estudante. */
+.profile--estudante {
+  width: 100%;
+  max-width: 380px;
+  justify-self: center;
+  padding-bottom: 20px;
+  border-radius: 28px;
+}
+
+.profile--estudante .profile__photo--usuario {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1.38;
+  margin: 0;
+  border-radius: 0;
+  background: #6430d8;
+}
+
+.profile--estudante .profile-photo { object-position: center 35%; }
+.profile--estudante .profile__photo::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0;
+  height: 28%;
+  background: linear-gradient(to bottom, transparent, #fff);
+  pointer-events: none;
+}
+.profile--estudante .profile__flame {
+  z-index: 1;
+  top: 16px;
+  left: 16px;
+  width: 36px;
+  height: 36px;
+  color: #bd241c;
+}
+.profile--estudante .profile__flame svg { width: 24px; height: 24px; }
+.profile--estudante .profile__body { position: relative; padding: 0 18px; }
+.profile--estudante .profile__name { margin: 4px 0 0; font-size: 24px; line-height: 1.25; overflow-wrap: anywhere; }
+.profile--estudante .profile__role { margin-top: 4px; font-size: 12px; color: #615769; overflow-wrap: anywhere; }
+.profile--estudante .stats { gap: 30px; margin-top: 18px; }
+.profile--estudante .stat { flex: 1; min-width: 0; }
+.profile--estudante .stat strong { font-size: 34px; line-height: 1.1; }
+.profile--estudante .stat span { display: block; margin-top: 2px; font-size: 12px; line-height: 1.4; }
+.profile--estudante .badges { justify-content: center; gap: 6px; margin-top: 18px; }
+.profile--estudante .badge { max-width: 100%; padding: 6px 10px; font-size: 11px; line-height: 1.4; overflow-wrap: anywhere; color: #3b1a8c; }
+.profile--estudante .btn-edit { box-sizing: border-box; gap: 10px; min-height: 44px; margin-top: 14px; padding: 10px 16px; font-size: 15px; text-decoration: none; }
+.profile--estudante .btn-edit svg { flex: none; width: 20px; height: 20px; }
+.profile--estudante .btn-edit:focus-visible { outline: 3px solid #6430d8; outline-offset: 3px; }
+
+.card__photo > .card__image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

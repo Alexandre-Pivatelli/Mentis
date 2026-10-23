@@ -1,0 +1,4 @@
+<nav class="student-nav" aria-label="Área do estudante">
+  <a href="{% url 'mensagens_aluno' %}"{% if active == 'mensagens' %} aria-current="page"{% endif %}>Mensagens</a>
+  {% if request.user.aluno %}<a href="{% url 'agenda_aluno' %}"{% if active == 'agenda' %} aria-current="page"{% endif %}>Agenda</a><a href="{% url 'perfil_aluno' %}"{% if active == 'sobre' %} aria-current="page"{% endif %}>Sobre</a>{% else %}<a href="{% url 'professor_detalhe' request.user.pk %}">Meu perfil</a>{% endif %}
+</nav>

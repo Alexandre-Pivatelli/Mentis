@@ -1,4 +1,4 @@
-{% load static %}
+{% load static aluno_extras %}
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -12,18 +12,46 @@
   <link rel="stylesheet" href="{% static 'css/perfil_aluno.css' %}">
 <link rel="stylesheet" href="{% static 'css/dados.css' %}">
   <link rel="stylesheet" href="{% static 'css/header.css' %}">
+  <link rel="stylesheet" href="{% static 'css/card_perfil_aluno.css' %}?v=4">
+  <link rel="stylesheet" href="{% static 'css/area_estudante.css' %}?v=1">
 </head>
-<body>
+<body class="perfil-aluno-page">
 
   <!-- HEADER -->
   {% include 'includes/header.html' %}
 
+{% include 'includes/navegacao_aluno.html' with active='sobre' %}
 <main class="page">
 {% if aluno %}
-<section class="content"><h2 class="section-heading">Sobre</h2><p class="about">Estudante da {{ aluno.escola|default:"escola não informada" }}, {{ aluno.serie }}.</p>
+<section class="content"><h2 class="section-heading">Sobre</h2><p class="about">{% if aluno.usuario.bio %}{{ aluno.usuario.bio|linebreaksbr }}{% elif aluno.escola %}Estudante de {{ aluno.escola }}{% if aluno.serie %}, {{ aluno.serie }}{% endif %}.{% elif aluno.serie %}Estudante · {{ aluno.serie }}.{% else %}Informações escolares ainda não preenchidas.{% endif %}</p>
 <h2 class="section-heading">Disciplinas das suas aulas</h2><div class="chips">{% for disciplina in disciplinas %}<a class="chip" href="{% url 'principal' %}?disciplina={{ disciplina.pk }}">{{ disciplina.nome }}</a>{% empty %}<p>Nenhuma aula cadastrada.</p>{% endfor %}</div>
 <h2 class="section-heading" id="agenda">Agenda</h2>{% for aula in agenda %}<article class="review"><h3>{{ aula.disciplina.nome }}</h3><p>{{ aula.professor.usuario.nome }} · {{ aula.data_hora|date:"d/m/Y H:i" }} · {{ aula.get_status_display }}</p></article>{% empty %}<p>Nenhuma aula agendada.</p>{% endfor %}
 <h2 class="section-heading">Suas avaliações de aulas</h2><div class="reviews">{% for avaliacao in avaliacoes %}<article class="review"><h3>{{ avaliacao.aula.professor.usuario.nome }}</h3><p>{{ avaliacao.aula.disciplina.nome }} · {{ avaliacao.nota }}/5</p><p>{{ avaliacao.comentario }}</p></article>{% empty %}<p>Você ainda não avaliou aulas.</p>{% endfor %}</div></section>
-<aside class="profile"><div class="profile__photo" aria-hidden="true"></div><div class="profile__body"><h1 class="profile__name">{{ aluno.usuario.nome|default:aluno.usuario.username }}</h1><p class="profile__role">Estudante | {{ aluno.serie }}</p><div class="stats"><div class="stat"><strong>{{ aulas_realizadas }}</strong><span>Aulas realizadas</span></div><div class="stat"><strong>{{ nota_media|floatformat:1|default:"—" }}</strong><span>Média das suas notas</span></div></div></div></aside>
+<aside class="profile perfil-card" aria-label="Seu perfil">
+  <div class="perfil-card__media">
+    {% if aluno.usuario.foto %}
+    <img class="profile-photo perfil-card__image" src="{{ aluno.usuario.foto.url }}" alt="Foto de {{ aluno.usuario.nome|default:aluno.usuario.username }}">
+    {% else %}<span class="perfil-card__initials">{{ aluno.usuario.nome|default:aluno.usuario.username|iniciais }}</span>{% endif %}
+  </div>
+  <div class="perfil-card__body">
+    <h1 class="perfil-card__name">{{ aluno.usuario.nome|default:aluno.usuario.username }}</h1>
+    <p class="perfil-card__role">Estudante{% if aluno.nivel_estudo %} · {{ aluno.get_nivel_estudo_display }}{% endif %}{% if aluno.serie %} | {{ aluno.serie }}{% endif %}</p>
+    <dl class="perfil-card__stats">
+      <div><dt>Aulas realizadas</dt><dd>{{ aulas_realizadas|default:0 }}</dd></div>
+      <div><dt>Média das notas</dt><dd>{{ nota_media|floatformat:1|default:"—" }}</dd></div>
+    </dl>
+    {% if aluno.novato or aluno.escola or disciplinas %}
+    <ul class="perfil-card__tags" aria-label="Tags do estudante">
+      <!-- Tag recebida ao cadastrar -->{% if aluno.novato %}<li class="novato-tag">Novato</li>{% endif %}
+      {% if aluno.escola %}<li>{{ aluno.escola }}</li>{% endif %}
+      {% for disciplina in disciplinas|slice:':3' %}<li>{{ disciplina.nome }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+    <a class="perfil-card__edit" href="{% url 'editar_perfil' %}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-7"/><path d="m16 3 5 5M10 14l-1 4 4-1 9-9-5-5-9 9Z"/></svg>
+      Editar perfil
+    </a>
+  </div>
+</aside>
 {% else %}<section class="content"><h1>Perfil do aluno</h1><p>Sua conta ainda não possui um perfil de aluno cadastrado.</p></section>{% endif %}
 </main></body></html>

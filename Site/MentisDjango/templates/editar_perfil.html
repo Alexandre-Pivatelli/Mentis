@@ -6,21 +6,22 @@
   <link rel="stylesheet" href="{% static 'css/editar_perfil.css' %}">
   <link rel="stylesheet" href="{% static 'css/formularios.css' %}">
   <script src="{% static 'js/auth.js' %}" defer></script>
+  <script src="{% static 'js/editar_perfil.js' %}?v=1" defer></script>
 {% endblock %}
 {% block content %}
 <main class="container">
   <section class="edit-section">
     <h1 class="welcome-title">Editar Perfil</h1>
-    <form class="edit-form" method="post" enctype="multipart/form-data">
+    <form class="edit-form" method="post" enctype="multipart/form-data" data-session-url="{% url 'sessao_perfil' %}" data-user-id="{{ request.user.pk }}">
       {% csrf_token %}
       {% if form.errors %}<div class="form-errors" role="alert" tabindex="-1" data-error-summary>Confira os campos indicados abaixo.{{ form.non_field_errors }}</div>{% endif %}
       {% if request.user.foto %}<img class="edit-photo" src="{{ request.user.foto.url }}" alt="Sua foto atual">{% endif %}
       {% include 'includes/form_field.html' with field=form.foto %}
-      <p class="field-help">PNG, JPEG ou WebP, até 5 MB.</p>
       {% include 'includes/form_field.html' with field=form.nome %}
       {% include 'includes/form_field.html' with field=form.username %}
       {% include 'includes/form_field.html' with field=form.email %}
       {% include 'includes/form_field.html' with field=form.bio %}
+      <p class="field-help" data-session-message role="status" aria-live="polite" hidden></p>
       <div class="button-group"><button type="submit" class="submit-btn">Salvar Alterações</button><a href="{{ perfil_url }}" class="cancel-btn">Cancelar</a></div>
     </form>
   </section>

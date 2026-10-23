@@ -66,11 +66,11 @@ class CorrecoesTests(TestCase):
 
     def test_cadastro_salva_serie_e_escola(self):
         response = self.client.post(reverse('cadastro'), dict(nome='Novo Aluno', username='novo',
-            email='novo@test.com', user_type='estudante', serie='Ensino Médio', escola='Escola Teste',
+            email='novo@test.com', user_type='estudante', nivel_estudo='MEDIO', serie='M2', escola='Escola Teste',
             password1='SenhaNova!75982', password2='SenhaNova!75982'))
         self.assertEqual(response.status_code, 302)
         aluno = Aluno.objects.get(usuario__username='novo')
-        self.assertEqual((aluno.serie, aluno.escola), ('Ensino Médio', 'Escola Teste'))
+        self.assertEqual((aluno.serie, aluno.escola), ('2º ano', 'Escola Teste'))
 
     def test_edicao_rejeita_invalidos_e_duplicados(self):
         self.client.force_login(self.user)
@@ -95,7 +95,7 @@ class CorrecoesTests(TestCase):
 
     def test_foto_bio_e_redirecionamento_por_perfil(self):
         with TemporaryDirectory() as media, override_settings(MEDIA_ROOT=media):
-            for user, url in [(self.user, reverse('ambiente_aluno')), (self.teacher_user, reverse('professor_detalhe', args=[self.professor.pk]))]:
+            for user, url in [(self.user, reverse('perfil_aluno')), (self.teacher_user, reverse('professor_detalhe', args=[self.professor.pk]))]:
                 self.client.force_login(user)
                 buffer = BytesIO()
                 Image.new('RGB', (8, 8)).save(buffer, 'PNG')

@@ -1,0 +1,4 @@
+{% extends 'base.html' %}{% load static %}
+{% block page_head %}<title>{% block title %}Mentis{% endblock %}</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="{% static 'css/area_estudante.css' %}?v=1">{% endblock %}
+{% block body_class %}student-area{% endblock %}
+{% block content %}<main class="student-shell">{% block student_content %}{% endblock %}</main>{% endblock %}

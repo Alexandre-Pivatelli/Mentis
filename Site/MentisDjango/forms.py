@@ -7,14 +7,44 @@ from django.db import transaction
 from .models import Aluno, Professor, Usuario
 
 
+class FotoPerfilInput(forms.ClearableFileInput):
+    template_name = 'includes/foto_input.html'
+
+
+class FotoPerfilField(forms.ImageField):
+    def __init__(self, **kwargs):
+        super().__init__(
+            label='Foto de perfil (opcional)', required=False,
+            help_text='PNG, JPEG ou WebP, até 5 MB.',
+            widget=FotoPerfilInput(attrs={'accept': 'image/png,image/jpeg,image/webp'}),
+            **kwargs,
+        )
+
+    def to_python(self, data):
+        if data and data.size > 5 * 1024 * 1024:
+            raise forms.ValidationError('Escolha uma imagem de até 5 MB.')
+        foto = super().to_python(data)
+        if foto and foto.image.format not in {'JPEG', 'PNG', 'WEBP'}:
+            raise forms.ValidationError('Use uma imagem PNG, JPEG ou WebP.')
+        return foto
+
+
 class CadastroForm(UserCreationForm):
+    foto = FotoPerfilField()
     user_type = forms.ChoiceField(label='Quero participar como', choices=[
         ('estudante', 'Estudante'), ('professor', 'Professor')], widget=forms.RadioSelect)
     nome = forms.CharField(label='Nome completo', max_length=150,
                            widget=forms.TextInput(attrs={'autocomplete': 'name'}))
     email = forms.EmailField(label='E-mail', max_length=254,
                              widget=forms.EmailInput(attrs={'autocomplete': 'email'}))
-    serie = forms.CharField(label='Série ou nível de ensino (opcional)', max_length=50, required=False)
+    nivel_estudo = forms.ChoiceField(label='Nível de estudo', required=False,
+        choices=[('', 'Selecione seu nível de estudo'), *Aluno.NivelEstudo.choices])
+    serie = forms.ChoiceField(label='Série ou período', required=False, choices=[
+        ('', 'Selecione sua série ou período'),
+        ('Ensino fundamental', [(f'F{i}', f'{i}º ano') for i in range(1, 10)]),
+        ('Ensino médio', [(f'M{i}', f'{i}º ano') for i in range(1, 4)]),
+        ('Graduação', [(f'G{i}', f'{i}º período') for i in range(1, 21)]),
+    ])
     escola = forms.CharField(label='Escola ou instituição (opcional)', max_length=150, required=False)
     formacao = forms.CharField(label='Formação', max_length=200, required=False)
     valor_hora = forms.DecimalField(label='Valor da aula por hora (R$)', max_digits=8,
@@ -25,8 +55,8 @@ class CadastroForm(UserCreationForm):
 
     class Meta(UserCreationForm.Meta):
         model = Usuario
-        fields = ('user_type', 'nome', 'username', 'email', 'password1', 'password2',
-                  'serie', 'escola', 'formacao', 'valor_hora', 'modalidade')
+        fields = ('user_type', 'nome', 'foto', 'username', 'email', 'password1', 'password2',
+                  'nivel_estudo', 'serie', 'escola', 'formacao', 'valor_hora', 'modalidade')
         labels = {'username': 'Nome de usuário'}
         widgets = {'username': forms.TextInput(attrs={'autocomplete': 'username', 'autocapitalize': 'none'})}
 
@@ -53,6 +83,17 @@ class CadastroForm(UserCreationForm):
             for field in ('formacao', 'valor_hora', 'modalidade'):
                 if not data.get(field) and field not in self.errors:
                     self.add_error(field, 'Preencha este campo para criar seu perfil de professor.')
+        if data.get('user_type') == 'estudante':
+            for field in ('nivel_estudo', 'serie'):
+                if not data.get(field) and field not in self.errors:
+                    self.add_error(field, 'Selecione este campo para criar seu perfil de estudante.')
+            nivel, serie = data.get('nivel_estudo'), data.get('serie')
+            prefix = {'FUNDAMENTAL': 'F', 'MEDIO': 'M', 'GRADUACAO': 'G'}.get(nivel)
+            if prefix and serie:
+                if not serie.startswith(prefix):
+                    self.add_error('serie', 'Escolha uma série ou período correspondente ao nível de estudo.')
+                else:
+                    data['serie'] = f"{int(serie[1:])}º {'período' if prefix == 'G' else 'ano'}"
         return data
 
     @transaction.atomic
@@ -62,7 +103,8 @@ class CadastroForm(UserCreationForm):
             Professor.objects.create(usuario=user, formacao=self.cleaned_data['formacao'],
                 valor_hora=self.cleaned_data['valor_hora'], modalidade=self.cleaned_data['modalidade'])
         else:
-            Aluno.objects.create(usuario=user, serie=self.cleaned_data.get('serie', ''),
+            Aluno.objects.create(usuario=user, nivel_estudo=self.cleaned_data['nivel_estudo'],
+                                 serie=self.cleaned_data['serie'], novato=True,
                                  escola=self.cleaned_data.get('escola', ''))
         return user
 
@@ -82,12 +124,13 @@ class LoginForm(AuthenticationForm):
 
 
 class EditarPerfilForm(forms.ModelForm):
+    foto = FotoPerfilField()
+
     class Meta:
         model = Usuario
         fields = ('nome', 'username', 'email', 'bio', 'foto')
         labels = {'nome': 'Nome completo', 'username': 'Nome de usuário', 'email': 'E-mail'}
-        widgets = {'bio': forms.Textarea(attrs={'rows': 4}),
-                   'foto': forms.ClearableFileInput(attrs={'accept': 'image/png,image/jpeg,image/webp'})}
+        widgets = {'bio': forms.Textarea(attrs={'rows': 4})}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -100,15 +143,6 @@ class EditarPerfilForm(forms.ModelForm):
         if Usuario.objects.filter(email__iexact=email).exclude(pk=self.instance.pk).exists():
             raise forms.ValidationError('Este e-mail já está cadastrado em outra conta.')
         return email
-
-    def clean_foto(self):
-        foto = self.cleaned_data.get('foto')
-        if foto and hasattr(foto, 'image'):
-            if foto.size > 5 * 1024 * 1024:
-                raise forms.ValidationError('Escolha uma imagem de até 5 MB.')
-            if foto.image.format not in {'JPEG', 'PNG', 'WEBP'}:
-                raise forms.ValidationError('Use uma imagem PNG, JPEG ou WebP.')
-        return foto
 
     @transaction.atomic
     def save(self):

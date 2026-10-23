@@ -15,6 +15,7 @@
   <meta name="description" content="Encontre professores particulares de qualquer disciplina, a qualquer distância.">
   <meta name="theme-color" content="#6430D8">
   <script src="{% static 'js/principal.js' %}?v=principal-6" defer></script>
+  <link rel="stylesheet" href="{% static 'css/fotos_perfil.css' %}?v=3">
 </head>
 <body class="principal-page">
   <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
@@ -57,7 +58,7 @@
   {% for professor in professores %}
   <article class="card">
     <a href="{% url 'professor_detalhe' professor.pk %}" class="card__link" aria-label="Ver perfil de {{ professor.nome_exibicao }}">
-      <div class="card__photo"><span class="card__initials" aria-hidden="true">{{ professor.iniciais }}</span><span class="card__name">{{ professor.nome_exibicao }}</span></div>
+      <div class="card__photo">{% if professor.usuario.foto %}<img class="card__image" src="{{ professor.usuario.foto.url }}" alt="" loading="lazy">{% else %}<span class="card__initials" aria-hidden="true">{{ professor.iniciais }}</span>{% endif %}<span class="card__name">{{ professor.nome_exibicao }}</span></div>
     </a>
     <div class="card__info"><strong>R$ {{ professor.valor_hora|floatformat:2 }} / h</strong>
     <span class="card__rating">{% if professor.nota_media != None %}{{ professor.nota_media|floatformat:1 }} <i aria-hidden="true">★</i>{% else %}Sem avaliações{% endif %}</span></div>

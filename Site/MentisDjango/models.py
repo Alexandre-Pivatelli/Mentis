@@ -62,11 +62,18 @@ class Responsavel(models.Model):
 
 
 class Aluno(models.Model):
+    class NivelEstudo(models.TextChoices):
+        FUNDAMENTAL = 'FUNDAMENTAL', 'Ensino fundamental'
+        MEDIO = 'MEDIO', 'Ensino médio'
+        GRADUACAO = 'GRADUACAO', 'Graduação'
+
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, primary_key=True)
     responsavel = models.ForeignKey(Responsavel, on_delete=models.PROTECT,
                                     related_name='alunos', null=True, blank=True)
     serie = models.CharField(max_length=50, blank=True)
     escola = models.CharField(max_length=150, blank=True)
+    nivel_estudo = models.CharField(max_length=20, choices=NivelEstudo.choices, blank=True)
+    novato = models.BooleanField(default=True)
 
     def __str__(self):
         return str(self.usuario)
@@ -164,3 +171,24 @@ class Material(models.Model):
     tipo = models.CharField(max_length=20, choices=TipoMaterial.choices)
     url = models.URLField()
     data_publicacao = models.DateTimeField(auto_now_add=True)
+
+
+class Conversa(models.Model):
+    aluno = models.ForeignKey(Aluno, on_delete=models.CASCADE, related_name='conversas')
+    professor = models.ForeignKey(Professor, on_delete=models.CASCADE, related_name='conversas')
+    atualizada_em = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=['aluno', 'professor'], name='conversa_participantes_unicos')]
+        ordering = ['-atualizada_em', '-pk']
+
+
+class Mensagem(models.Model):
+    conversa = models.ForeignKey(Conversa, on_delete=models.CASCADE, related_name='mensagens')
+    autor = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    texto = models.TextField(max_length=3000)
+    enviada_em = models.DateTimeField(auto_now_add=True)
+    lida_em = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['enviada_em', 'pk']

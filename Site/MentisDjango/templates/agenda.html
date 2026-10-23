@@ -1,0 +1,13 @@
+{% extends 'area_estudante.html' %}
+{% block title %}Agenda · Mentis{% endblock %}
+{% block student_content %}{% include 'includes/navegacao_aluno.html' with active='agenda' %}
+<header class="agenda-heading"><div><h1>Seu tempo de aprender.</h1><p class="quiet">Acompanhe suas aulas e organize a próxima etapa.</p></div><a class="text-button" href="{% url 'agenda_aluno' %}">Hoje</a></header>
+<div class="agenda-layout"><section class="calendar" aria-label="Calendário de aulas">
+<header class="calendar-toolbar"><h2>{{ mes|date:'F Y'|capfirst }}</h2><div><a href="?mes={{ anterior|date:'Y-m-d' }}" aria-label="Mês anterior">‹</a><a href="?mes={{ seguinte|date:'Y-m-d' }}" aria-label="Próximo mês">›</a></div></header>
+<div class="weekdays" aria-hidden="true"><span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span><span>Dom</span></div>
+<div class="calendar-grid">{% for semana in semanas %}{% for d in semana %}<a class="calendar-day{% if not d.atual %} outside-month{% endif %}{% if d.hoje %} is-today{% endif %}{% if d.selecionado %} is-selected{% endif %}" href="?mes={{ d.data|date:'Y-m-01' }}&amp;dia={{ d.data|date:'Y-m-d' }}" aria-label="{{ d.data|date:'d/m/Y' }}{% if d.quantidade %}, {{ d.quantidade }} aula{{ d.quantidade|pluralize }}{% endif %}"{% if d.selecionado %} aria-current="date"{% endif %}><span>{{ d.data.day }}</span>{% if d.quantidade %}<i aria-hidden="true"></i>{% endif %}</a>{% endfor %}{% endfor %}</div>
+<footer class="calendar-foot"><span class="lesson-dot"></span> Dia com aula <span>{{ total_mes }} aula{{ total_mes|pluralize }} no mês</span></footer>
+</section>
+<section class="day-schedule" aria-label="Aulas do dia"><h2>{{ dia|date:'d \d\e F' }}</h2><p class="quiet">{{ dia|date:'l'|capfirst }}</p>
+{% for aula in aulas_dia %}<article class="lesson"><div class="lesson-time"><strong>{{ aula.data_hora|date:'H:i' }}</strong><span>{{ aula.duracao_min }} min</span></div><div><span class="lesson-status status-{{ aula.status|lower }}">{{ aula.get_status_display }}</span><h3>{{ aula.disciplina.nome }}</h3><p>{{ aula.professor.usuario.nome }}</p><p class="quiet">{{ aula.modalidade }}</p><form method="post" action="{% url 'mensagens_aluno' %}">{% csrf_token %}<input type="hidden" name="acao" value="nova"><input type="hidden" name="professor" value="{{ aula.professor_id }}"><button class="text-button" type="submit">Conversar com professor</button></form></div></article>{% empty %}<div class="schedule-empty"><h3>Um espaço livre no seu dia.</h3><p class="quiet">Nenhuma aula marcada para esta data. Escolha outro dia para consultar sua agenda.</p><a class="text-button" href="{% url 'principal' %}#resultados">Encontrar um professor</a></div>{% endfor %}
+</section></div>{% endblock %}
