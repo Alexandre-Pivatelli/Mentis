@@ -1,0 +1,107 @@
+{% comment %}
+  ===== CAMPOS E LABELS DE PROFESSOR (Sprint 6) =====
+  Aparecem no cadastro só quando a pessoa escolhe "Professor".
+  Para usar, coloque no cadastro.html, antes do botão "Criar Conta",
+  um include deste arquivo: includes/campos_professor.html
+  Os nomes dos campos (formacao, valor_hora, modalidade) são os mesmos
+  do CadastroForm em forms.py, então o Django recebe e salva os dados.
+{% endcomment %}
+<style>
+  /* O CSS do cadastro não estiliza campos numéricos; este deixa o valor igual aos outros campos. */
+  #camposProfessor input[type="number"] {
+    width: 100%;
+    padding: 10px 16px;
+    border: 1px solid #dcdcdc;
+    border-radius: 20px;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    background-color: #fff;
+    color: #333;
+    transition: border-color 0.2s;
+  }
+
+  #camposProfessor input[type="number"]:focus {
+    border-color: #6a35d9;
+  }
+</style>
+
+<div id="camposProfessor" hidden>
+
+  <!-- Formação -->
+  <div class="input-group">
+    <label for="formacao">
+      <i class="fa-solid fa-user-graduate"></i>
+      {{ form.formacao.label }}
+    </label>
+    <input type="text" id="formacao" name="formacao" maxlength="200"
+           placeholder="Ex.: Licenciatura em Química pela UFRJ"
+           value="{{ form.formacao.value|default:'' }}" disabled />
+    {% if form.formacao.errors %}<div class="field-error">{{ form.formacao.errors }}</div>{% endif %}
+  </div>
+
+  <!-- Valor da aula por hora -->
+  <div class="input-group">
+    <label for="valor_hora">
+      <i class="fa-solid fa-money-bill-wave"></i>
+      {{ form.valor_hora.label }}
+    </label>
+    <input type="number" id="valor_hora" name="valor_hora" step="0.01" min="0.01"
+           inputmode="decimal" placeholder="Ex.: 80.00"
+           value="{{ form.valor_hora.value|default:'' }}" disabled />
+    {% if form.valor_hora.errors %}<div class="field-error">{{ form.valor_hora.errors }}</div>{% endif %}
+  </div>
+
+  <!-- Modalidade -->
+  <div class="input-group">
+    <label for="modalidade">
+      <i class="fa-solid fa-laptop-house"></i>
+      {{ form.modalidade.label }}
+    </label>
+    <select id="modalidade" name="modalidade" disabled>
+      {% for valor, texto in form.fields.modalidade.choices %}
+        <option value="{{ valor }}"{% if form.modalidade.value == valor %} selected{% endif %}>{{ texto }}</option>
+      {% endfor %}
+    </select>
+    {% if form.modalidade.errors %}<div class="field-error">{{ form.modalidade.errors }}</div>{% endif %}
+  </div>
+
+</div>
+
+<script>
+  // Mostra os campos de professor quando "Professor" está escolhido e esconde para "Estudante".
+  // Campos escondidos ficam desativados (disabled), assim não atrapalham o cadastro de estudante.
+  (function () {
+    const bloco = document.getElementById('camposProfessor');
+    const tipo = document.getElementById('userTypeInput');
+    if (!bloco || !tipo) return;
+    const campos = bloco.querySelectorAll('input, select');
+
+    function atualizar() {
+      const ehProfessor = tipo.value === 'professor';
+      bloco.hidden = !ehProfessor;
+      campos.forEach(function (campo) {
+        campo.disabled = !ehProfessor;
+        campo.required = ehProfessor;
+      });
+    }
+
+    // Os botões Estudante/Professor já existem no cadastro.html; só escutamos o clique deles.
+    // O setTimeout espera o script do cadastro.html trocar o tipo antes de atualizarmos.
+    ['btnEstudante', 'btnProfessor'].forEach(function (id) {
+      const botao = document.getElementById(id);
+      if (botao) botao.addEventListener('click', function () { setTimeout(atualizar); });
+    });
+
+    // Espera a página terminar de carregar, porque o script do cadastro.html
+    // (que fica no fim da página) pode trocar o tipo para professor pelo link ?tipo=professor.
+    document.addEventListener('DOMContentLoaded', function () {
+      // Se o formulário voltou com erro de um cadastro de professor, reabre a aba Professor.
+      {% if form.user_type.value == 'professor' %}
+      const botaoProfessor = document.getElementById('btnProfessor');
+      if (botaoProfessor) botaoProfessor.click();
+      {% endif %}
+      atualizar();
+    });
+  })();
+</script>
