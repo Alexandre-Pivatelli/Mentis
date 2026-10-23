@@ -1,0 +1,259 @@
+/* Layout Geral da Página de Professores */
+body {
+  background-color: #f4f0ff;
+}
+
+.main-container {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.section-header {
+  margin-bottom: 25px;
+}
+
+.section-header h1 {
+  font-size: 32px;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 5px;
+}
+
+.section-header p {
+  font-size: 15px;
+  color: #555;
+}
+
+/* Barra de Filtros e Busca */
+.search-filter-bar {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  margin-bottom: 35px;
+}
+
+.filter-form {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.search-input-wrapper {
+  flex: 2;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #dcdcdc;
+  border-radius: 15px;
+  padding: 0 15px;
+  background: #fff;
+}
+
+.search-input-wrapper i {
+  color: #7b42f6;
+}
+
+.search-input-wrapper input {
+  width: 100%;
+  border: none;
+  outline: none;
+  padding: 12px 0;
+  font-size: 14px;
+}
+
+.filter-select-wrapper flex-1 {
+  flex: 1;
+}
+
+.filter-form select {
+  padding: 12px 20px;
+  border: 1px solid #dcdcdc;
+  border-radius: 15px;
+  background: #fff;
+  font-size: 14px;
+  outline: none;
+  cursor: pointer;
+}
+
+.filter-btn {
+  background-color: #6a35d9;
+  color: #fff;
+  border: none;
+  padding: 0 25px;
+  border-radius: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.filter-btn:hover {
+  background-color: #582ac2;
+}
+
+/* Grelha de Cards */
+.teachers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 25px;
+}
+
+.teacher-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 25px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.2s;
+}
+
+.teacher-card:hover {
+  transform: translateY(-4px);
+}
+
+.teacher-card-top {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.teacher-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: #6a35d9;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.teacher-info h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111;
+}
+
+.teacher-subject {
+  font-size: 13px;
+  color: #666;
+}
+
+.teacher-tags {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  background-color: #f1edff;
+  color: #6a35d9;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 20px;
+}
+
+.teacher-schedule-box {
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  padding: 12px 15px;
+  margin-bottom: 20px;
+}
+
+.schedule-title {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  color: #777;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.hours-list {
+  display: flex;
+  gap: 8px;
+}
+
+.hour-chip {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #444;
+}
+
+.hour-chip.active {
+  background-color: #6a35d9;
+  color: #fff;
+  border-color: #6a35d9;
+}
+
+.teacher-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.teacher-price {
+  font-size: 13px;
+  color: #555;
+}
+
+.teacher-price strong {
+  font-size: 18px;
+  color: #6a35d9;
+}
+
+.reserve-btn {
+  background-color: #5bb334;
+  color: #fff;
+  text-decoration: none;
+  padding: 8px 20px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.reserve-btn:hover {
+  background-color: #4ca328;
+}
+
+.teacher-card-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.rating {
+  font-size: 12px;
+  color: #666;
+}
+
+.rating i {
+  color: #f5a623;
+}
+
+.profile-link {
+  font-size: 13px;
+  font-weight: 600;
+  color: #6a35d9;
+  text-decoration: none;
+}
+
+.profile-link:hover {
+  text-decoration: underline;
+}

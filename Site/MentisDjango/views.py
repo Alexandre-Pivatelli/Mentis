@@ -1,6 +1,6 @@
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.core.paginator import Paginator
 from django.db.models import Avg, Count, Q
 from django.http import HttpResponseForbidden
@@ -8,7 +8,6 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_POST
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
 from .models import Aluno, Aula, Avaliacao, Disciplina, Professor, StatusAula, Usuario
 
@@ -111,30 +110,6 @@ def professor_view(request, pk=None):
         'materiais': professor.materiais.select_related('disciplina').order_by('-data_publicacao', '-pk')[:12],
         'avaliacoes': avaliacoes[:10], 'disponibilidades': professor.disponibilidades.order_by('dia_semana', 'hora_inicio')})
 
-def cadastro_view(request):
-    if request.user.is_authenticated:
-        return redirect('principal')
-
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        tipo_usuario = request.POST.get('user_type', 'estudante')  # Pega o tipo vindo do botão 'userTypeInput'
-
-        if form.is_valid():
-            usuario = form.save()
-            
-            # Vincula o perfil conforme a escolha (Aluno ou Professor)
-            if tipo_usuario == 'professor':
-                Professor.objects.create(usuario=usuario)
-            else:
-                Aluno.objects.create(usuario=usuario)
-
-            # Efetua o login automático e redireciona para a tela principal
-            login(request, usuario)
-            return redirect('principal')
-    else:
-        form = UserCreationForm()
-
-    return render(request, 'cadastro.html', {'form': form})
 
 def cadastro_view(request):
     if request.user.is_authenticated:
@@ -142,31 +117,29 @@ def cadastro_view(request):
 
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
-        tipo_usuario = request.POST.get('user_type', 'estudante')  # Captura 'estudante' ou 'professor'
+        tipo_usuario = request.POST.get('user_type', 'estudante')
 
         if form.is_valid():
             usuario = form.save()
             
-            # Salva o nome completo no modelo do usuário
             nome_completo = request.POST.get('nome', '')
             if nome_completo:
                 usuario.nome = nome_completo
                 usuario.email = request.POST.get('email', '')
                 usuario.save()
 
-            # Cria o vínculo com a tabela de Professor ou Aluno
             if tipo_usuario == 'professor':
                 Professor.objects.create(usuario=usuario)
             else:
                 Aluno.objects.create(usuario=usuario)
 
-            # Efetua o login automático e redireciona
             login(request, usuario)
             return redirect('principal')
     else:
         form = UserCreationForm()
 
     return render(request, 'cadastro.html', {'form': form})
+
 
 @login_required(login_url='login')
 def editar_perfil_view(request):
@@ -178,3 +151,43 @@ def editar_perfil_view(request):
         return redirect('perfil_aluno')
 
     return render(request, 'editar_perfil.html')
+
+
+def professores_view(request):
+    busca = request.GET.get('q', '').strip()[:200]
+    disciplina_id = request.GET.get('disciplina', '')
+    tipo_material = request.GET.get('tipo', '')
+    
+    # Pega o queryset base de professores
+    professores = professores_queryset().order_by('usuario__nome', 'pk')
+    
+    # 1. Filtro de busca geral (nome, username, disciplina, biografia)
+    if busca:
+        professores = professores.filter(
+            Q(usuario__nome__icontains=busca) |
+            Q(usuario__username__icontains=busca) |
+            Q(disciplinas__nome__icontains=busca) |
+            Q(bio__icontains=busca)
+        ).distinct()
+        
+    # 2. Filtro por Matéria (Disciplina) específica
+    if disciplina_id.isdigit():
+        professores = professores.filter(disciplinas__pk=int(disciplina_id))
+        
+    # 3. Filtro por Tipo de Material oferecido pelo professor
+    # (Certifica-te de que o teu modelo Material possui um campo correspondente, ex: 'tipo')
+    if tipo_material:
+        professores = professores.filter(materiais__tipo__icontains=tipo_material).distinct()
+
+    # Paginação (8 professores por página)
+    pagina = Paginator(professores, 8).get_page(request.GET.get('page'))
+    for professor in pagina:
+        identificar(professor)
+        
+    return render(request, 'professores.html', {
+        'professores': pagina,
+        'busca': busca,
+        'disciplina_selecionada': disciplina_id,
+        'tipo_selecionado': tipo_material,
+        'disciplinas': Disciplina.objects.order_by('nome'), # Passa as disciplinas para o select do HTML
+    })

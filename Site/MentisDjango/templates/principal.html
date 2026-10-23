@@ -20,7 +20,7 @@
 
     <nav class="nav">
       <a href="{% url 'principal' %}#disciplinas">Disciplinas</a>
-      <a href="{% url 'professor' %}">Professores</a>
+      <a href="{% url 'professores' %}">Professores</a>
       <a href="#">Materiais</a>
       <a href="#">Informações</a>
     </nav>
@@ -93,8 +93,8 @@
     <section class="cta">
       <h2>Venha fazer parte da Mentis</h2>
       <div class="cta__buttons">
-        <a href="#" class="btn btn--white">Começar como estudante</a>
-        <a href="#" class="btn btn--outline">Sou professor</a>
+        <a href="{% url 'cadastro' %}" class= "btn btn--white">Começar como estudante</a>
+        <a href="{% url 'cadastro' %}?tipo=professor" class="btn btn--outline">Sou professor</a>
       </div>
     </section>
   </main>
