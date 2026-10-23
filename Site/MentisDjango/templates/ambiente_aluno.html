@@ -1,23 +1,19 @@
-{% load static aluno_extras %}
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mentis – Ambiente do aluno</title>
+{% extends "base.html" %}
+{% load static aluno_extras i18n %}
+{% block page_head %}
+<title>Mentis – Ambiente do aluno</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="{% static 'css/perfil_aluno.css' %}">
   <link rel="stylesheet" href="{% static 'css/dados.css' %}">
-  <link rel="stylesheet" href="{% static 'css/header.css' %}">
   <link rel="stylesheet" href="{% static 'css/ambiente_aluno.css' %}">
-</head>
-<body>
-
-  <!-- HEADER -->
-  {% include 'includes/header.html' %}
+{% endblock %}
+{% block body_class %}{% endblock %}
+{% block content %}
+<!-- HEADER -->
+  
 
   <main class="page">
   {% if aluno %}
@@ -38,10 +34,11 @@
         Estudante da {{ aluno.escola|default:"escola não informada" }}{% if aluno.serie %}, {{ aluno.serie }}{% endif %}.
       </p>
 
+      {% if aluno.usuario.bio %}<p class="about">{{ aluno.usuario.bio|linebreaksbr }}</p>{% endif %}
       <!-- Resumo em números -->
       <div class="resumo">
         <div class="resumo__item">
-          <strong>{{ agenda|length }}</strong>
+          <strong>{{ total_proximas_aulas }}</strong>
           <span>Próximas aulas</span>
         </div>
         <div class="resumo__item">
@@ -113,8 +110,8 @@
 
     <!-- ===== CARD DO PERFIL (lado direito) ===== -->
     <aside class="profile">
-      <div class="profile__photo" aria-hidden="true">
-        <span class="profile__iniciais">{{ aluno.usuario.nome|default:aluno.usuario.username|iniciais }}</span>
+      <div class="profile__photo">{% if aluno.usuario.foto %}<img class="profile-photo" src="{{ aluno.usuario.foto.url }}" alt="Foto de {{ aluno.usuario.nome }}">{% else %}
+        <span class="profile__iniciais">{{ aluno.usuario.nome|default:aluno.usuario.username|iniciais }}</span>{% endif %}
       </div>
       <div class="profile__body">
         <h1 class="profile__name">{{ aluno.usuario.nome|default:aluno.usuario.username }}</h1>
@@ -141,6 +138,4 @@
     </section>
   {% endif %}
   </main>
-
-</body>
-</html>
+{% endblock %}

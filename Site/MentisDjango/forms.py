@@ -79,3 +79,41 @@ class LoginForm(AuthenticationForm):
         self.fields['username'].widget.attrs.update({'autocomplete': 'username', 'autocapitalize': 'none'})
         self.fields['password'].label = 'Senha'
         self.fields['password'].widget.attrs['autocomplete'] = 'current-password'
+
+
+class EditarPerfilForm(forms.ModelForm):
+    class Meta:
+        model = Usuario
+        fields = ('nome', 'username', 'email', 'bio', 'foto')
+        labels = {'nome': 'Nome completo', 'username': 'Nome de usuário', 'email': 'E-mail'}
+        widgets = {'bio': forms.Textarea(attrs={'rows': 4}),
+                   'foto': forms.ClearableFileInput(attrs={'accept': 'image/png,image/jpeg,image/webp'})}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.professor = Professor.objects.filter(usuario=self.instance).first() if self.instance.pk else None
+        if self.professor:
+            self.initial['bio'] = self.professor.bio
+
+    def clean_email(self):
+        email = self.cleaned_data['email'].strip().lower()
+        if Usuario.objects.filter(email__iexact=email).exclude(pk=self.instance.pk).exists():
+            raise forms.ValidationError('Este e-mail já está cadastrado em outra conta.')
+        return email
+
+    def clean_foto(self):
+        foto = self.cleaned_data.get('foto')
+        if foto and hasattr(foto, 'image'):
+            if foto.size > 5 * 1024 * 1024:
+                raise forms.ValidationError('Escolha uma imagem de até 5 MB.')
+            if foto.image.format not in {'JPEG', 'PNG', 'WEBP'}:
+                raise forms.ValidationError('Use uma imagem PNG, JPEG ou WebP.')
+        return foto
+
+    @transaction.atomic
+    def save(self):
+        user = super().save()
+        if self.professor:
+            self.professor.bio = self.cleaned_data['bio']
+            self.professor.save(update_fields=['bio'])
+        return user
