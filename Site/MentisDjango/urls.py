@@ -4,6 +4,7 @@ from .views_estudante import mensagens_view, agenda_view
 from .views_aluno import ambiente_aluno_view
 
 urlpatterns = [
+    path('avaliar-site/', views.avaliar_site_view, name='avaliar_site'),
     path('mensagens/', mensagens_view, name='mensagens_aluno'),
     path('agenda/', agenda_view, name='agenda_aluno'),
     path("", views.principal_view, name="principal"),

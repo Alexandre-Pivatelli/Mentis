@@ -192,3 +192,20 @@ class Mensagem(models.Model):
 
     class Meta:
         ordering = ['enviada_em', 'pk']
+
+
+class AvaliacaoSite(models.Model):
+    usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, related_name='avaliacao_site')
+    nota = models.PositiveSmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
+    comentario = models.TextField(max_length=1500)
+    criada_em = models.DateTimeField(auto_now_add=True)
+    atualizada_em = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-criada_em', '-pk']
+        verbose_name = 'avaliação do site'
+        verbose_name_plural = 'avaliações do site'
+        constraints = [models.CheckConstraint(condition=models.Q(nota__gte=1, nota__lte=5), name='avaliacao_site_nota_valida')]
+
+    def __str__(self):
+        return f'{self.usuario} — {self.nota}/5'

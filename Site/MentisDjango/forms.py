@@ -4,7 +4,7 @@ from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.db import transaction
 
-from .models import Aluno, Professor, Usuario
+from .models import Aluno, Professor, Usuario, AvaliacaoSite
 
 
 class FotoPerfilInput(forms.ClearableFileInput):
@@ -151,3 +151,16 @@ class EditarPerfilForm(forms.ModelForm):
             self.professor.bio = self.cleaned_data['bio']
             self.professor.save(update_fields=['bio'])
         return user
+
+
+class AvaliacaoSiteForm(forms.ModelForm):
+    nota = forms.TypedChoiceField(label='Sua nota para a Mentis', coerce=int,
+        choices=[(i, str(i)) for i in range(1, 6)], widget=forms.RadioSelect,
+        help_text='1 = muito ruim · 5 = excelente')
+    comentario = forms.CharField(label='Como foi sua experiência?', max_length=1500,
+        widget=forms.Textarea(attrs={'rows': 4, 'placeholder': 'Conte o que funcionou bem e o que podemos melhorar…'}),
+        help_text='Até 1.500 caracteres. Seu nome e a data ficarão visíveis na página principal.')
+
+    class Meta:
+        model = AvaliacaoSite
+        fields = ('nota', 'comentario')
