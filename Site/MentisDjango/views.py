@@ -3,7 +3,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.core.paginator import Paginator
 from django.db import IntegrityError
+from django.db import IntegrityError
 from django.db.models import Avg, Count, Q
+from django.http import HttpResponseForbidden, JsonResponse
+from django.middleware.csrf import get_token
 from django.http import HttpResponseForbidden, JsonResponse
 from django.middleware.csrf import get_token
 from django.shortcuts import get_object_or_404, redirect, render
@@ -11,6 +14,7 @@ from django.urls import reverse
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_POST
 
+from .models import Aluno, Aula, Avaliacao, Disciplina, Professor, StatusAula, Usuario, AvaliacaoSite
 from .models import Aluno, Aula, Avaliacao, Disciplina, Professor, StatusAula, Usuario, AvaliacaoSite
 
 
@@ -32,6 +36,8 @@ def identificar(professor):
 
 @never_cache
 def principal_view(request, avaliacao_form=None, status=200):
+@never_cache
+def principal_view(request, avaliacao_form=None, status=200):
     busca = request.GET.get('q', '').strip()[:200]
     disciplina = request.GET.get('disciplina', '')
     professores = professores_queryset().order_by('usuario__nome', 'pk')
@@ -42,7 +48,13 @@ def principal_view(request, avaliacao_form=None, status=200):
     if (disciplina.isascii() and disciplina.isdecimal() and len(disciplina) <= 19
             and 0 < int(disciplina) <= 9223372036854775807):
         disciplina = str(int(disciplina))
+    if (disciplina.isascii() and disciplina.isdecimal() and len(disciplina) <= 19
+            and 0 < int(disciplina) <= 9223372036854775807):
+        disciplina = str(int(disciplina))
         professores = professores.filter(disciplinas__pk=int(disciplina))
+    else:
+        disciplina = ''
+    pagina = Paginator(professores, 15).get_page(request.GET.get('page'))
     else:
         disciplina = ''
     pagina = Paginator(professores, 15).get_page(request.GET.get('page'))
@@ -54,20 +66,50 @@ def principal_view(request, avaliacao_form=None, status=200):
     propria = avaliacoes_site.filter(usuario=request.user).first() if request.user.is_authenticated else None
     if avaliacao_form is None:
         avaliacao_form = AvaliacaoSiteForm(instance=propria)
+    avaliacoes_site = AvaliacaoSite.objects.select_related('usuario')
+    resumo = avaliacoes_site.aggregate(media=Avg('nota'), total=Count('pk'))
+    reviews = Paginator(avaliacoes_site, 6).get_page(request.GET.get('review_page'))
+    propria = avaliacoes_site.filter(usuario=request.user).first() if request.user.is_authenticated else None
+    if avaliacao_form is None:
+        avaliacao_form = AvaliacaoSiteForm(instance=propria)
     return render(request, 'principal.html', {'professores': pagina, 'busca': busca,
         'avaliacoes_site': reviews, 'resumo_site': resumo, 'avaliacao_site_form': avaliacao_form,
         'propria_avaliacao': propria, 'avaliacao_status': status,
         'avaliacao_login_next': reverse('principal') + '#avaliacoes',
+        'avaliacoes_site': reviews, 'resumo_site': resumo, 'avaliacao_site_form': avaliacao_form,
+        'propria_avaliacao': propria, 'avaliacao_status': status,
+        'avaliacao_login_next': reverse('principal') + '#avaliacoes',
         'disciplina_selecionada': disciplina, 'disciplinas': Disciplina.objects.order_by('nome'),
+        'total_professores': Professor.objects.count()}, status=status)
         'total_professores': Professor.objects.count()}, status=status)
 
 
 @sensitive_post_parameters('password')
 @never_cache
 @require_http_methods(['GET', 'POST'])
+@sensitive_post_parameters('password')
+@never_cache
+@require_http_methods(['GET', 'POST'])
 def login_view(request):
     if request.user.is_authenticated:
         return redirect('principal')
+    destino = request.POST.get('next') or request.GET.get('next', '')
+    if not url_has_allowed_host_and_scheme(destino, {request.get_host()}, require_https=request.is_secure()):
+        destino = reverse('principal')
+    form = LoginForm(request, data=request.POST if request.method == 'POST' else None)
+    if request.method == 'POST':
+        permitido, espera = permitir_tentativa(request, 'login')
+        if not permitido:
+            form = LoginForm(request, data={})
+            form.full_clean()
+            form.add_error(None, 'Muitas tentativas. Aguarde 15 minutos antes de tentar novamente.')
+            response = render(request, 'login.html', {'form': form, 'next': destino}, status=429)
+            response['Retry-After'] = str(espera)
+            return response
+        if form.is_valid():
+            login(request, form.get_user())
+            return redirect(destino or reverse('principal'))
+    return render(request, 'login.html', {'form': form, 'next': destino})
     destino = request.POST.get('next') or request.GET.get('next', '')
     if not url_has_allowed_host_and_scheme(destino, {request.get_host()}, require_https=request.is_secure()):
         destino = reverse('principal')
@@ -126,6 +168,7 @@ def perfil_aluno_view(request):
         'avaliacoes': avaliacoes[:10], 'nota_media': avaliacoes.aggregate(media=Avg('nota'))['media'],
         'disciplinas': Disciplina.objects.filter(aulas__aluno=aluno).distinct().order_by('nome'),
         'agenda': aulas.filter(status__in=[StatusAula.AGENDADA, StatusAula.CONFIRMADA], data_hora__gte=timezone.now()).order_by('data_hora', 'pk')[:10]})
+        'agenda': aulas.filter(status__in=[StatusAula.AGENDADA, StatusAula.CONFIRMADA], data_hora__gte=timezone.now()).order_by('data_hora', 'pk')[:10]})
 
 
 def professor_view(request, pk=None):
@@ -170,6 +213,7 @@ def cadastro_view(request):
 
 
 @login_required(login_url='login')
+@require_http_methods(['GET', 'POST'])
 @require_http_methods(['GET', 'POST'])
 def editar_perfil_view(request):
     if request.method == 'POST':
