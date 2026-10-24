@@ -1,0 +1,38 @@
+{% load aluno_extras %}
+<section class="site-reviews" id="avaliacoes" aria-labelledby="site-reviews-title">
+  <header class="site-reviews__heading"><div><h2 id="site-reviews-title">O que você acha da <span>Mentis?</span></h2><p>Experiências de quem aprende e ensina por aqui.</p></div>
+  {% if resumo_site.total %}<div class="site-reviews__summary"><strong>{{ resumo_site.media|floatformat:1 }}<span> / 5</span></strong><p>{{ resumo_site.total }} avaliação{{ resumo_site.total|pluralize:'s' }}</p></div>{% endif %}</header>
+  <div class="site-reviews__layout">
+    <div class="site-reviews__list">
+    {% for review in avaliacoes_site %}
+      <article class="site-review">
+        <header>{% if review.usuario.foto %}<img class="site-review__avatar" src="{{ review.usuario.foto.url }}" alt="" loading="lazy">{% else %}<span class="site-review__avatar site-review__initials" aria-hidden="true">{{ review.usuario.nome|default:review.usuario.username|iniciais }}</span>{% endif %}
+          <div class="site-review__identity"><h3>{{ review.usuario.nome|default:review.usuario.username }}</h3><time datetime="{{ review.criada_em|date:'c' }}">{{ review.criada_em|date:'d/m/Y' }} às {{ review.criada_em|date:'H:i' }}</time></div>
+          <span class="site-review__rating" aria-label="Nota {{ review.nota }} de 5">{{ review.nota }}<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1Z"/></svg><span>/ 5</span></span>
+        </header>
+        <p class="site-review__comment">{{ review.comentario }}</p>
+      </article>
+    {% empty %}<div class="site-reviews__empty"><h3>A primeira opinião pode ser a sua.</h3><p>Ainda não há avaliações do site. Conte como foi sua experiência com a Mentis.</p></div>{% endfor %}
+    {% if avaliacoes_site.has_other_pages %}<nav class="site-reviews__pagination" aria-label="Páginas de avaliações">
+      {% if avaliacoes_site.has_previous %}<a href="?q={{ busca|urlencode }}&amp;disciplina={{ disciplina_selecionada|urlencode }}&amp;page={{ professores.number }}&amp;review_page={{ avaliacoes_site.previous_page_number }}#avaliacoes">Anteriores</a>{% endif %}
+      <span>{{ avaliacoes_site.number }} de {{ avaliacoes_site.paginator.num_pages }}</span>
+      {% if avaliacoes_site.has_next %}<a href="?q={{ busca|urlencode }}&amp;disciplina={{ disciplina_selecionada|urlencode }}&amp;page={{ professores.number }}&amp;review_page={{ avaliacoes_site.next_page_number }}#avaliacoes">Próximas</a>{% endif %}
+    </nav>{% endif %}
+    </div>
+    <aside class="site-reviews__write" aria-labelledby="write-review-title">
+      <h3 id="write-review-title">{% if propria_avaliacao %}Sua avaliação{% else %}Deixe sua opinião{% endif %}</h3>
+      {% if request.user.is_authenticated %}
+      <p class="site-reviews__intro">{% if propria_avaliacao %}Você pode atualizar sua nota e seu comentário aqui.{% else %}O que você gostou? O que podemos melhorar?{% endif %}</p>
+      {% if request.GET.avaliacao == 'salva' and propria_avaliacao %}<p class="site-reviews__success" role="status">Sua avaliação foi salva. Obrigado por compartilhar!</p>{% endif %}
+      <form method="post" action="{% url 'avaliar_site' %}" data-session-url="{% url 'sessao_perfil' %}" data-user-id="{{ request.user.pk }}">
+        {% csrf_token %}
+        {% if avaliacao_site_form.errors %}<div class="site-reviews__error" role="alert" tabindex="-1" data-review-errors>Confira a nota e o comentário abaixo.{{ avaliacao_site_form.non_field_errors }}</div>{% endif %}
+        <fieldset class="site-reviews__score"><legend>{{ avaliacao_site_form.nota.label }}</legend>{{ avaliacao_site_form.nota }}<p class="site-reviews__help" id="id_nota_helptext">{{ avaliacao_site_form.nota.help_text }}</p>{{ avaliacao_site_form.nota.errors }}</fieldset>
+        <label for="id_comentario">{{ avaliacao_site_form.comentario.label }}</label>{{ avaliacao_site_form.comentario }}<p class="site-reviews__help" id="id_comentario_helptext">{{ avaliacao_site_form.comentario.help_text }}</p>{{ avaliacao_site_form.comentario.errors }}
+        <p class="site-reviews__error" data-session-message role="status" aria-live="polite" hidden></p>
+        <button type="submit" class="btn btn--primary">{% if propria_avaliacao %}Salvar avaliação{% else %}Publicar avaliação{% endif %}</button>
+      </form>
+      {% else %}<p class="site-reviews__intro">Entre na sua conta para avaliar o site. As avaliações são públicas e identificadas pelo autor.</p><a class="btn btn--primary" href="{% url 'login' %}?next={{ avaliacao_login_next|urlencode }}">Entrar para avaliar</a>{% endif %}
+    </aside>
+  </div>
+</section>

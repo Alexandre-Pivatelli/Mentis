@@ -1,0 +1,28 @@
+{% load aluno_extras %}
+<aside class="profile profile--estudante" aria-label="Seu perfil">
+  <div class="profile__photo profile__photo--usuario">
+    {% if aluno.usuario.foto %}
+    <img class="profile-photo" src="{{ aluno.usuario.foto.url }}" alt="Foto de {{ aluno.usuario.nome|default:aluno.usuario.username }}">
+    {% else %}
+    <span class="profile__iniciais">{{ aluno.usuario.nome|default:aluno.usuario.username|iniciais }}</span>
+    {% endif %}
+  </div>
+  <div class="profile__body">
+    <h1 class="profile__name">{{ aluno.usuario.nome|default:aluno.usuario.username }}</h1>
+    <p class="profile__role">Estudante{% if aluno.serie %} | {{ aluno.serie }}{% endif %}</p>
+    <div class="stats">
+      <div class="stat"><strong>{{ aulas_realizadas|default:0 }}</strong><span>Aulas realizadas</span></div>
+      <div class="stat"><strong>{{ nota_media|floatformat:1|default:"—" }}</strong><span>Média das suas notas</span></div>
+    </div>
+    {% if aluno.escola or disciplinas %}
+    <div class="badges">
+      {% if aluno.escola %}<span class="badge">{{ aluno.escola }}</span>{% endif %}
+      {% for disciplina in disciplinas|slice:':3' %}<span class="badge">{{ disciplina.nome }}</span>{% endfor %}
+    </div>
+    {% endif %}
+    <a class="btn-edit" href="{% url 'editar_perfil' %}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-7"/><path d="m16 3 5 5M10 14l-1 4 4-1L22 8l-5-5-9 9Z"/></svg>
+      Editar perfil
+    </a>
+  </div>
+</aside>

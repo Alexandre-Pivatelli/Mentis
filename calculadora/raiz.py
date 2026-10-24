@@ -1,2 +1,2 @@
-def raiz (x, y):
-    return (x)**(1/y)
+def raiz(x, y):
+    return (x) ** (1 / y)

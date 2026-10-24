@@ -1,0 +1,12 @@
+{% if widget.is_initial %}
+<div class="photo-current">
+  <a href="{{ widget.value.url }}">Ver foto atual</a>
+  {% if not widget.required %}
+  <label for="{{ widget.checkbox_id }}">
+    <input type="checkbox" name="{{ widget.checkbox_name }}" id="{{ widget.checkbox_id }}"{% if widget.attrs.disabled %} disabled{% endif %}{% if widget.attrs.checked %} checked{% endif %}>
+    Remover foto atual
+  </label>
+  {% endif %}
+</div>
+{% endif %}
+{% include 'django/forms/widgets/input.html' %}

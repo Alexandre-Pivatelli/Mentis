@@ -1,0 +1,34 @@
+{% comment %}
+  ===== CAMPOS E LABELS DE PROFESSOR (Sprint 6) =====
+  Aparecem no cadastro só quando a pessoa escolhe "Professor".
+  Os nomes dos campos (formacao, valor_hora, modalidade) são os mesmos
+  do CadastroForm em forms.py, então o Django recebe e salva os dados.
+  A troca Estudante/Professor é feita pelo static/js/auth.js através do
+  atributo data-profile="professor" (habilita/desabilita e mostra/esconde).
+{% endcomment %}
+<style>
+  /* O CSS do cadastro não estiliza campos numéricos; este deixa o valor igual aos outros campos. */
+  #camposProfessor input[type="number"] {
+    width: 100%;
+    padding: 10px 16px;
+    border: 1px solid #dcdcdc;
+    border-radius: 20px;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    background-color: #fff;
+    color: #333;
+    transition: border-color 0.2s;
+  }
+
+  #camposProfessor input[type="number"]:focus {
+    border-color: #6a35d9;
+  }
+</style>
+
+<fieldset class="profile-fields" id="camposProfessor" data-profile="professor">
+  <legend>Dados do professor</legend>
+  {% include 'includes/form_field.html' with field=form.formacao %}
+  {% include 'includes/form_field.html' with field=form.valor_hora %}
+  {% include 'includes/form_field.html' with field=form.modalidade %}
+</fieldset>

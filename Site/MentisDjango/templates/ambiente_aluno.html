@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% load static aluno_extras i18n %}
+{% block page_head %}
+<title>Mentis – Ambiente do aluno</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="{% static 'css/perfil_aluno.css' %}">
+  <link rel="stylesheet" href="{% static 'css/dados.css' %}">
+  <link rel="stylesheet" href="{% static 'css/ambiente_aluno.css' %}">
+{% endblock %}
+{% block body_class %}{% endblock %}
+{% block content %}
+<!-- HEADER -->
+  
+
+  <main class="page">
+  {% if aluno %}
+
+    <!-- ===== CONTEÚDO (lado esquerdo) ===== -->
+    <section class="content">
+
+      <!-- Abas: levam para as seções da própria página -->
+      <nav class="tabs" aria-label="Seções do ambiente do aluno">
+        <a class="tab tab--active" href="#sobre">Meu ambiente</a>
+        <a class="tab" href="#agenda">Agenda</a>
+        <a class="tab" href="#avaliacoes">Avaliações</a>
+      </nav>
+
+      <!-- Sobre -->
+      <h2 class="section-heading" id="sobre">Sobre</h2>
+      <p class="about">
+        Estudante da {{ aluno.escola|default:"escola não informada" }}{% if aluno.serie %}, {{ aluno.serie }}{% endif %}.
+      </p>
+
+      {% if aluno.usuario.bio %}<p class="about">{{ aluno.usuario.bio|linebreaksbr }}</p>{% endif %}
+      <!-- Resumo em números -->
+      <div class="resumo">
+        <div class="resumo__item">
+          <strong>{{ total_proximas_aulas }}</strong>
+          <span>Próximas aulas</span>
+        </div>
+        <div class="resumo__item">
+          <strong>{{ aulas_realizadas }}</strong>
+          <span>Aulas realizadas</span>
+        </div>
+        <div class="resumo__item">
+          <strong>{{ disciplinas|length }}</strong>
+          <span>Disciplinas</span>
+        </div>
+      </div>
+
+      <!-- Disciplinas -->
+      <h2 class="section-heading">Disciplinas das suas aulas</h2>
+      <div class="chips">
+        {% for disciplina in disciplinas %}
+          <a class="chip" href="{% url 'principal' %}?disciplina={{ disciplina.pk }}#resultados">{{ disciplina.nome }}</a>
+        {% empty %}
+          <p class="vazio">Você ainda não tem aulas. <a href="{% url 'principal' %}#resultados">Encontre um professor</a>.</p>
+        {% endfor %}
+      </div>
+
+      <!-- Agenda -->
+      <h2 class="section-heading" id="agenda">Agenda</h2>
+      <ul class="agenda">
+        {% for aula in agenda %}
+          <li class="aula">
+            <div class="aula__data">
+              <strong>{{ aula.data_hora|date:"d" }}</strong>
+              <span>{{ aula.data_hora|date:"M" }}</span>
+            </div>
+            <div class="aula__info">
+              <h3>{{ aula.disciplina.nome }}</h3>
+              <p>
+                <a href="{% url 'professor_detalhe' aula.professor.pk %}">{{ aula.professor.usuario.nome|default:aula.professor.usuario.username }}</a>
+                · {{ aula.data_hora|date:"l, H:i" }} · {{ aula.duracao_min }} min
+              </p>
+            </div>
+            <span class="aula__status aula__status--{{ aula.status|lower }}">{{ aula.get_status_display }}</span>
+          </li>
+        {% empty %}
+          <li class="vazio">Nenhuma aula agendada.</li>
+        {% endfor %}
+      </ul>
+
+      <!-- Avaliações -->
+      <h2 class="section-heading" id="avaliacoes">Suas avaliações de aulas</h2>
+      <div class="reviews">
+        {% for avaliacao in avaliacoes %}
+          <article class="review">
+            <div class="review__head">
+              <div class="avatar" aria-hidden="true"></div>
+              <div class="review__who">
+                <p class="review__name">{{ avaliacao.aula.professor.usuario.nome|default:avaliacao.aula.professor.usuario.username }}</p>
+                <div class="review__meta">
+                  <span>{{ avaliacao.aula.disciplina.nome }}</span>
+                  <span class="review__rating"><i>★</i> {{ avaliacao.nota }}/5</span>
+                </div>
+              </div>
+            </div>
+            <hr>
+            <p>{{ avaliacao.comentario|default:"Sem comentário." }}</p>
+          </article>
+        {% empty %}
+          <p class="vazio">Você ainda não avaliou aulas.</p>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- ===== CARD DO PERFIL (lado direito) ===== -->
+    {% include 'includes/card_estudante.html' %}
+
+  {% else %}
+    <section class="content">
+      <h1 class="section-heading">Ambiente do aluno</h1>
+      <p class="about">Sua conta ainda não possui um perfil de aluno cadastrado.</p>
+    </section>
+  {% endif %}
+  </main>
+{% endblock %}

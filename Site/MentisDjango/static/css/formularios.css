@@ -1,0 +1,27 @@
+[hidden] { display: none !important; }
+.profile-fields { border: 0; padding: 0; margin: 24px 0; min-width: 0; }
+.profile-fields legend { font-weight: 600; margin-bottom: 16px; }
+.profile-choice #id_user_type { display: flex; flex-wrap: wrap; gap: 16px; }
+.profile-choice label { display: flex; align-items: center; gap: 8px; min-height: 44px; cursor: pointer; }
+.profile-choice input { accent-color: #6430d8; }
+.input-group input:not([type="checkbox"]), .input-group select, .input-group textarea { box-sizing: border-box; width: 100%; min-height: 44px; font: inherit; font-size: 1rem; padding: 10px 16px; border: 1px solid #b0a8bb; border-radius: 20px; background: #fff; color: #333; }
+.input-group input[type="checkbox"] { width: auto; }
+.input-group input[type="file"] { border-radius: 8px; }
+.input-group textarea { resize: vertical; }
+.input-group { min-width: 0; }
+.input-group label { display: block; margin-bottom: 8px; }
+.field-help { font-size: .875rem; line-height: 1.5; color: #615769; margin: 6px 0 16px; }
+.errorlist, .form-errors { color: #a42534; overflow-wrap: anywhere; }
+.errorlist { list-style: none; padding: 0; margin: 8px 0; }
+.form-errors { margin: 20px 0; padding: 16px; background: #fceef0; border-radius: 12px; }
+.input-group [aria-invalid="true"] { border-color: #a42534; }
+:focus-visible { outline: 3px solid #6430d8; outline-offset: 3px; }
+.input-group input:focus-visible, .input-group select:focus-visible, .input-group textarea:focus-visible { outline: 3px solid #6430d8; outline-offset: 3px; }
+.input-group input[type="text"], .input-group input[type="email"], .input-group input[type="password"] { font-size: 1rem; }
+.form-errors, .errorlist { font-size: .875rem; }
+.brand-section { min-width: 0; }
+.big-logo-icon img, #logo-branco { max-width: 100%; }
+.edit-photo { display: block; width: 96px; height: 96px; object-fit: cover; border-radius: 16px; margin-block: 20px; }
+.photo-current { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-bottom: 8px; }
+.photo-current a { display: inline-flex; align-items: center; min-height: 44px; color: #6430d8; }
+.photo-current label { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; margin: 0; cursor: pointer; }
