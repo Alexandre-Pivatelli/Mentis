@@ -1,0 +1,139 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mentis – Sobre nós</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="{% static 'css/header.css' %}">
+  <link rel="stylesheet" href="{% static 'css/sobre.css' %}?v=3">
+</head>
+<body class="sobre-page">
+
+  {% include 'includes/header.html' %}
+
+<main>
+
+  <section class="sobre-hero">
+    <span class="sobre-blob sobre-blob--1" aria-hidden="true"></span>
+    <span class="sobre-blob sobre-blob--2" aria-hidden="true"></span>
+
+    <div class="sobre-container sobre-hero__conteudo">
+      <span class="sobre-badge">✨ Sobre nós</span>
+      <h1 class="sobre-hero__titulo">
+        Olá, nós somos a <span class="sobre-destaque-texto">Mentis</span>,
+        a solução para estudar do seu jeito!
+      </h1>
+      <p class="sobre-hero__texto">
+        Nossa equipe é formada integralmente por alunos da Pontifícia Universidade Católica
+        do Rio de Janeiro, que, durante a disciplina de Projeto de software, tivemos a ideia
+        de criar essa aplicação.
+      </p>
+      <div class="sobre-hero__acoes">
+        <a class="sobre-botao" href="{% url 'principal' %}">Encontrar professores</a>
+        <a class="sobre-botao sobre-botao--contorno" href="#galeria">Conheça a equipe</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="sobre-container sobre-destaques">
+    <article class="sobre-destaque sobre-destaque--roxo">
+      <span class="sobre-destaque__icone" aria-hidden="true">🎯</span>
+      <h3>ENEM e vestibulares</h3>
+      <p>Nosso foco principal, com atendimento também para o ensino médio.</p>
+    </article>
+    <article class="sobre-destaque sobre-destaque--rosa">
+      <span class="sobre-destaque__icone" aria-hidden="true">🎁</span>
+      <h3>Aula teste gratuita</h3>
+      <p>Conheça o professor antes de decidir, sem pagar nada.</p>
+    </article>
+    <article class="sobre-destaque sobre-destaque--verde">
+      <span class="sobre-destaque__icone" aria-hidden="true">🏛️</span>
+      <h3>Feita na PUC-Rio</h3>
+      <p>Criada por estudantes que sabem o que é se preparar para uma prova.</p>
+    </article>
+  </section>
+
+  <section class="sobre-secao">
+    <div class="sobre-container">
+      <h2 class="sobre-titulo">Para quem é a <span>Mentis</span></h2>
+      <div class="sobre-publicos">
+        <article class="sobre-publico sobre-publico--aluno">
+          <span class="sobre-publico__tag">Alunos</span>
+          <h3>Estude com quem combina com você</h3>
+          <p>Encontre professores por disciplina, compare perfis e experimente com uma aula teste gratuita.</p>
+        </article>
+        <article class="sobre-publico sobre-publico--professor">
+          <span class="sobre-publico__tag">Professores</span>
+          <h3>Mostre o seu trabalho</h3>
+          <p>Divulgue suas aulas e conquiste novos alunos. No início, sem cobrança de comissão.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="sobre-secao sobre-secao--suave">
+    <div class="sobre-container">
+      <h2 class="sobre-titulo">Como <span>funciona</span></h2>
+      <ol class="sobre-passos">
+        <li class="sobre-passo">
+          <span class="sobre-passo__numero sobre-passo__numero--roxo">1</span>
+          <h3>Busque</h3>
+          <p>Procure professores pela disciplina que você quer estudar.</p>
+        </li>
+        <li class="sobre-passo">
+          <span class="sobre-passo__numero sobre-passo__numero--rosa">2</span>
+          <h3>Experimente</h3>
+          <p>Faça uma aula teste gratuita para conhecer o professor.</p>
+        </li>
+        <li class="sobre-passo">
+          <span class="sobre-passo__numero sobre-passo__numero--amarelo">3</span>
+          <h3>Estude</h3>
+          <p>Agende suas aulas e acompanhe sua preparação até a prova.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="sobre-secao" id="galeria">
+    <div class="sobre-container">
+      <h2 class="sobre-titulo">Por trás da <span>Mentis</span></h2>
+      <p class="sobre-subtitulo">Um pouco da equipe e do caminho até aqui.</p>
+      <div class="sobre-galeria">
+        <figure class="sobre-foto sobre-foto--1" data-label="Imagem 1">
+          <img src="{% static 'img/sobre/foto1.jpg' %}" alt="Equipe Mentis" onerror="this.remove()">
+        </figure>
+        <figure class="sobre-foto sobre-foto--2" data-label="Imagem 2">
+          <img src="{% static 'img/sobre/foto2.jpg' %}" alt="Equipe Mentis" onerror="this.remove()">
+        </figure>
+        <figure class="sobre-foto sobre-foto--3" data-label="Imagem 3">
+          <img src="{% static 'img/sobre/foto3.jpg' %}" alt="Equipe Mentis" onerror="this.remove()">
+        </figure>
+        <figure class="sobre-foto sobre-foto--4" data-label="Imagem 4">
+          <img src="{% static 'img/sobre/foto4.jpg' %}" alt="Equipe Mentis" onerror="this.remove()">
+        </figure>
+        <figure class="sobre-foto sobre-foto--5" data-label="Imagem 5">
+          <img src="{% static 'img/sobre/foto5.jpg' %}" alt="Equipe Mentis" onerror="this.remove()">
+        </figure>
+        <figure class="sobre-foto sobre-foto--6" data-label="Imagem 6">
+          <img src="{% static 'img/sobre/foto6.jpg' %}" alt="Equipe Mentis" onerror="this.remove()">
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="sobre-container">
+    <div class="sobre-cta">
+      <h2>Pronto para estudar do seu jeito?</h2>
+      <p>Encontre seu professor e marque sua aula teste gratuita.</p>
+      <a class="sobre-botao sobre-botao--branco" href="{% url 'principal' %}">Começar agora</a>
+    </div>
+  </section>
+
+</main>
+</body>
+</html>

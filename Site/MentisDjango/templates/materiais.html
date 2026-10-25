@@ -1,0 +1,221 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mentis – Meus materiais</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="{% static 'css/header.css' %}">
+  <link rel="stylesheet" href="{% static 'css/materiais.css' %}?v=2">
+</head>
+<body class="materiais-page">
+
+  {% include 'includes/header.html' %}
+
+<main>
+
+  {% regroup materiais by professor as por_professor %}
+
+  <section class="mat-hero">
+    <span class="mat-blob mat-blob--1" aria-hidden="true"></span>
+    <span class="mat-blob mat-blob--2" aria-hidden="true"></span>
+
+    <div class="mat-container mat-hero__conteudo">
+      <div>
+        <span class="mat-badge">📚 Meus materiais</span>
+        <h1 class="mat-hero__titulo">Seus materiais de <span class="mat-destaque-texto">estudo</span></h1>
+        <p class="mat-hero__texto">Tudo o que seus professores compartilharam com você, num só lugar.</p>
+      </div>
+
+      {% if materiais %}
+      <div class="mat-resumo">
+        <div class="mat-resumo__item">
+          <strong>{{ materiais|length }}</strong>
+          <span>{{ materiais|length|pluralize:"material,materiais" }}</span>
+        </div>
+        <div class="mat-resumo__item">
+          <strong>{{ por_professor|length }}</strong>
+          <span>{{ por_professor|length|pluralize:"professor,professores" }}</span>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </section>
+
+  {% if materiais %}
+
+  <section class="mat-container mat-recentes" id="mat-recentes">
+    <h2 class="mat-titulo">Adicionados recentemente</h2>
+    <div class="mat-recentes__lista">
+      {% for material in materiais|dictsortreversed:"criado_em"|slice:":3" %}
+      <a class="mat-recente mat-card--{{ material.tipo }}"
+         href="{% if material.arquivo %}{{ material.arquivo.url }}{% else %}{{ material.link }}{% endif %}"
+         target="_blank" rel="noopener">
+        <span class="mat-card__icone" aria-hidden="true">{% if material.tipo == 'pdf' %}📄{% elif material.tipo == 'lista' %}✏️{% elif material.tipo == 'video' %}🎬{% else %}🔗{% endif %}</span>
+        <span class="mat-recente__texto">
+          <strong>{{ material.titulo }}</strong>
+          <span>{{ material.professor }} · {{ material.criado_em|date:"d/m" }}</span>
+        </span>
+        <span class="mat-recente__seta" aria-hidden="true">→</span>
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="mat-container mat-biblioteca">
+    <div class="mat-barra">
+      <h2 class="mat-titulo">Por professor</h2>
+      <div class="mat-busca">
+        <span aria-hidden="true">🔍</span>
+        <input type="search" id="mat-busca" placeholder="Filtrar meus materiais" aria-label="Filtrar meus materiais">
+      </div>
+    </div>
+
+    <div class="mat-chips" id="mat-disciplinas" role="group" aria-label="Filtrar por disciplina">
+      <button type="button" class="mat-chip is-ativo" data-disciplina="">Todas</button>
+    </div>
+
+    {% for grupo in por_professor %}
+    <div class="mat-professor-bloco">
+      <div class="mat-professor-bloco__topo">
+        <span class="mat-avatar">{{ grupo.grouper|stringformat:"s"|first|upper }}</span>
+        <div>
+          <h3>{{ grupo.grouper }}</h3>
+          <span>{{ grupo.list|length }} {{ grupo.list|length|pluralize:"material,materiais" }}</span>
+        </div>
+      </div>
+
+      <div class="mat-grade">
+        {% for material in grupo.list %}
+        <article class="mat-card mat-card--{{ material.tipo }}"
+                 data-disciplina="{{ material.disciplina }}"
+                 data-busca="{{ material.titulo|lower }} {{ material.descricao|lower }} {{ material.disciplina|lower }} {{ material.professor|lower }}">
+          <div class="mat-card__topo">
+            <span class="mat-card__icone" aria-hidden="true">{% if material.tipo == 'pdf' %}📄{% elif material.tipo == 'lista' %}✏️{% elif material.tipo == 'video' %}🎬{% else %}🔗{% endif %}</span>
+            <div class="mat-card__tags">
+              <span class="mat-tag mat-tag--disciplina">{{ material.disciplina }}</span>
+              <span class="mat-tag mat-tag--tipo">{{ material.get_tipo_display }}</span>
+            </div>
+          </div>
+
+          <h4 class="mat-card__titulo">{{ material.titulo }}</h4>
+          {% if material.descricao %}
+          <p class="mat-card__descricao">{{ material.descricao }}</p>
+          {% endif %}
+
+          <div class="mat-card__rodape">
+            <span class="mat-card__data">{{ material.criado_em|date:"d/m/Y" }}</span>
+            {% if material.arquivo %}
+            <a class="mat-botao" href="{{ material.arquivo.url }}" target="_blank" rel="noopener" download>Baixar</a>
+            {% elif material.link %}
+            <a class="mat-botao" href="{{ material.link }}" target="_blank" rel="noopener">Abrir</a>
+            {% endif %}
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+
+    <div class="mat-vazio mat-vazio--filtro" id="mat-sem-resultado" hidden>
+      <h3>Nenhum material encontrado</h3>
+      <p>Nada com esse filtro entre os seus materiais.</p>
+      <button type="button" class="mat-botao mat-botao--contorno" id="mat-limpar">Limpar filtros</button>
+    </div>
+  </section>
+
+  <section class="mat-container">
+    <div class="mat-mais">
+      <div>
+        <h2>Quer mais materiais?</h2>
+        <p>Comece aulas com novos professores e receba os materiais deles aqui.</p>
+      </div>
+      <a class="mat-botao mat-botao--branco" href="{% url 'principal' %}">Encontrar professores</a>
+    </div>
+  </section>
+
+  {% else %}
+
+  <section class="mat-container mat-vazio-secao">
+    <div class="mat-vazio">
+      <span class="mat-vazio__icone" aria-hidden="true">🗂️</span>
+      <h3>Você ainda não tem materiais</h3>
+      <p>Quando um professor compartilhar algum material com você, ele aparece aqui.</p>
+      <a class="mat-botao" href="{% url 'principal' %}">Encontrar professores</a>
+    </div>
+  </section>
+
+  {% endif %}
+
+</main>
+
+<script>
+  (function () {
+    const cards = Array.from(document.querySelectorAll('.mat-card'));
+    if (!cards.length) return;
+
+    const busca = document.getElementById('mat-busca');
+    const chips = document.getElementById('mat-disciplinas');
+    const blocos = Array.from(document.querySelectorAll('.mat-professor-bloco'));
+    const recentes = document.getElementById('mat-recentes');
+    const semResultado = document.getElementById('mat-sem-resultado');
+    let disciplina = '';
+
+    const disciplinas = [...new Set(cards.map(c => c.dataset.disciplina))].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+    if (disciplinas.length < 2) {
+      chips.hidden = true;
+    } else {
+      disciplinas.forEach(nome => {
+        const botao = document.createElement('button');
+        botao.type = 'button';
+        botao.className = 'mat-chip';
+        botao.dataset.disciplina = nome;
+        botao.textContent = nome;
+        chips.appendChild(botao);
+      });
+    }
+
+    const normalizar = t => t.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+
+    function filtrar() {
+      const termo = normalizar(busca.value.trim());
+      let total = 0;
+      cards.forEach(card => {
+        const ok = (!disciplina || card.dataset.disciplina === disciplina)
+          && (!termo || normalizar(card.dataset.busca).includes(termo));
+        card.hidden = !ok;
+        if (ok) total++;
+      });
+      blocos.forEach(b => { b.hidden = !b.querySelector('.mat-card:not([hidden])'); });
+      recentes.hidden = Boolean(termo || disciplina);
+      semResultado.hidden = total > 0;
+    }
+
+    function ativar(botao) {
+      chips.querySelectorAll('.mat-chip').forEach(b => b.classList.toggle('is-ativo', b === botao));
+    }
+
+    chips.addEventListener('click', e => {
+      const botao = e.target.closest('.mat-chip');
+      if (!botao) return;
+      disciplina = botao.dataset.disciplina;
+      ativar(botao);
+      filtrar();
+    });
+
+    busca.addEventListener('input', filtrar);
+
+    document.getElementById('mat-limpar').addEventListener('click', () => {
+      busca.value = '';
+      disciplina = '';
+      ativar(chips.querySelector('.mat-chip'));
+      filtrar();
+    });
+  })();
+</script>
+</body>
+</html>
