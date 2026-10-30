@@ -1,231 +1,191 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
+/* ==========================================================================
+   Tela de login (Mentis)
+   O cabeçalho vem de includes/header.html e é estilizado em header.css.
+   ========================================================================== */
+
+:root {
+  --purple: #6a35d9;
+  --purple-dark: #582ac2;
+  --purple-soft: #7b42f6;
+  --border: #dcdcdc;
+  --text: #333;
+  --title: #000;
+  --ease: .2s ease;
 }
 
+*, *::before, *::after { box-sizing: border-box; }
+
 body {
-  background-color: #ffffff;
-  color: #333;
+  margin: 0;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background: #fff;
+  color: var(--text);
+  font-family: 'Poppins', system-ui, sans-serif;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* NAVBAR */
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 50px;
-  background-color: #fff;
-}
-
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #6a35d9;
-  font-size: 24px;
-  font-weight: 700;
-}
-
-.logo img, 
-#logo-roxo {
-  height: 60px;
-  width: auto; 
-}
-.nav-links {
-  display: flex;
-  gap: 25px;
-}
-
-.nav-links a {
-  text-decoration: none;
-  color: #333;
-  font-weight: 500;
-  font-size: 15px;
-}
-
-.auth-links {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #6a35d9;
-}
-
-.auth-links a {
-  text-decoration: none;
-  color: #6a35d9;
-  font-weight: 500;
-  font-size: 15px;
-}
-
-.auth-links a.active {
-  font-weight: 700;
-}
-
-/* ESTRUTURA PRINCIPAL */
+/* Estrutura: formulário à esquerda, banner à direita */
 .container {
   display: flex;
   flex: 1;
 }
 
-/* LADO ESQUERDO: FORMULÁRIO DE CADASTRO */
+/* ----- Lado esquerdo: formulário ----- */
 .register-section {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 40px 20px;
+  padding: 48px 20px;
 }
 
 .welcome-title {
+  margin-bottom: 24px;
+  color: var(--title);
   font-size: 32px;
   font-weight: 700;
-  margin-bottom: 20px;
-  color: #000;
+  letter-spacing: -.01em;
 }
 
-/* SELEÇÃO ESTUDANTE / PROFESSOR */
+/* Alternância Estudante / Professor */
 .toggle-container {
   display: flex;
-  border: 1px solid #dcdcdc;
-  border-radius: 25px;
-  padding: 3px;
   width: 100%;
-  max-width: 380px;
-  margin-bottom: 20px;
-  background-color: #fff;
+  max-width: 360px;
+  margin-bottom: 28px;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: 25px;
+  background: #fff;
 }
 
 .toggle-btn {
   flex: 1;
-  border: none;
-  background: transparent;
-  padding: 10px 15px;
-  border-radius: 20px;
-  font-size: 15px;
-  font-weight: 500;
-  color: #333;
-  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  transition: all 0.3s ease;
+  min-height: 44px;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 20px;
+  background: transparent;
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color var(--ease), color var(--ease);
+}
+
+.toggle-btn:hover:not(.active) {
+  background: #f5f2fc;
 }
 
 .toggle-btn.active {
-  background-color: #6a35d9;
+  background: var(--purple);
   color: #fff;
+  font-weight: 600;
 }
 
-/* FORMULÁRIO */
+/* ----- Formulário ----- */
 .register-form {
   width: 100%;
-  max-width: 380px;
+  max-width: 360px;
 }
 
 .input-group {
-  margin-bottom: 15px;
+  margin-bottom: 18px;
 }
 
 .input-group label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  display: block;
+  margin-bottom: 6px;
+  padding-left: 4px;
+  color: var(--text);
   font-size: 14px;
   font-weight: 500;
-  margin-bottom: 6px;
-  color: #333;
 }
 
-.input-group input[type="text"],
-.input-group input[type="email"],
-.input-group input[type="password"],
-.input-group select {
+.input-group input {
   width: 100%;
   padding: 12px 18px;
-  border: 1px solid #dcdcdc;
+  border: 1px solid var(--border);
   border-radius: 20px;
+  background: #fff;
+  color: var(--text);
   font-size: 14px;
   outline: none;
-  background-color: #fff;
-  color: #333;
+  transition: border-color var(--ease), box-shadow var(--ease);
 }
 
-.input-group select {
-  cursor: pointer;
+.input-group input:focus {
+  border-color: var(--purple);
+  box-shadow: 0 0 0 4px rgb(106 53 217 / 12%);
 }
 
-.input-group input:focus,
-.input-group select:focus {
-  border-color: #6a35d9;
+/* Mensagens de erro geradas pelo Django (<ul class="errorlist">) */
+.errorlist {
+  margin: 6px 0 0 4px;
+  padding: 0;
+  list-style: none;
+  color: #c0392b;
+  font-size: 13px;
 }
 
-/* BOTÃO CADASTRAR */
+/* Botão Entrar */
 .submit-btn {
   width: 100%;
-  padding: 12px;
-  background-color: #6a35d9;
-  color: #fff;
+  min-height: 52px;
+  margin-top: 8px;
   border: none;
   border-radius: 20px;
+  background: var(--purple);
+  color: #fff;
   font-size: 18px;
   font-weight: 600;
   cursor: pointer;
-  margin-top: 10px;
-  margin-bottom: 15px;
-  box-shadow: 0 4px 10px rgba(106, 53, 217, 0.3);
-  transition: background 0.3s;
+  box-shadow: 0 6px 16px rgb(106 53 217 / 30%);
+  transition: background-color var(--ease), transform var(--ease);
 }
 
 .submit-btn:hover {
-  background-color: #582ac2;
+  background: var(--purple-dark);
 }
 
-.message-text {
-  text-align: center;
-  font-size: 14px;
-  font-weight: 500;
-  margin-bottom: 10px;
+.submit-btn:active {
+  transform: translateY(1px);
 }
 
-.login-text {
-  text-align: center;
-  font-size: 13px;
-  color: #333;
-  font-weight: 500;
+.submit-btn:focus-visible {
+  outline: 3px solid var(--purple-soft);
+  outline-offset: 3px;
 }
 
-.login-text a {
-  color: #6a35d9;
-  text-decoration: none;
-  font-weight: 600;
-}
-
-/* LADO DIREITO (BANNER ROXO) */
+/* ----- Lado direito: banner roxo ----- */
 .brand-section {
   flex: 1;
-  background: linear-gradient(135deg, #7b42f6, #5821c8);
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 48px 24px;
+  background: linear-gradient(135deg, var(--purple-soft), #5821c8);
 }
 
 .brand-content {
-  text-align: center;
   color: #fff;
+  text-align: center;
 }
 
-.big-logo-icon img, 
-#logo-branco {
-  width: 350px;
+.big-logo-icon img,
+.big-logo-img {
+  display: block;
+  width: min(350px, 60vw);
   height: auto;
-  margin-bottom: 15px;
+  margin: 0 auto 16px;
 }
 
 .brand-title {
@@ -234,48 +194,28 @@ body {
   letter-spacing: 2px;
 }
 
-/* RESPONSIVIDADE */
+/* ----- Responsividade ----- */
 @media (max-width: 768px) {
   .container {
     flex-direction: column;
   }
+
   .brand-section {
     padding: 40px 20px;
   }
-  .nav-links {
-    display: none;
+
+  .brand-title {
+    font-size: 40px;
+  }
+
+  .big-logo-icon img,
+  .big-logo-img {
+    width: 180px;
   }
 }
 
-.toggle-container {
-  display: flex;
-  border: 1px solid #dcdcdc;
-  border-radius: 25px;
-  padding: 3px;
-  width: 100%;
-  max-width: 360px;
-  margin-bottom: 25px;
-  background-color: #fff;
-}
-
-.toggle-btn {
-  flex: 1;
-  border: none;
-  background: transparent;
-  padding: 10px 15px;
-  border-radius: 20px;
-  font-size: 15px;
-  font-weight: 500;
-  color: #333;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  transition: all 0.3s ease;
-}
-
-.toggle-btn.active {
-  background-color: #6a35d9;
-  color: #fff;
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition: none !important;
+  }
 }
