@@ -1,4 +1,5 @@
-from django.contrib.auth import login, logout
+from django.contrib import messages
+from django.contrib.auth import login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db import IntegrityError
@@ -14,7 +15,7 @@ from django.views.decorators.debug import sensitive_post_parameters
 from django.views.decorators.http import require_GET, require_POST, require_http_methods
 
 from .auth_limits import permitir_tentativa
-from .forms import AvaliacaoSiteForm, CadastroForm, EditarPerfilForm, LoginForm
+from .forms import AvaliacaoSiteForm, CadastroForm, EditarPerfilForm, LoginForm, RedefinirSenhaForm
 from .models import (Aluno, Aula, Avaliacao, AvaliacaoSite, Disciplina,
                      Favorito, Professor, StatusAula, Usuario)
 
@@ -204,6 +205,22 @@ def editar_perfil_view(request):
         else:
             return redirect(perfil_url)
     return render(request, 'editar_perfil.html', {'form': form, 'perfil_url': perfil_url})
+
+
+@sensitive_post_parameters('old_password', 'new_password1', 'new_password2')
+@never_cache
+@login_required(login_url='login')
+@require_http_methods(['GET', 'POST'])
+def redefinir_senha_view(request):
+    perfil_url = (reverse('professor_detalhe', args=[request.user.pk])
+                  if hasattr(request.user, 'professor') else reverse('perfil_aluno'))
+    form = RedefinirSenhaForm(user=request.user, data=request.POST if request.method == 'POST' else None)
+    if request.method == 'POST' and form.is_valid():
+        usuario = form.save()
+        update_session_auth_hash(request, usuario)
+        messages.success(request, 'Sua senha foi redefinida com sucesso.')
+        return redirect(perfil_url)
+    return render(request, 'redefinir_senha.html', {'form': form, 'perfil_url': perfil_url})
 
 
 @never_cache

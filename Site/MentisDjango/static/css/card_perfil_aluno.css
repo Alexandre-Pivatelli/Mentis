@@ -54,7 +54,9 @@
 .perfil-card__tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 7px; list-style: none; margin: 20px 0 0; padding: 0; }
 .perfil-card__tags li { max-width: 100%; padding: 6px 10px; border: 1px solid var(--separator, #d3c1f5); border-radius: 999px; background: var(--surface-subtle, #f5f0ff); font-size: 11px; line-height: 1.4; color: var(--accent-hover, #4a1fa3); overflow-wrap: anywhere; }
 .perfil-card__edit { display: flex; align-items: center; justify-content: center; gap: 9px; width: 100%; min-height: 46px; margin-top: 20px; padding: 12px 16px; border-radius: 999px; background: var(--action, #6430d8); color: #fff; font-size: 14px; font-weight: 600; line-height: 1.5; text-decoration: none; transition: background-color 150ms ease; }
-.perfil-card__edit svg { flex: none; width: 19px; height: 19px; }
+.perfil-card__edit svg, .perfil-card__password svg { flex: none; width: 19px; height: 19px; }
 .perfil-card__edit:hover { background: var(--action-hover, #4a1fa3); }
-.perfil-card__edit:focus-visible { outline: 3px solid var(--focus, #6430d8); outline-offset: 4px; }
-@media (prefers-reduced-motion: reduce) { .perfil-card__edit { transition: none; } }
+.perfil-card__edit:focus-visible, .perfil-card__password:focus-visible { outline: 3px solid var(--focus, #6430d8); outline-offset: 4px; }
+.perfil-card__password { display: flex; align-items: center; justify-content: center; gap: 9px; width: 100%; min-height: 44px; margin-top: 10px; padding: 10px 16px; border: 1px solid var(--separator, #d3c1f5); border-radius: 999px; background: transparent; color: var(--accent, #6430d8); font-size: 13px; font-weight: 600; line-height: 1.5; text-decoration: none; transition: background-color 150ms ease, color 150ms ease; }
+.perfil-card__password:hover { background: var(--surface-hover, #f5f0ff); color: var(--accent-hover, #4a1fa3); }
+@media (prefers-reduced-motion: reduce) { .perfil-card__edit, .perfil-card__password { transition: none; } }
