@@ -187,12 +187,12 @@ class CorrecoesTests(TestCase):
             response = self.client.get(url)
             self.assertTemplateUsed(response, 'base.html')
             self.assertTemplateUsed(response, 'includes/header.html')
-            self.assertContains(response, '<header ', count=1)
+            self.assertContains(response, '<header class="mentis-header"', count=1)
         self.client.force_login(self.staff)
         for name in ('usuarios', 'editar_perfil', 'perfil_aluno', 'ambiente_aluno'):
             response = self.client.get(reverse(name))
             self.assertTemplateUsed(response, 'base.html')
-            self.assertContains(response, '<header ', count=1)
+            self.assertContains(response, '<header class="mentis-header"', count=1)
 
     def test_collectstatic(self):
         with TemporaryDirectory() as root, override_settings(STATIC_ROOT=root):

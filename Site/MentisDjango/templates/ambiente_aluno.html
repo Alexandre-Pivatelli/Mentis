@@ -6,9 +6,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="{% static 'css/perfil_aluno.css' %}">
-  <link rel="stylesheet" href="{% static 'css/dados.css' %}">
-  <link rel="stylesheet" href="{% static 'css/ambiente_aluno.css' %}">
+  <link rel="stylesheet" href="{% static 'css/perfil_aluno.css' %}?v=themes-1">
+  <link rel="stylesheet" href="{% static 'css/dados.css' %}?v=themes-1">
+  <link rel="stylesheet" href="{% static 'css/ambiente_aluno.css' %}?v=themes-1">
 {% endblock %}
 {% block body_class %}{% endblock %}
 {% block content %}
@@ -26,6 +26,7 @@
         <a class="tab tab--active" href="#sobre">Meu ambiente</a>
         <a class="tab" href="#agenda">Agenda</a>
         <a class="tab" href="#avaliacoes">Avaliações</a>
+        <a class="tab" href="{% url 'favoritos_aluno' %}">Favoritos</a>
       </nav>
 
       <!-- Sobre -->

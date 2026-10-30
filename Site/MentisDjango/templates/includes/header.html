@@ -3,11 +3,17 @@
   <a href="{% url 'principal' %}" class="mentis-header__logo" aria-label="Mentis — página inicial"><img src="{% static 'img/logo-r.png' %}" alt="Mentis" width="104" height="40" fetchpriority="high"></a>
   <nav class="mentis-header__nav" aria-label="Navegação principal">
     <a href="{% url 'principal' %}#disciplinas">Disciplinas</a>
-    <a href="{% url 'principal' %}#resultados">Professores</a>
+    <a href="{% url 'professores' %}"{% if request.resolver_match.url_name == 'professores' %} aria-current="page"{% endif %}>Professores</a>
+    {% if request.user.aluno %}<a href="{% url 'favoritos_aluno' %}"{% if request.resolver_match.url_name == 'favoritos_aluno' %} aria-current="page"{% endif %}>Favoritos</a>{% endif %}
     <a href="{% url 'professor' %}#materiais">Materiais</a>
     <a href="{% url 'principal' %}#como-funciona">Informações</a>
   </nav>
   <div class="mentis-header__auth">
+    <button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false" aria-label="Ativar modo escuro" hidden>
+      <svg class="theme-toggle__moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.9 13a9 9 0 0 1-9.9-9.9A9 9 0 1 0 20.9 13Z"/></svg>
+      <svg class="theme-toggle__sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg>
+      <span data-theme-label>Modo escuro</span>
+    </button>
     {% if request.user.is_authenticated %}
       {% if request.user.professor %}<a href="{% url 'professor_detalhe' request.user.pk %}">Meu perfil</a>{% else %}<a href="{% url 'perfil_aluno' %}">Meu perfil</a>{% endif %}
       {% if request.user.is_staff %}<a href="{% url 'usuarios' %}">Usuários</a>{% endif %}
@@ -18,3 +24,4 @@
     {% endif %}
   </div>
 </header>
+{% if messages %}<div class="site-notices" role="status">{% for message in messages %}<p>{{ message }}</p>{% endfor %}</div>{% endif %}
