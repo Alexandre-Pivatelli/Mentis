@@ -161,7 +161,7 @@ button {
   flex: 0 0 320px;
   scroll-snap-align: start;
   padding: 14px 16px 24px;
-  background: #fff;
+  background: var(--surface, #fff);
   border-radius: 38px;
   box-shadow: 0 4px 24px rgba(100, 48, 216, 0.07);
 }
@@ -201,7 +201,7 @@ button {
   align-items: center;
   margin-top: 2px;
   font-size: 1rem;
-  color: #888;
+  color: var(--muted, #888);
 }
 
 .review__rating {
@@ -218,7 +218,7 @@ button {
 .review hr {
   margin: 12px 0;
   border: none;
-  border-top: 1px solid #8a8a8a;
+  border-top: 1px solid var(--separator, #8a8a8a);
 }
 
 .review p {
@@ -231,7 +231,7 @@ button {
 .profile {
   overflow: hidden;
   padding-bottom: 24px;
-  background: #fff;
+  background: var(--surface, #fff);
   border-radius: 40px;
   box-shadow: 0 4px 30px rgba(100, 48, 216, 0.08);
 }
@@ -241,7 +241,7 @@ button {
   height: 360px;
   /* Troque o gradiente por: url("img/aluno.jpg") center/cover */
   background:
-    linear-gradient(to top, #fff 0%, rgba(255, 255, 255, 0) 30%),
+    linear-gradient(to top, var(--surface, #fff) 0%, rgba(255, 255, 255, 0) 30%),
     linear-gradient(135deg, #b9a2f2 0%, #6430d8 55%, #3b1a8c 100%);
 }
 
@@ -254,7 +254,7 @@ button {
   justify-content: center;
   width: 52px;
   height: 52px;
-  background: #fff;
+  background: var(--surface, #fff);
   border-radius: 50%;
 }
 
@@ -278,7 +278,7 @@ button {
 .profile__role {
   margin-top: 2px;
   font-size: 0.95rem;
-  color: #8a8a8a;
+  color: var(--muted, #8a8a8a);
 }
 
 .stats {
@@ -336,7 +336,7 @@ button {
   padding: 20px;
   border: none;
   border-radius: 999px;
-  background: var(--purple);
+  background: var(--action, var(--purple));
   color: #fff;
   font-size: 1.4rem;
   font-weight: 700;
@@ -344,7 +344,7 @@ button {
 }
 
 .btn-edit:hover {
-  background: var(--purple-dark);
+  background: var(--action-hover, var(--purple-dark));
   transform: translateY(-2px);
 }
 

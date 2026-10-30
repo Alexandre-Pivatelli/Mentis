@@ -1,0 +1,6 @@
+<form class="directory-filters" method="get">
+  <div><label for="teacher-search">Buscar por nome ou disciplina</label><input id="teacher-search" type="search" name="q" value="{{ busca }}" placeholder="Quem você procura?" maxlength="200"></div>
+  <div><label for="teacher-subject">Disciplina</label><select id="teacher-subject" name="disciplina"><option value="">Todas as disciplinas</option>{% for disciplina in disciplinas %}<option value="{{ disciplina.pk }}"{% if disciplina_selecionada == disciplina.pk|stringformat:'s' %} selected{% endif %}>{{ disciplina.nome }}</option>{% endfor %}</select></div>
+  {% if not somente_favoritos %}<div><label for="teacher-material">Tipo de material</label><select id="teacher-material" name="tipo"><option value="">Todos os materiais</option><option value="PDF"{% if tipo_selecionado == 'PDF' %} selected{% endif %}>PDF</option><option value="VIDEO"{% if tipo_selecionado == 'VIDEO' %} selected{% endif %}>Vídeo</option><option value="LINK"{% if tipo_selecionado == 'LINK' %} selected{% endif %}>Link</option><option value="LISTA_EXERCICIOS"{% if tipo_selecionado == 'LISTA_EXERCICIOS' %} selected{% endif %}>Lista de exercícios</option></select></div>{% endif %}
+  <button class="directory-action" type="submit">Buscar</button>
+</form>

@@ -1,21 +1,13 @@
+{% extends "base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+{% block page_head %}
   <title>Mentis — Usuários</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-  
-  <link rel="stylesheet" href="{% static 'css/usuarios.css' %}">
-<link rel="stylesheet" href="{% static 'css/dados.css' %}">
-  <link rel="stylesheet" href="{% static 'css/header.css' %}">
-</head>
-<body>
-
-{% include 'includes/header.html' %}
-
+  <link rel="stylesheet" href="{% static 'css/usuarios.css' %}?v=themes-2">
+  <link rel="stylesheet" href="{% static 'css/dados.css' %}?v=themes-2">
+{% endblock %}
+{% block content %}
 <main class="container">
   <h1 class="page-title">Usuários</h1>
   <p class="page-subtitle">Gerencie todos os usuários cadastrados na plataforma</p>
@@ -54,4 +46,4 @@
 <nav class="pagination" aria-label="Paginação">
 {% if usuarios.has_previous %}<a class="page-btn" href="?q={{ busca|urlencode }}&amp;disciplina={{ disciplina_selecionada|urlencode }}&amp;page={{ usuarios.previous_page_number }}">‹</a>{% endif %}
 <span>Página {{ usuarios.number }} de {{ usuarios.paginator.num_pages }}</span>
-{% if usuarios.has_next %}<a class="page-btn" href="?q={{ busca|urlencode }}&amp;disciplina={{ disciplina_selecionada|urlencode }}&amp;page={{ usuarios.next_page_number }}">›</a>{% endif %}</nav></div></div></main></body></html>
+{% if usuarios.has_next %}<a class="page-btn" href="?q={{ busca|urlencode }}&amp;disciplina={{ disciplina_selecionada|urlencode }}&amp;page={{ usuarios.next_page_number }}">›</a>{% endif %}</nav></div></div></main>{% endblock %}
