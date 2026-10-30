@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% load static %}
+{% block page_head %}
+  <title>Mentis – Redefinir senha</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/redefinir_senha.css' %}?v=themes-2">
+  <script src="{% static 'js/editar_perfil.js' %}?v=themes-2" defer></script>
+{% endblock %}
+{% block body_class %}reset-page{% endblock %}
+{% block content %}
+<main class="reset-main">
+  <div class="reset-card">
+    <a class="reset-back" href="{{ perfil_url }}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M19 12H5"/><path d="m12 19-7-7 7-7"/>
+      </svg>
+      Voltar para o perfil
+    </a>
+
+    <header class="reset-header">
+      <h1 class="reset-title">Redefinir senha</h1>
+      <p class="reset-subtitle">Crie uma nova senha para voltar a acessar sua conta na Mentis.</p>
+    </header>
+
+    <form class="reset-form" method="post" action="{% url 'redefinir_senha' %}" data-session-url="{% url 'sessao_perfil' %}" data-user-id="{{ request.user.pk }}">
+      {% csrf_token %}
+      {% if form.errors %}
+      <div class="reset-errors" role="alert" tabindex="-1" data-error-summary>
+        Confira os campos indicados abaixo.
+        {{ form.non_field_errors }}
+      </div>
+      {% endif %}
+
+      <div class="reset-field">
+        <label class="reset-label" for="{{ form.old_password.id_for_label }}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/>
+          </svg>
+          {{ form.old_password.label }}
+        </label>
+        <div class="reset-input-wrap">
+          {{ form.old_password }}
+          <button type="button" class="reset-eye" data-toggle-password="{{ form.old_password.id_for_label }}" aria-pressed="false" aria-label="Mostrar senha atual">
+            <svg class="reset-eye__on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg class="reset-eye__off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-6.5 0-10-8-10-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c6.5 0 10 8 10 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+          </button>
+        </div>
+        {{ form.old_password.errors }}
+      </div>
+
+      <div class="reset-field">
+        <label class="reset-label" for="{{ form.new_password1.id_for_label }}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/>
+          </svg>
+          {{ form.new_password1.label }}
+        </label>
+        <div class="reset-input-wrap">
+          {{ form.new_password1 }}
+          <button type="button" class="reset-eye" data-toggle-password="{{ form.new_password1.id_for_label }}" aria-pressed="false" aria-label="Mostrar nova senha">
+            <svg class="reset-eye__on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg class="reset-eye__off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-6.5 0-10-8-10-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c6.5 0 10 8 10 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+          </button>
+        </div>
+        {{ form.new_password1.errors }}
+      </div>
+
+      <div class="reset-field">
+        <label class="reset-label" for="{{ form.new_password2.id_for_label }}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/>
+          </svg>
+          {{ form.new_password2.label }}
+        </label>
+        <div class="reset-input-wrap">
+          {{ form.new_password2 }}
+          <button type="button" class="reset-eye" data-toggle-password="{{ form.new_password2.id_for_label }}" aria-pressed="false" aria-label="Mostrar confirmação de senha">
+            <svg class="reset-eye__on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg class="reset-eye__off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-6.5 0-10-8-10-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c6.5 0 10 8 10 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+          </button>
+        </div>
+        {{ form.new_password2.errors }}
+      </div>
+
+      <div class="reset-tips">
+        <p>Dica: combine letras, números e símbolos.</p>
+        <p>Evite informações pessoais e senhas já utilizadas.</p>
+      </div>
+
+      <p class="reset-errors" data-session-message role="status" aria-live="polite" hidden></p>
+
+      <button type="submit" class="reset-submit">Redefinir senha</button>
+
+      <p class="reset-footer-note">Depois de salvar, entre com sua nova senha.</p>
+    </form>
+  </div>
+</main>
+
+<script>
+  document.querySelectorAll('[data-toggle-password]').forEach(button => {
+    const input = document.getElementById(button.dataset.togglePassword);
+    if (!input) return;
+    button.addEventListener('click', () => {
+      const show = input.type === 'password';
+      input.type = show ? 'text' : 'password';
+      button.setAttribute('aria-pressed', String(show));
+    });
+  });
+</script>
+{% endblock %}

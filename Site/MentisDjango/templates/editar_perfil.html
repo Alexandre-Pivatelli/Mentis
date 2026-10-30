@@ -22,7 +22,11 @@
       {% include 'includes/form_field.html' with field=form.email %}
       {% include 'includes/form_field.html' with field=form.bio %}
       <p class="field-help" data-session-message role="status" aria-live="polite" hidden></p>
-      <div class="button-group"><button type="submit" class="submit-btn">Salvar Alterações</button><a href="{{ perfil_url }}" class="cancel-btn">Cancelar</a></div>
+      <div class="button-group">
+        <button type="submit" class="submit-btn">Salvar Alterações</button>
+        <a href="{% url 'redefinir_senha' %}" class="cancel-btn">Redefinir senha</a>
+        <a href="{{ perfil_url }}" class="cancel-btn">Cancelar</a>
+      </div>
     </form>
   </section>
   <section class="brand-section" aria-label="Mentis"><div class="brand-content"><div class="big-logo-icon"><img src="{% static 'img/logo-b.png' %}" id="logo-branco" alt="Mentis"></div><h2 class="brand-title">MENTIS</h2></div></section>

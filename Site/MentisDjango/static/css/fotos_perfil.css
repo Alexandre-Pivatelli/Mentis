@@ -66,6 +66,9 @@
 .profile--estudante .btn-edit { box-sizing: border-box; gap: 10px; min-height: 44px; margin-top: 14px; padding: 10px 16px; font-size: 15px; text-decoration: none; }
 .profile--estudante .btn-edit svg { flex: none; width: 20px; height: 20px; }
 .profile--estudante .btn-edit:focus-visible { outline: 3px solid var(--focus, #6430d8); outline-offset: 3px; }
+.profile--estudante .perfil-card__password { display: flex; align-items: center; justify-content: center; gap: 9px; width: 100%; min-height: 44px; margin-top: 10px; padding: 10px 16px; border: 1px solid var(--separator, #d3c1f5); border-radius: 999px; background: transparent; color: var(--accent, #6430d8); font-size: 13px; font-weight: 600; line-height: 1.5; text-decoration: none; }
+.profile--estudante .perfil-card__password svg { flex: none; width: 19px; height: 19px; }
+.profile--estudante .perfil-card__password:hover { background: var(--surface-hover, #f5f0ff); color: var(--accent-hover, #4a1fa3); }
 
 .card__photo > .card__image {
   position: absolute;
