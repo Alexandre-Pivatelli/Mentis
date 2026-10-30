@@ -1,8 +1,9 @@
-from django.contrib.auth import login, logout
+from django.contrib import messages
+from django.contrib.auth import login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db import IntegrityError
-from django.db.models import Avg, Count, Q
+from django.db.models import Avg, BooleanField, Count, Exists, OuterRef, Q, Value
 from django.http import HttpResponseForbidden, JsonResponse
 from django.middleware.csrf import get_token
 from django.shortcuts import get_object_or_404, redirect, render
@@ -14,13 +15,17 @@ from django.views.decorators.debug import sensitive_post_parameters
 from django.views.decorators.http import require_GET, require_POST, require_http_methods
 
 from .auth_limits import permitir_tentativa
-from .forms import AvaliacaoSiteForm, CadastroForm, EditarPerfilForm, LoginForm
+from .forms import AvaliacaoSiteForm, CadastroForm, EditarPerfilForm, LoginForm, RedefinirSenhaForm
 from .models import (Aluno, Aula, Avaliacao, AvaliacaoSite, Disciplina,
-                     Professor, StatusAula, Usuario)
+                     Favorito, Professor, StatusAula, Usuario)
 
 
-def professores_queryset():
+def professores_queryset(usuario=None):
+    favorito = (Exists(Favorito.objects.filter(aluno_id=usuario.pk, professor_id=OuterRef('pk')))
+                if usuario and usuario.is_authenticated and hasattr(usuario, 'aluno')
+                else Value(False, output_field=BooleanField()))
     return Professor.objects.select_related('usuario').prefetch_related('disciplinas').annotate(
+        favorito=favorito,
         nota_media=Avg('aulas__avaliacao__nota'),
         total_avaliacoes=Count('aulas__avaliacao', distinct=True),
         aulas_realizadas=Count('aulas', filter=Q(aulas__status=StatusAula.REALIZADA), distinct=True),
@@ -39,7 +44,7 @@ def identificar(professor):
 def principal_view(request, avaliacao_form=None, status=200):
     busca = request.GET.get('q', '').strip()[:200]
     disciplina = request.GET.get('disciplina', '')
-    professores = professores_queryset().order_by('usuario__nome', 'pk')
+    professores = professores_queryset(request.user).order_by('usuario__nome', 'pk')
     if busca:
         professores = professores.filter(Q(usuario__nome__icontains=busca)
             | Q(usuario__username__icontains=busca) | Q(disciplinas__nome__icontains=busca)
@@ -135,11 +140,12 @@ def perfil_aluno_view(request):
                                data_hora__gte=timezone.now()).order_by('data_hora', 'pk')[:10]})
 
 
+@never_cache
 def professor_view(request, pk=None):
     if pk is None:
         primeiro = Professor.objects.order_by('pk').first()
         return redirect('professor_detalhe', pk=primeiro.pk) if primeiro else redirect('principal')
-    professor = identificar(get_object_or_404(professores_queryset(), pk=pk))
+    professor = identificar(get_object_or_404(professores_queryset(request.user), pk=pk))
     avaliacoes = Avaliacao.objects.filter(aula__professor=professor).select_related(
         'aula__aluno__usuario', 'aula__disciplina').order_by('-data', '-pk')
     return render(request, 'professor.html', {'professor': professor,
@@ -201,12 +207,29 @@ def editar_perfil_view(request):
     return render(request, 'editar_perfil.html', {'form': form, 'perfil_url': perfil_url})
 
 
+@sensitive_post_parameters('old_password', 'new_password1', 'new_password2')
+@never_cache
+@login_required(login_url='login')
+@require_http_methods(['GET', 'POST'])
+def redefinir_senha_view(request):
+    perfil_url = (reverse('professor_detalhe', args=[request.user.pk])
+                  if hasattr(request.user, 'professor') else reverse('perfil_aluno'))
+    form = RedefinirSenhaForm(user=request.user, data=request.POST if request.method == 'POST' else None)
+    if request.method == 'POST' and form.is_valid():
+        usuario = form.save()
+        update_session_auth_hash(request, usuario)
+        messages.success(request, 'Sua senha foi redefinida com sucesso.')
+        return redirect(perfil_url)
+    return render(request, 'redefinir_senha.html', {'form': form, 'perfil_url': perfil_url})
+
+
+@never_cache
 def professores_view(request):
     busca = request.GET.get('q', '').strip()[:200]
     disciplina_id = request.GET.get('disciplina', '')
     tipo_material = request.GET.get('tipo', '')
 
-    professores = professores_queryset().order_by('usuario__nome', 'pk')
+    professores = professores_queryset(request.user).order_by('usuario__nome', 'pk')
 
     # 1. Busca geral (nome, username, disciplina, biografia)
     if busca:
@@ -218,8 +241,12 @@ def professores_view(request):
         ).distinct()
 
     # 2. Filtro por disciplina
-    if disciplina_id.isdigit():
+    if (disciplina_id.isascii() and disciplina_id.isdecimal() and len(disciplina_id) <= 19
+            and 0 < int(disciplina_id) <= 9223372036854775807):
+        disciplina_id = str(int(disciplina_id))
         professores = professores.filter(disciplinas__pk=int(disciplina_id))
+    else:
+        disciplina_id = ''
 
     # 3. Filtro por tipo de material oferecido pelo professor
     if tipo_material:

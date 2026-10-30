@@ -1,7 +1,7 @@
 from decimal import Decimal
 
 from django import forms
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm, UserCreationForm
 from django.db import transaction
 
 from .models import Aluno, Professor, Usuario, AvaliacaoSite
@@ -151,6 +151,33 @@ class EditarPerfilForm(forms.ModelForm):
             self.professor.bio = self.cleaned_data['bio']
             self.professor.save(update_fields=['bio'])
         return user
+
+
+class RedefinirSenhaForm(PasswordChangeForm):
+    error_messages = {
+        **PasswordChangeForm.error_messages,
+        'password_incorrect': 'Sua senha atual está incorreta. Confira e tente novamente.',
+        'password_mismatch': 'As duas senhas não coincidem.',
+    }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['old_password'].label = 'Senha atual'
+        self.fields['old_password'].widget.attrs.update({
+            'placeholder': 'Digite sua senha atual',
+            'autocomplete': 'current-password',
+        })
+        self.fields['old_password'].widget.attrs.pop('autofocus', None)
+        self.fields['new_password1'].label = 'Nova senha'
+        self.fields['new_password1'].widget.attrs.update({
+            'placeholder': 'Digite sua nova senha',
+            'autocomplete': 'new-password',
+        })
+        self.fields['new_password2'].label = 'Confirmar nova senha'
+        self.fields['new_password2'].widget.attrs.update({
+            'placeholder': 'Repita sua nova senha',
+            'autocomplete': 'new-password',
+        })
 
 
 class AvaliacaoSiteForm(forms.ModelForm):

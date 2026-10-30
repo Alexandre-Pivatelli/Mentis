@@ -1,6 +1,6 @@
 /* Layout Geral da Página de Professores */
 body {
-  background-color: #f4f0ff;
+  background-color: var(--page, #f4f0ff);
 }
 
 .main-container {
@@ -16,18 +16,18 @@ body {
 .section-header h1 {
   font-size: 32px;
   font-weight: 700;
-  color: #111;
+  color: var(--foreground, #111);
   margin-bottom: 5px;
 }
 
 .section-header p {
   font-size: 15px;
-  color: #555;
+  color: var(--secondary, #555);
 }
 
 /* Barra de Filtros e Busca */
 .search-filter-bar {
-  background: #ffffff;
+  background: var(--surface, #ffffff);
   padding: 20px;
   border-radius: 20px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
@@ -45,14 +45,14 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
-  border: 1px solid #dcdcdc;
+  border: 1px solid var(--separator, #dcdcdc);
   border-radius: 15px;
   padding: 0 15px;
-  background: #fff;
+  background: var(--surface, #fff);
 }
 
 .search-input-wrapper i {
-  color: #7b42f6;
+  color: var(--accent, #7b42f6);
 }
 
 .search-input-wrapper input {
@@ -61,6 +61,8 @@ body {
   outline: none;
   padding: 12px 0;
   font-size: 14px;
+  background: transparent;
+  color: var(--foreground, #111);
 }
 
 .filter-select-wrapper flex-1 {
@@ -69,16 +71,17 @@ body {
 
 .filter-form select {
   padding: 12px 20px;
-  border: 1px solid #dcdcdc;
+  border: 1px solid var(--separator, #dcdcdc);
   border-radius: 15px;
-  background: #fff;
+  background: var(--surface, #fff);
+  color: var(--foreground, #111);
   font-size: 14px;
   outline: none;
   cursor: pointer;
 }
 
 .filter-btn {
-  background-color: #6a35d9;
+  background-color: var(--action, #6a35d9);
   color: #fff;
   border: none;
   padding: 0 25px;
@@ -89,7 +92,7 @@ body {
 }
 
 .filter-btn:hover {
-  background-color: #582ac2;
+  background-color: var(--action-hover, #582ac2);
 }
 
 /* Grelha de Cards */
@@ -100,7 +103,7 @@ body {
 }
 
 .teacher-card {
-  background: #ffffff;
+  background: var(--surface, #ffffff);
   border-radius: 20px;
   padding: 25px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
@@ -125,7 +128,7 @@ body {
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background-color: #6a35d9;
+  background-color: var(--action, #6a35d9);
   color: white;
   display: flex;
   align-items: center;
@@ -137,12 +140,12 @@ body {
 .teacher-info h3 {
   font-size: 18px;
   font-weight: 700;
-  color: #111;
+  color: var(--foreground, #111);
 }
 
 .teacher-subject {
   font-size: 13px;
-  color: #666;
+  color: var(--secondary, #666);
 }
 
 .teacher-tags {
@@ -153,8 +156,8 @@ body {
 }
 
 .tag {
-  background-color: #f1edff;
-  color: #6a35d9;
+  background-color: var(--surface-subtle, #f1edff);
+  color: var(--accent, #6a35d9);
   font-size: 11px;
   font-weight: 600;
   padding: 5px 12px;
@@ -162,7 +165,7 @@ body {
 }
 
 .teacher-schedule-box {
-  background-color: #f9f9f9;
+  background-color: var(--surface-hover, #f9f9f9);
   border-radius: 12px;
   padding: 12px 15px;
   margin-bottom: 20px;
@@ -172,7 +175,7 @@ body {
   display: block;
   font-size: 10px;
   font-weight: 700;
-  color: #777;
+  color: var(--secondary, #777);
   letter-spacing: 0.5px;
   margin-bottom: 8px;
 }
@@ -183,19 +186,19 @@ body {
 }
 
 .hour-chip {
-  background: #fff;
-  border: 1px solid #e0e0e0;
+  background: var(--surface, #fff);
+  border: 1px solid var(--separator, #e0e0e0);
   padding: 4px 10px;
   border-radius: 8px;
   font-size: 12px;
   font-weight: 500;
-  color: #444;
+  color: var(--foreground, #444);
 }
 
 .hour-chip.active {
-  background-color: #6a35d9;
+  background-color: var(--action, #6a35d9);
   color: #fff;
-  border-color: #6a35d9;
+  border-color: var(--action, #6a35d9);
 }
 
 .teacher-footer {
@@ -204,17 +207,17 @@ body {
   align-items: center;
   margin-bottom: 15px;
   padding-bottom: 15px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--separator, #eee);
 }
 
 .teacher-price {
   font-size: 13px;
-  color: #555;
+  color: var(--secondary, #555);
 }
 
 .teacher-price strong {
   font-size: 18px;
-  color: #6a35d9;
+  color: var(--accent, #6a35d9);
 }
 
 .reserve-btn {
@@ -240,7 +243,7 @@ body {
 
 .rating {
   font-size: 12px;
-  color: #666;
+  color: var(--secondary, #666);
 }
 
 .rating i {
@@ -250,7 +253,7 @@ body {
 .profile-link {
   font-size: 13px;
   font-weight: 600;
-  color: #6a35d9;
+  color: var(--accent, #6a35d9);
   text-decoration: none;
 }
 

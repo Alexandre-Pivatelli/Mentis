@@ -2,6 +2,7 @@ from django.urls import path
 from . import views
 from .views_aluno import ambiente_aluno_view
 from .views_estudante import mensagens_view, agenda_view
+from .views_favoritos import favoritos_view, favorito_professor_view
 
 urlpatterns = [
     path('', views.principal_view, name='principal'),
@@ -11,8 +12,12 @@ urlpatterns = [
     path('usuarios/', views.usuarios_view, name='usuarios'),
     path('perfil-aluno/', views.perfil_aluno_view, name='perfil_aluno'),
     path('perfil/editar/', views.editar_perfil_view, name='editar_perfil'),
+    path('perfil/senha/', views.redefinir_senha_view, name='redefinir_senha'),
+    path('redefinir-senha/', views.redefinir_senha_view, name='redefinir_senha_atalho'),
     path('perfil/sessao/', views.sessao_perfil_view, name='sessao_perfil'),
     path('professores/', views.professores_view, name='professores'),
+    path('favoritos/', favoritos_view, name='favoritos_aluno'),
+    path('professor/<int:pk>/favorito/', favorito_professor_view, name='favorito_professor'),
     path('professor/', views.professor_view, name='professor'),
     path('professor/<int:pk>/', views.professor_view, name='professor_detalhe'),
     path('avaliar-site/', views.avaliar_site_view, name='avaliar_site'),

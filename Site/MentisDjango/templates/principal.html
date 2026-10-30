@@ -1,29 +1,22 @@
+{% extends "base.html" %}
 {% load static i18n %}
-{% language 'pt-br' %}
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% block page_head %}
   <title>Mentis – Sua aula, do seu jeito</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="{% static 'css/principal.css' %}?v=principal-8">
-  <link rel="stylesheet" href="{% static 'css/header.css' %}?v=header-4">
+  <link rel="stylesheet" href="{% static 'css/principal.css' %}?v=themes-2">
   <meta name="description" content="Encontre professores particulares de qualquer disciplina, a qualquer distância.">
   <meta name="theme-color" content="#6430D8">
-  <script src="{% static 'js/principal.js' %}?v=principal-7" defer></script>
-  <link rel="stylesheet" href="{% static 'css/avaliacoes_site.css' %}?v=1">
-  {% if request.user.is_authenticated %}<script src="{% static 'js/editar_perfil.js' %}?v=2" defer></script>{% endif %}
-  <link rel="stylesheet" href="{% static 'css/fotos_perfil.css' %}?v=3">
-</head>
-<body class="principal-page">
+  <script src="{% static 'js/principal.js' %}?v=themes-2" defer></script>
+  <link rel="stylesheet" href="{% static 'css/avaliacoes_site.css' %}?v=themes-2">
+  {% if request.user.is_authenticated %}<script src="{% static 'js/editar_perfil.js' %}?v=themes-2" defer></script>{% endif %}
+{% endblock %}
+{% block body_class %}principal-page{% endblock %}
+{% block content %}
+{% language 'pt-br' %}
   <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
-
-  <!-- HEADER -->
-  {% include 'includes/header.html' %}
 
   <main id="conteudo" tabindex="-1">
     <!-- HERO -->
@@ -66,6 +59,7 @@
     <span class="card__rating">{% if professor.nota_media != None %}{{ professor.nota_media|floatformat:1 }} <i aria-hidden="true">★</i>{% else %}Sem avaliações{% endif %}</span></div>
     <p class="card__subjects">{% for disciplina in professor.disciplinas.all %}{{ disciplina.nome }}{% if not forloop.last %} · {% endif %}{% empty %}Professor particular{% endfor %}</p>
     <p class="card__text">{{ professor.bio|default:'Conheça o perfil e saiba mais sobre as aulas deste professor.'|truncatechars:130 }}</p>
+    {% include 'includes/favorito_botao.html' %}
   </article>
   {% empty %}<div class="cards__empty"><h3>Nenhum professor encontrado</h3><p>Tente outro nome ou disciplina, ou remova os filtros para explorar os perfis.</p><a class="btn btn--ghost" href="{% url 'principal' %}#resultados">Ver professores</a></div>{% endfor %}
   </div>
@@ -107,15 +101,15 @@
     {% include 'includes/avaliacoes_site.html' %}
 
     <!-- CTA -->
-    <section class="cta" style = "background-color:#4A1BB0">
+    <section class="cta">
       <h2>Venha fazer parte da Mentis</h2>
       <div class="cta__buttons">
         {% if request.user.is_authenticated %}
         <a href="{% url 'principal' %}#resultados" class="btn btn--white">Encontrar um professor</a>
         {% if request.user.professor %}<a href="{% url 'professor_detalhe' request.user.pk %}" class="btn btn--outline">Meu perfil</a>{% else %}<a href="{% url 'perfil_aluno' %}" class="btn btn--outline">Meu perfil</a>{% endif %}
         {% else %}
-        <a href="{% url 'cadastro' %}" class="btn btn--white" style = "color:white; background-color: #4A1BB0; border-width: 2px; border-color: white; ">Começar como estudante</a>
-        <a href="{% url 'cadastro' %}?tipo=professor" class="btn btn--outline" style = " border-width: 2px; border-color: white; border-radius: 10px; ">Sou professor</a>
+        <a href="{% url 'cadastro' %}" class="btn btn--white">Começar como estudante</a>
+        <a href="{% url 'cadastro' %}?tipo=professor" class="btn btn--outline">Sou professor</a>
         {% endif %}
       </div>
     </section>
@@ -126,7 +120,5 @@
       <nav aria-label="Navegação do rodapé"><a href="#avaliacoes">Avaliações do site</a><a href="#como-funciona">Como funciona</a><a href="#conteudo">Voltar ao início</a></nav>
     </div>
   </footer>
-
-</body>
-</html>
 {% endlanguage %}
+{% endblock %}

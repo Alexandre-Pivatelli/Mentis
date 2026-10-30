@@ -1,22 +1,15 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mentis – Perfil da professora</title>
+{% block page_head %}<title>{{ professor.nome_exibicao }} – Mentis</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="{% static 'css/professor.css' %}">
-<link rel="stylesheet" href="{% static 'css/dados.css' %}">
-  <link rel="stylesheet" href="{% static 'css/header.css' %}">
-  <link rel="stylesheet" href="{% static 'css/fotos_perfil.css' %}?v=3">
-</head>
-<body>
-
-  <!-- ÍCONES (sprite) -->
+  <link rel="stylesheet" href="{% static 'css/professor.css' %}?v=themes-2">
+<link rel="stylesheet" href="{% static 'css/dados.css' %}?v=themes-2">
+{% endblock %}
+{% block content %}
+<!-- ÍCONES (sprite) -->
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <symbol id="i-check" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></symbol>
     <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/></symbol>
@@ -33,13 +26,13 @@
   </svg>
 
   <!-- HEADER -->
-  {% include 'includes/header.html' %}
+  
 
 <main>
 <section class="hero"><div class="wrap hero__in"><div class="profile"><div class="profile__photo">
 {% if professor.usuario.foto %}<img class="profile-photo" src="{{ professor.usuario.foto.url }}" alt="Foto de {{ professor.nome_exibicao }}">
 {% else %}<span role="img" aria-label="Iniciais de {{ professor.nome_exibicao }}">{{ professor.iniciais }}</span>{% endif %}
-</div><div><div class="tags">{% if professor.verificado %}<span class="tag tag--verified">Verificado</span>{% endif %}</div><h1>{{ professor.nome_exibicao }}</h1>{% if request.user.pk == professor.usuario_id %}<a class="profile-edit" href="{% url 'editar_perfil' %}">Editar perfil</a>{% endif %}<p class="profile__role">{% for disciplina in professor.disciplinas.all %}{{ disciplina.nome }}{% if not forloop.last %} · {% endif %}{% endfor %}</p><ul class="profile__stats"><li>{{ professor.nota_media|floatformat:1|default:"Sem nota" }} ({{ professor.total_avaliacoes }} avaliações)</li><li>{{ professor.aulas_realizadas }} aulas realizadas</li><li>{{ professor.total_materiais }} materiais</li></ul></div></div><div class="book">{% if request.user.aluno %}<form method="post" action="{% url 'mensagens_aluno' %}">{% csrf_token %}<input type="hidden" name="acao" value="nova"><input type="hidden" name="professor" value="{{ professor.pk }}"><button class="btn btn--primary btn--block" type="submit">Enviar mensagem</button></form>{% endif %}<p class="book__label">Valor por hora · {{ professor.modalidade }}</p><p class="book__price">R$ {{ professor.valor_hora|floatformat:2 }}</p><a class="btn btn--primary btn--block" href="#horarios">Consultar horários</a></div></div></section>
+</div><div><div class="tags">{% if professor.verificado %}<span class="tag tag--verified">Verificado</span>{% endif %}</div><h1>{{ professor.nome_exibicao }}</h1>{% if request.user.pk == professor.usuario_id %}<div class="profile-actions"><a class="profile-edit" href="{% url 'editar_perfil' %}">Editar perfil</a> · <a class="profile-edit" href="{% url 'redefinir_senha' %}">Redefinir senha</a></div>{% endif %}<p class="profile__role">{% for disciplina in professor.disciplinas.all %}{{ disciplina.nome }}{% if not forloop.last %} · {% endif %}{% endfor %}</p><ul class="profile__stats"><li>{{ professor.nota_media|floatformat:1|default:"Sem nota" }} ({{ professor.total_avaliacoes }} avaliações)</li><li>{{ professor.aulas_realizadas }} aulas realizadas</li><li>{{ professor.total_materiais }} materiais</li></ul></div></div><div class="book">{% include 'includes/favorito_botao.html' %}{% if request.user.aluno %}<form method="post" action="{% url 'mensagens_aluno' %}">{% csrf_token %}<input type="hidden" name="acao" value="nova"><input type="hidden" name="professor" value="{{ professor.pk }}"><button class="btn btn--primary btn--block" type="submit">Enviar mensagem</button></form>{% endif %}<p class="book__label">Valor por hora · {{ professor.modalidade }}</p><p class="book__price">R$ {{ professor.valor_hora|floatformat:2 }}</p><a class="btn btn--primary btn--block" href="#horarios">Consultar horários</a></div></div></section>
 <div class="wrap layout"><div class="content"><section class="section about"><p class="eyebrow">Sobre</p><h2 class="title">Conheça {{ professor.nome_exibicao }}</h2><p>{{ professor.bio|linebreaksbr|default:"Biografia não informada." }}</p></section>
 <section class="section" id="materiais"><h2 class="title">Materiais publicados</h2><div class="materials">{% for material in materiais %}<article class="material"><p class="material__kind">{{ material.get_tipo_display }}</p><h3>{{ material.titulo }}</h3><p>{{ material.descricao }}</p><div class="material__foot"><a href="{{ material.url }}" rel="noopener noreferrer">Abrir material</a><span>{{ material.data_publicacao|date:"d/m/Y" }}</span></div></article>{% empty %}<p>Nenhum material publicado.</p>{% endfor %}</div></section>
 <section class="section"><h2 class="title">Avaliações das aulas</h2><div class="reviews">{% for avaliacao in avaliacoes %}<article class="review"><div class="review__head"><strong>{{ avaliacao.aula.aluno.usuario.first_name|default:"Estudante" }}</strong><span>{{ avaliacao.nota }}/5</span></div><p class="review__meta">{{ avaliacao.aula.disciplina.nome }} · {{ avaliacao.data|date:"d/m/Y" }}</p><blockquote>{{ avaliacao.comentario }}</blockquote></article>{% empty %}<p>Nenhuma avaliação disponível.</p>{% endfor %}</div></section></div>
@@ -51,6 +44,4 @@
       <span>Aprenda com quem entende de verdade.</span>
     </div>
   </footer>
-
-</body>
-</html>
+{% endblock %}

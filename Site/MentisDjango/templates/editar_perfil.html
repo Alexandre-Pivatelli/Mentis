@@ -2,11 +2,11 @@
 {% load static %}
 {% block page_head %}
   <title>Mentis - Editar Perfil</title>
-  <link rel="stylesheet" href="{% static 'css/login.css' %}">
-  <link rel="stylesheet" href="{% static 'css/editar_perfil.css' %}">
-  <link rel="stylesheet" href="{% static 'css/formularios.css' %}">
-  <script src="{% static 'js/auth.js' %}" defer></script>
-  <script src="{% static 'js/editar_perfil.js' %}?v=2" defer></script>
+  <link rel="stylesheet" href="{% static 'css/login.css' %}?v=themes-2">
+  <link rel="stylesheet" href="{% static 'css/editar_perfil.css' %}?v=themes-2">
+  <link rel="stylesheet" href="{% static 'css/formularios.css' %}?v=themes-2">
+  <script src="{% static 'js/auth.js' %}?v=themes-2" defer></script>
+  <script src="{% static 'js/editar_perfil.js' %}?v=themes-2" defer></script>
 {% endblock %}
 {% block content %}
 <main class="container">
@@ -22,7 +22,11 @@
       {% include 'includes/form_field.html' with field=form.email %}
       {% include 'includes/form_field.html' with field=form.bio %}
       <p class="field-help" data-session-message role="status" aria-live="polite" hidden></p>
-      <div class="button-group"><button type="submit" class="submit-btn">Salvar Alterações</button><a href="{{ perfil_url }}" class="cancel-btn">Cancelar</a></div>
+      <div class="button-group">
+        <button type="submit" class="submit-btn">Salvar Alterações</button>
+        <a href="{% url 'redefinir_senha' %}" class="cancel-btn">Redefinir senha</a>
+        <a href="{{ perfil_url }}" class="cancel-btn">Cancelar</a>
+      </div>
     </form>
   </section>
   <section class="brand-section" aria-label="Mentis"><div class="brand-content"><div class="big-logo-icon"><img src="{% static 'img/logo-b.png' %}" id="logo-branco" alt="Mentis"></div><h2 class="brand-title">MENTIS</h2></div></section>
