@@ -73,10 +73,14 @@ html[data-theme='dark'] {
   --verde-claro: #193d38;
 }
 html { background: var(--page); scrollbar-color: var(--separator) var(--page); }
+body { background: var(--page); color: var(--foreground); }
 ::selection { background: var(--selection); color: var(--foreground); }
 input, textarea, select { caret-color: var(--accent); accent-color: var(--action); }
 input::placeholder, textarea::placeholder { color: var(--secondary); opacity: 1; }
 :focus-visible { outline-color: var(--focus); }
+.mentis-header { background: var(--page); border-bottom-color: var(--separator); color: var(--foreground); }
+.mentis-header__auth { color: var(--accent); }
+.mentis-header__auth .mentis-header__signup { border-color: var(--separator); }
 .mentis-header__auth .theme-toggle {
   display: inline-flex; align-items: center; gap: 7px; min-height: 44px;
   padding: 8px 10px; border: 1px solid var(--separator); border-radius: 10px;
@@ -87,9 +91,74 @@ input::placeholder, textarea::placeholder { color: var(--secondary); opacity: 1;
 [data-theme='dark'] .theme-toggle__moon { display: none; }
 [data-theme='dark'] .theme-toggle__sun { display: block; }
 [data-theme='dark'] .mentis-header__logo img { filter: brightness(0) invert(1); }
+[data-theme='dark'] .search { background: var(--surface); border-color: var(--separator); }
+[data-theme='dark'] .search input[type='search'] { color: var(--foreground); }
+[data-theme='dark'] .chip { background: var(--surface-subtle); color: var(--accent); border-color: var(--separator); }
+[data-theme='dark'] .chip:hover { background: var(--surface-hover); color: var(--foreground); }
+[data-theme='dark'] .chip.is-selected { background: var(--action); color: #fff; border-color: var(--action); }
+[data-theme='dark'] .carousel__arrow { background: var(--surface); border-color: var(--separator); color: var(--accent); }
+[data-theme='dark'] .carousel__arrow:disabled { background: var(--page); color: var(--secondary); opacity: .5; }
 [data-theme='dark'] .site-review__comment { color: var(--foreground); }
+[data-theme='dark'] .site-reviews__write { background: var(--surface); border-color: var(--separator); color: var(--foreground); }
+[data-theme='dark'] .site-reviews__write textarea { background: var(--page); border-color: var(--separator); color: var(--foreground); }
+[data-theme='dark'] .site-reviews__score #id_nota label { background: var(--surface-subtle); border-color: var(--separator); color: var(--foreground); }
+[data-theme='dark'] .site-reviews__score label:has(input:checked) { background: var(--action) !important; border-color: var(--accent) !important; color: #fff !important; }
 [data-theme='dark'] .outside-month { color: var(--secondary); }
-[data-theme='dark'] .site-reviews__score label:has(input:checked) { border-color: var(--accent) !important; }
+[data-theme='dark'] .cta { background: var(--surface-subtle); border: 1px solid var(--separator); color: var(--foreground); }
+[data-theme='dark'] .cta .btn--white { background: var(--action); color: #fff; border-color: transparent; }
+[data-theme='dark'] .cta .btn--white:hover { background: var(--action-hover); }
+[data-theme='dark'] .cta .btn--outline { background: transparent; color: var(--foreground); border-color: var(--separator); }
+[data-theme='dark'] .cta .btn--outline:hover { background: var(--surface-hover); }
+[data-theme='dark'] .book { background: var(--surface); border: 1px solid var(--separator); box-shadow: 0 14px 40px rgb(0 0 0 / 35%); }
+[data-theme='dark'] .schedule { background: var(--surface-subtle); border: 1px solid var(--separator); box-shadow: 0 18px 40px rgb(0 0 0 / 35%); color: var(--foreground); }
+[data-theme='dark'] .schedule li { border-bottom-color: var(--separator); }
+[data-theme='dark'] .profile.perfil-card,
+[data-theme='dark'] .profile--estudante,
+[data-theme='dark'] .review,
+[data-theme='dark'] .resumo__item,
+[data-theme='dark'] .aula,
+[data-theme='dark'] .teacher-result,
+[data-theme='dark'] .material,
+[data-theme='dark'] .cert,
+[data-theme='dark'] .rating-card {
+  background: var(--surface);
+  border-color: var(--separator);
+  box-shadow: 0 8px 28px rgb(0 0 0 / 28%);
+}
+[data-theme='dark'] .review,
+[data-theme='dark'] .resumo__item,
+[data-theme='dark'] .aula,
+[data-theme='dark'] .profile.perfil-card,
+[data-theme='dark'] .profile--estudante {
+  border: 1px solid var(--separator);
+}
+[data-theme='dark'] .directory-filters {
+  background: var(--surface);
+  border: 1px solid var(--separator);
+}
+[data-theme='dark'] .directory-filters input,
+[data-theme='dark'] .directory-filters select {
+  background: var(--page);
+  border-color: var(--separator);
+  color: var(--foreground);
+}
+[data-theme='dark'] .directory-filters select option,
+[data-theme='dark'] select option {
+  background: var(--surface);
+  color: var(--foreground);
+}
+[data-theme='dark'] .perfil-card__tags li {
+  background: var(--surface-subtle);
+  border-color: var(--separator);
+  color: var(--accent);
+}
+[data-theme='dark'] .perfil-aluno-page .review {
+  padding: 18px 22px;
+  border-radius: 20px;
+}
+[data-theme='dark'] .perfil-aluno-page .review + .review {
+  margin-top: 12px;
+}
 .mentis-header a[aria-current='page'] { color: var(--accent); font-weight: 600; text-decoration: underline; text-underline-offset: 6px; }
 .site-notices { padding: 12px 20px; background: var(--success-bg); color: var(--success); font: 500 .9rem/1.6 'Poppins', sans-serif; }
 .site-notices p { margin: 0; }

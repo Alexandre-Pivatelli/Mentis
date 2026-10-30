@@ -18,7 +18,7 @@
   font-size: 13px;
   font-weight: 500;
   margin-bottom: 5px;
-  color: #333;
+  color: var(--foreground, #333);
 }
 
 .input-group input[type="text"],
@@ -27,12 +27,12 @@
 .input-group select {
   width: 100%;
   padding: 10px 16px;
-  border: 1px solid #dcdcdc;
+  border: 1px solid var(--separator, #dcdcdc);
   border-radius: 20px;
   font-size: 14px;
   outline: none;
-  background-color: #fff;
-  color: #333;
+  background-color: var(--surface, #fff);
+  color: var(--foreground, #333);
   transition: border-color 0.2s;
 }
 
@@ -42,20 +42,20 @@
 
 .input-group input:focus,
 .input-group select:focus {
-  border-color: #6a35d9;
+  border-color: var(--accent, #6a35d9);
 }
 
 /* Tratamento das mensagens de erro do Django */
 .form-errors,
 .field-error {
-  color: #d93025;
+  color: var(--danger, #d93025);
   font-size: 12px;
   margin-top: 4px;
 }
 
 .form-errors {
   margin-bottom: 12px;
-  background-color: #fce8e6;
+  background-color: var(--danger-bg, #fce8e6);
   padding: 8px 12px;
   border-radius: 10px;
 }
@@ -68,12 +68,12 @@
 .login-text {
   text-align: center;
   font-size: 13px;
-  color: #333;
+  color: var(--foreground, #333);
   margin-top: 10px;
 }
 
 .login-text a {
-  color: #6a35d9;
+  color: var(--accent, #6a35d9);
   text-decoration: none;
   font-weight: 600;
 }

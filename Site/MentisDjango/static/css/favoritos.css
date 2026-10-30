@@ -17,7 +17,7 @@
 .book > .favorite-form .favorite-button { width: 100%; }
 .favorite-feedback { position: fixed; z-index: 100; inset: auto 20px 20px auto; max-width: min(440px, calc(100% - 40px)); margin: 0; padding: 16px 20px; border-radius: 12px; background: var(--foreground); color: var(--page); box-shadow: 0 6px 24px rgb(0 0 0 / 18%); font: 500 .875rem/1.6 'Poppins', sans-serif; }
 .favorite-feedback:empty { display: none; }
-.teacher-directory { max-width: 1200px; margin: 20px auto 64px; color: var(--foreground); font-family: 'Poppins', sans-serif; }
+.teacher-directory { width: min(100% - 40px, 1200px); margin: 20px auto 64px; color: var(--foreground); font-family: 'Poppins', sans-serif; }
 .teacher-directory *, .teacher-directory *::before, .teacher-directory *::after { box-sizing: border-box; }
 .directory-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; margin-bottom: 32px; }
 .directory-heading h1 { margin: 0; font-size: clamp(1.8rem, 3vw, 2.5rem); letter-spacing: -.025em; line-height: 1.25; }

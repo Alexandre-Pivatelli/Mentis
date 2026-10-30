@@ -1,17 +1,17 @@
 .sobre-page {
-  --roxo: #7c3aed;
-  --roxo-escuro: #5b21b6;
-  --roxo-claro: #ede9fe;
+  --roxo: var(--accent, #7c3aed);
+  --roxo-escuro: var(--accent-hover, #5b21b6);
+  --roxo-claro: var(--surface-subtle, #ede9fe);
   --rosa: #ec4899;
   --rosa-claro: #fce7f3;
   --amarelo: #f59e0b;
-  --amarelo-claro: #fef3c7;
+  --amarelo-claro: var(--warning-bg, #fef3c7);
   --verde: #14b8a6;
   --verde-claro: #ccfbf1;
-  --texto: #1e1b4b;
-  --texto-suave: #6b6890;
-  --fundo: #ffffff;
-  --fundo-suave: #faf8ff;
+  --texto: var(--foreground, #1e1b4b);
+  --texto-suave: var(--secondary, #6b6890);
+  --fundo: var(--surface, #ffffff);
+  --fundo-suave: var(--page, #faf8ff);
   --raio: 20px;
 
   margin: 0;
@@ -19,6 +19,11 @@
   color: var(--texto);
   background: var(--fundo);
   line-height: 1.6;
+}
+
+html[data-theme='dark'] .sobre-page {
+  --rosa-claro: #45243e;
+  --verde-claro: #193d38;
 }
 
 .sobre-page main *,
@@ -49,7 +54,7 @@
   font-weight: 600;
   text-decoration: none;
   background: #fff;
-  color: var(--roxo-escuro);
+  color: #5b21b6;
   box-shadow: 0 8px 24px rgba(30, 27, 75, 0.18);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -72,14 +77,14 @@
 }
 
 .sobre-botao--branco {
-  color: var(--roxo);
+  color: #7c3aed;
 }
 
 .sobre-hero {
   position: relative;
   overflow: hidden;
   padding: 100px 0 150px;
-  background: linear-gradient(135deg, var(--roxo-escuro) 0%, var(--roxo) 55%, #a855f7 100%);
+  background: linear-gradient(135deg, #5b21b6 0%, #7c3aed 55%, #a855f7 100%);
   color: #fff;
   text-align: center;
 }
@@ -162,7 +167,7 @@
 }
 
 .sobre-destaque {
-  background: #fff;
+  background: var(--fundo);
   border-radius: var(--raio);
   padding: 28px;
   box-shadow: 0 12px 32px rgba(91, 33, 182, 0.12);
@@ -239,11 +244,11 @@
 }
 
 .sobre-publico--aluno {
-  background: linear-gradient(135deg, var(--roxo-claro), #f5f3ff);
+  background: linear-gradient(135deg, var(--roxo-claro), var(--fundo-suave, #f5f3ff));
 }
 
 .sobre-publico--professor {
-  background: linear-gradient(135deg, var(--amarelo-claro), #fff7ed);
+  background: linear-gradient(135deg, var(--amarelo-claro), var(--fundo-suave, #fff7ed));
 }
 
 .sobre-publico__tag {
@@ -256,7 +261,7 @@
   margin-bottom: 16px;
 }
 
-.sobre-publico--aluno .sobre-publico__tag { background: var(--roxo); }
+.sobre-publico--aluno .sobre-publico__tag { background: var(--action, #7c3aed); }
 .sobre-publico--professor .sobre-publico__tag { background: var(--amarelo); }
 
 .sobre-publico h3 {
@@ -278,7 +283,7 @@
 }
 
 .sobre-passo {
-  background: #fff;
+  background: var(--fundo);
   border-radius: var(--raio);
   padding: 32px 28px;
   text-align: center;
@@ -308,7 +313,7 @@
   margin-bottom: 18px;
 }
 
-.sobre-passo__numero--roxo { background: var(--roxo); box-shadow: 0 0 0 8px var(--roxo-claro); }
+.sobre-passo__numero--roxo { background: var(--action, #7c3aed); box-shadow: 0 0 0 8px var(--roxo-claro); }
 .sobre-passo__numero--rosa { background: var(--rosa); box-shadow: 0 0 0 8px var(--rosa-claro); }
 .sobre-passo__numero--amarelo { background: var(--amarelo); box-shadow: 0 0 0 8px var(--amarelo-claro); }
 
@@ -362,7 +367,7 @@
   border-radius: 28px;
   text-align: center;
   color: #fff;
-  background: linear-gradient(120deg, var(--roxo-escuro), var(--roxo) 50%, var(--rosa));
+  background: linear-gradient(120deg, #5b21b6, #7c3aed 50%, var(--rosa));
   box-shadow: 0 20px 40px rgba(124, 58, 237, 0.25);
 }
 

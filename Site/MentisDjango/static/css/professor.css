@@ -81,11 +81,11 @@ button:focus-visible {
 }
 
 .btn--primary {
-  background: var(--brand);
+  background: var(--action, var(--brand));
 }
 
 .btn--primary:hover {
-  background: var(--brand-dark);
+  background: var(--action-hover, var(--brand-dark));
 }
 
 .btn--green {
@@ -115,7 +115,7 @@ button:focus-visible {
 
 /* ========== HEADER ========== */
 .header {
-  background: #fff;
+  background: var(--surface, #fff);
   border-bottom: 1px solid var(--line);
 }
 
@@ -162,7 +162,7 @@ button:focus-visible {
 /* ========== HERO ========== */
 .hero {
   background: var(--hero);
-  border-bottom: 1px solid #DDD5F7;
+  border-bottom: 1px solid var(--line, #DDD5F7);
 }
 
 .hero__in {
@@ -214,7 +214,7 @@ button:focus-visible {
 }
 
 .tag--verified {
-  background: var(--brand);
+  background: var(--action, var(--brand));
 }
 
 .tag--highlight {
@@ -261,7 +261,7 @@ button:focus-visible {
 .book {
   padding: 22px;
   border-radius: 20px;
-  background: #fff;
+  background: var(--surface, #fff);
   box-shadow: 0 14px 40px rgba(74, 27, 176, 0.15);
 }
 
@@ -336,7 +336,7 @@ button:focus-visible {
 .about p {
   margin-top: 16px;
   line-height: 1.7;
-  color: #4A4657;
+  color: var(--foreground, #4A4657);
 }
 
 .about .title + p {
@@ -352,10 +352,10 @@ button:focus-visible {
 
 .chips li {
   padding: 6px 14px;
-  border: 1px solid #DDD6EF;
+  border: 1px solid var(--line, #DDD6EF);
   border-radius: 999px;
   background: var(--chip);
-  color: #4A4657;
+  color: var(--foreground, #4A4657);
   font-size: 0.8rem;
   font-weight: 500;
 }
@@ -375,7 +375,7 @@ button:focus-visible {
   padding: 20px;
   border: 1px solid var(--line);
   border-radius: 18px;
-  background: #fff;
+  background: var(--surface, #fff);
   box-shadow: 0 2px 10px rgba(74, 27, 176, 0.04);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
@@ -412,7 +412,7 @@ button:focus-visible {
 }
 
 .badge--sub {
-  background: var(--brand);
+  background: var(--action, var(--brand));
 }
 
 .material__kind {
@@ -464,7 +464,7 @@ button:focus-visible {
 }
 
 .stars .off {
-  color: #D9D4E6;
+  color: var(--separator, #D9D4E6);
 }
 
 .rating-card {
@@ -476,7 +476,7 @@ button:focus-visible {
   padding: 24px 32px;
   border: 1px solid var(--line);
   border-radius: 18px;
-  background: #fff;
+  background: var(--surface, #fff);
 }
 
 .rating-card__score {
@@ -525,7 +525,7 @@ button:focus-visible {
 .bar {
   height: 8px;
   border-radius: 999px;
-  background: #EEEAF7;
+  background: var(--surface-subtle, #EEEAF7);
   overflow: hidden;
 }
 
@@ -547,7 +547,7 @@ button:focus-visible {
   padding: 18px 20px;
   border: 1px solid var(--line);
   border-radius: 18px;
-  background: #fff;
+  background: var(--surface, #fff);
 }
 
 .review__head {
@@ -575,7 +575,7 @@ button:focus-visible {
   margin-top: 12px;
   font-size: 0.9rem;
   line-height: 1.55;
-  color: #4A4657;
+  color: var(--foreground, #4A4657);
 }
 
 /* ========== SIDEBAR ========== */
@@ -593,7 +593,7 @@ button:focus-visible {
   padding: 16px 18px;
   border: 1px solid var(--line);
   border-radius: 16px;
-  background: #fff;
+  background: var(--surface, #fff);
 }
 
 .cert .i {
@@ -626,7 +626,7 @@ button:focus-visible {
   margin-top: 28px;
   padding: 22px;
   border-radius: 20px;
-  background: var(--brand);
+  background: var(--action, var(--brand));
   box-shadow: 0 18px 40px rgba(74, 27, 176, 0.35);
   color: #fff;
 }
@@ -664,7 +664,7 @@ button:focus-visible {
 /* ========== FOOTER ========== */
 .footer {
   border-top: 1px solid var(--line);
-  background: #fff;
+  background: var(--surface, #fff);
 }
 
 .footer__in {

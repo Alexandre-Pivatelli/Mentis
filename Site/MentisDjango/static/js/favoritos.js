@@ -16,7 +16,7 @@
     error.hidden = true;
     form.setAttribute('aria-busy', 'true');
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 10000);
+    const requestTimeout = setTimeout(() => controller.abort(), 10000);
     try {
       const response = await fetch(form.action, {
         method: 'POST', body: new FormData(form), credentials: 'same-origin', signal: controller.signal,
@@ -45,7 +45,7 @@
       error.textContent = 'Não foi possível salvar. Verifique sua conexão, atualize a página e tente novamente.';
       error.hidden = false;
     } finally {
-      clearTimeout(timeout);
+      clearTimeout(requestTimeout);
       form.removeAttribute('aria-busy');
       related.forEach(item => { item.querySelector('button').disabled = false; });
     }
