@@ -114,8 +114,8 @@
         <a href="{% url 'principal' %}#resultados" class="btn btn--white">Encontrar um professor</a>
         {% if request.user.professor %}<a href="{% url 'professor_detalhe' request.user.pk %}" class="btn btn--outline">Meu perfil</a>{% else %}<a href="{% url 'perfil_aluno' %}" class="btn btn--outline">Meu perfil</a>{% endif %}
         {% else %}
-        <a href="{% url 'cadastro' %}" class="btn btn--white" style = "color:white; background-color: #4A1BB0; border-width: 2px; border-color: white; ">Começar como estudante</a>
-        <a href="{% url 'cadastro' %}?tipo=professor" class="btn btn--outline" style = " border-width: 2px; border-color: white; border-radius: 10px; ">Sou professor</a>
+        <a href="{% url 'cadastro' %}" class="btn btn--white" style = "color:#4A1BB0; background-color: white; border-width: 5px; border-color: white; border-radius: 20px; ">Começar como estudante</a>
+        <a href="{% url 'cadastro' %}?tipo=professor" class="btn btn--outline" style = "color:#4A1BB0; background-color: white; border-width: 5px; border-color: white; border-radius: 20px; ">Sou professor</a>
         {% endif %}
       </div>
     </section>
