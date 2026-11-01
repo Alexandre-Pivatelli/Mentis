@@ -1,0 +1,11 @@
+<article class="teacher-result">
+  <a class="teacher-result__identity" href="{% url 'professor_detalhe' professor.pk %}">
+    {% if professor.usuario.foto %}<img class="teacher-result__avatar" src="{{ professor.usuario.foto.url }}" alt="" loading="lazy">{% else %}<span class="teacher-result__avatar teacher-result__initials" aria-hidden="true">{{ professor.iniciais }}</span>{% endif %}
+    <div><h2>{{ professor.nome_exibicao }}</h2><p class="teacher-result__subjects">{% for disciplina in professor.disciplinas.all %}{{ disciplina.nome }}{% if not forloop.last %} · {% endif %}{% empty %}Professor particular{% endfor %}</p></div>
+  </a>
+  <p class="teacher-result__bio">{{ professor.bio|default:'Conheça o perfil para saber mais sobre as aulas deste professor.'|truncatechars:180 }}</p>
+  <p class="teacher-result__meta">{{ professor.modalidade }}{% if professor.verificado %} · Verificado{% endif %}</p>
+  <p class="teacher-result__rating">{% if professor.nota_media != None %}{{ professor.nota_media|floatformat:1 }}/5 · {{ professor.total_avaliacoes }} {% if professor.total_avaliacoes == 1 %}avaliação{% else %}avaliações{% endif %}{% else %}Ainda sem avaliações{% endif %}</p>
+  <div class="teacher-result__footer"><strong>R$ {{ professor.valor_hora|floatformat:2 }} <span>/ hora</span></strong>{% include 'includes/favorito_botao.html' %}</div>
+  <a class="teacher-result__profile" href="{% url 'professor_detalhe' professor.pk %}">Ver perfil e horários</a>
+</article>

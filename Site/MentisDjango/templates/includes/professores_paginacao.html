@@ -1,0 +1,7 @@
+{% if professores.has_other_pages %}
+<nav class="directory-pagination" aria-label="Páginas de professores">
+  {% if professores.has_previous %}<a href="?q={{ busca|urlencode }}&amp;disciplina={{ disciplina_selecionada|urlencode }}&amp;tipo={{ tipo_selecionado|default:''|urlencode }}&amp;page={{ professores.previous_page_number }}">Anterior</a>{% endif %}
+  <span>Página {{ professores.number }} de {{ professores.paginator.num_pages }}</span>
+  {% if professores.has_next %}<a href="?q={{ busca|urlencode }}&amp;disciplina={{ disciplina_selecionada|urlencode }}&amp;tipo={{ tipo_selecionado|default:''|urlencode }}&amp;page={{ professores.next_page_number }}">Próxima</a>{% endif %}
+</nav>
+{% endif %}

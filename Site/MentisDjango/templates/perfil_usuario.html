@@ -1,25 +1,17 @@
+{% extends "base.html" %}
 {% load static aluno_extras %}
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% block page_head %}
   <title>Mentis – Perfil do aluno</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  
-  <link rel="stylesheet" href="{% static 'css/perfil_aluno.css' %}">
-<link rel="stylesheet" href="{% static 'css/dados.css' %}">
-  <link rel="stylesheet" href="{% static 'css/header.css' %}">
-  <link rel="stylesheet" href="{% static 'css/card_perfil_aluno.css' %}?v=4">
-  <link rel="stylesheet" href="{% static 'css/area_estudante.css' %}?v=1">
-</head>
-<body class="perfil-aluno-page">
-
-  <!-- HEADER -->
-  {% include 'includes/header.html' %}
-
+  <link rel="stylesheet" href="{% static 'css/perfil_aluno.css' %}?v=themes-2">
+  <link rel="stylesheet" href="{% static 'css/dados.css' %}?v=themes-2">
+  <link rel="stylesheet" href="{% static 'css/card_perfil_aluno.css' %}?v=themes-2">
+  <link rel="stylesheet" href="{% static 'css/area_estudante.css' %}?v=themes-2">
+{% endblock %}
+{% block body_class %}perfil-aluno-page{% endblock %}
+{% block content %}
 {% include 'includes/navegacao_aluno.html' with active='sobre' %}
 <main class="page">
 {% if aluno %}
@@ -51,7 +43,11 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-7"/><path d="m16 3 5 5M10 14l-1 4 4-1 9-9-5-5-9 9Z"/></svg>
       Editar perfil
     </a>
+    <a class="perfil-card__password" href="{% url 'redefinir_senha' %}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></svg>
+      Redefinir senha
+    </a>
   </div>
 </aside>
 {% else %}<section class="content"><h1>Perfil do aluno</h1><p>Sua conta ainda não possui um perfil de aluno cadastrado.</p></section>{% endif %}
-</main></body></html>
+</main>{% endblock %}

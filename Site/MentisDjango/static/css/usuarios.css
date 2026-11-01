@@ -24,8 +24,8 @@
       justify-content: space-between;
       padding: 0 48px;
       height: 72px;
-      background: #fff;
-      box-shadow: 0 1px 0 #E8E3F5;
+      background: var(--surface, #fff);
+      box-shadow: 0 1px 0 var(--separator, #E8E3F5);
     }
 
     .logo {
@@ -85,12 +85,12 @@
 
     .search-wrap input {
       padding: 10px 16px 10px 40px;
-      border: 2px solid #E8E3F5;
+      border: 2px solid var(--separator, #E8E3F5);
       border-radius: 50px;
       font-family: 'Poppins', sans-serif;
       font-size: 0.85rem;
       color: var(--text);
-      background: #fff;
+      background: var(--surface, #fff);
       outline: none;
       width: 260px;
       transition: border-color .2s;
@@ -100,7 +100,7 @@
 
     .btn-add {
       padding: 10px 22px;
-      background: var(--purple);
+      background: var(--action, var(--purple));
       color: #fff;
       border: none;
       border-radius: 50px;
@@ -111,13 +111,13 @@
       transition: background .2s;
     }
 
-    .btn-add:hover { background: var(--purple-dark); }
+    .btn-add:hover { background: var(--action-hover, var(--purple-dark)); }
 
     /* TABELA */
     .table-wrap {
-      background: #fff;
+      background: var(--surface, #fff);
       border-radius: var(--radius);
-      border: 1.5px solid #EEE9FA;
+      border: 1.5px solid var(--separator, #EEE9FA);
       overflow: hidden;
     }
 
@@ -141,11 +141,11 @@
     }
 
     tbody tr {
-      border-top: 1px solid #F0EBF8;
+      border-top: 1px solid var(--separator, #F0EBF8);
       transition: background .15s;
     }
 
-    tbody tr:hover { background: #FAFAFF; }
+    tbody tr:hover { background: var(--surface-hover, #FAFAFF); }
 
     tbody td {
       padding: 16px 20px;
@@ -192,18 +192,18 @@
     }
 
     .badge--aluno {
-      background: #E6F7F0;
-      color: #15803D;
+      background: var(--success-bg, #E6F7F0);
+      color: var(--success, #15803D);
     }
 
     .badge--ativo {
-      background: #E6F7F0;
-      color: #15803D;
+      background: var(--success-bg, #E6F7F0);
+      color: var(--success, #15803D);
     }
 
     .badge--inativo {
-      background: #FEE2E2;
-      color: #DC2626;
+      background: var(--danger-bg, #FEE2E2);
+      color: var(--danger, #DC2626);
     }
 
     /* AÇÕES */
@@ -216,8 +216,8 @@
       width: 34px;
       height: 34px;
       border-radius: 50%;
-      border: 1.5px solid #E8E3F5;
-      background: #fff;
+      border: 1.5px solid var(--separator, #E8E3F5);
+      background: var(--surface, #fff);
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -227,7 +227,7 @@
     }
 
     .btn-icon:hover { border-color: var(--purple); color: var(--purple); background: var(--lavender); }
-    .btn-icon.delete:hover { border-color: #DC2626; color: #DC2626; background: #FEE2E2; }
+    .btn-icon.delete:hover { border-color: var(--danger, #DC2626); color: var(--danger, #DC2626); background: var(--danger-bg, #FEE2E2); }
 
     /* RODAPÉ DA TABELA */
     .table-footer {
@@ -235,7 +235,7 @@
       align-items: center;
       justify-content: space-between;
       padding: 16px 20px;
-      border-top: 1px solid #F0EBF8;
+      border-top: 1px solid var(--separator, #F0EBF8);
       font-size: 0.8rem;
       color: var(--muted);
     }
@@ -249,8 +249,8 @@
       width: 32px;
       height: 32px;
       border-radius: 50%;
-      border: 1.5px solid #E8E3F5;
-      background: #fff;
+      border: 1.5px solid var(--separator, #E8E3F5);
+      background: var(--surface, #fff);
       font-family: 'Poppins', sans-serif;
       font-size: 0.8rem;
       font-weight: 600;
@@ -264,8 +264,8 @@
 
     .page-btn:hover,
     .page-btn.active {
-      background: var(--purple);
-      border-color: var(--purple);
+      background: var(--action, var(--purple));
+      border-color: var(--action, var(--purple));
       color: #fff;
     }
 

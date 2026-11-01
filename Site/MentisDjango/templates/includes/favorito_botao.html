@@ -1,0 +1,12 @@
+{% if request.user.aluno and request.user.pk != professor.pk %}
+<form class="favorite-form" method="post" action="{% url 'favorito_professor' professor.pk %}" data-favorite-form data-professor-id="{{ professor.pk }}">
+  {% csrf_token %}
+  <input type="hidden" name="next" value="{{ request.get_full_path }}">
+  <input type="hidden" name="acao" value="{% if professor.favorito %}remover{% else %}adicionar{% endif %}">
+  <button class="favorite-button" type="submit" aria-pressed="{{ professor.favorito|yesno:'true,false' }}" aria-label="{% if professor.favorito %}Remover {{ professor.nome_exibicao }} dos favoritos{% else %}Favoritar {{ professor.nome_exibicao }}{% endif %}" data-favorite-name="{{ professor.nome_exibicao }}">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/></svg>
+    <span data-favorite-label>{% if professor.favorito %}Favoritado{% else %}Favoritar{% endif %}</span>
+  </button>
+  <p class="favorite-error" role="alert" hidden></p>
+</form>
+{% endif %}

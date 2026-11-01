@@ -4,9 +4,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{% static 'css/header.css' %}?v=themes-2">
+  <link rel="stylesheet" href="{% static 'css/fotos_perfil.css' %}?v=themes-2">
   {% block page_head %}{% endblock %}
-  <link rel="stylesheet" href="{% static 'css/header.css' %}">
-  <link rel="stylesheet" href="{% static 'css/fotos_perfil.css' %}?v=3">
+  {% include 'includes/tema.html' %}
 </head>
 <body class="{% block body_class %}{% endblock %}">
   {% include 'includes/header.html' %}

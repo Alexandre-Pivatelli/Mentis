@@ -1,0 +1,18 @@
+{% extends 'area_estudante.html' %}
+{% block title %}Meus professores favoritos – Mentis{% endblock %}
+{% block student_content %}
+{% include 'includes/navegacao_aluno.html' with active='favoritos' %}
+<section class="teacher-directory" data-favorites-page aria-labelledby="favorites-title">
+  <header class="directory-heading"><div><h1 id="favorites-title">Seus professores favoritos</h1><p>{{ total_favoritos }} professor{{ total_favoritos|pluralize:'es' }} salvo{{ total_favoritos|pluralize }} para encontrar de novo, quando precisar.</p></div><a class="directory-action" href="{% url 'professores' %}">Explorar professores</a></header>
+  {% if total_favoritos %}{% include 'includes/professores_filtros.html' %}{% endif %}
+  {% if professores %}
+  <p class="directory-count" role="status">{{ professores.paginator.count }} professor{{ professores.paginator.count|pluralize:'es' }}{% if busca or disciplina_selecionada %} encontrado{{ professores.paginator.count|pluralize }} nos favoritos{% endif %}</p>
+  <div class="teacher-grid">{% for professor in professores %}{% include 'includes/professor_card.html' %}{% endfor %}</div>
+  {% include 'includes/professores_paginacao.html' %}
+  {% elif total_favoritos %}
+  <div class="directory-empty"><h2>Nenhum favorito com esses filtros</h2><p>Tente outro nome ou disciplina para encontrar um professor salvo.</p><a class="directory-action" href="{% url 'favoritos_aluno' %}">Limpar filtros</a></div>
+  {% else %}
+  <div class="directory-empty"><svg class="directory-empty__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/></svg><h2>Seus próximos professores, por perto</h2><p>Toque em “Favoritar” na busca ou no perfil de um professor. Você poderá encontrar todos aqui.</p><a class="directory-action" href="{% url 'professores' %}">Encontrar professores</a></div>
+  {% endif %}
+</section>
+{% endblock %}

@@ -157,3 +157,39 @@ class CadastroLoginTests(TestCase):
         self.assertNotContains(response, 'value="UmaSenhaForte!9284"')
         response = self.client.get('/cadastro/?tipo=professor')
         self.assertEqual(response.context['form']['user_type'].value(), 'professor')
+
+    def test_redefinir_senha_logged_in_user(self):
+        user = Usuario.objects.create_user(username='maria', email='maria@example.com', password='UmaSenhaForte!9284')
+        Aluno.objects.create(usuario=user, nivel_estudo='MEDIO', serie='2º ano')
+        self.assertRedirects(self.client.get('/perfil/senha/'), '/login/?next=/perfil/senha/')
+        self.client.force_login(user)
+        response = self.client.get('/perfil/senha/')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Redefinir senha')
+        self.assertContains(response, '<header class="mentis-header"', count=1)
+        # Senha atual incorreta
+        response = self.client.post('/perfil/senha/', {
+            'old_password': 'Errada!123',
+            'new_password1': 'NovaSenhaForte!999',
+            'new_password2': 'NovaSenhaForte!999',
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('old_password', response.context['form'].errors)
+        # Senhas novas diferentes
+        response = self.client.post('/perfil/senha/', {
+            'old_password': 'UmaSenhaForte!9284',
+            'new_password1': 'NovaSenhaForte!999',
+            'new_password2': 'OutraSenhaForte!888',
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('new_password2', response.context['form'].errors)
+        # Sucesso mantendo a sessão ativa
+        response = self.client.post('/perfil/senha/', {
+            'old_password': 'UmaSenhaForte!9284',
+            'new_password1': 'NovaSenhaForte!999',
+            'new_password2': 'NovaSenhaForte!999',
+        })
+        self.assertRedirects(response, '/perfil-aluno/')
+        user.refresh_from_db()
+        self.assertTrue(user.check_password('NovaSenhaForte!999'))
+        self.assertEqual(int(self.client.session['_auth_user_id']), user.pk)

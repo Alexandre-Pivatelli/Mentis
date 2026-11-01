@@ -102,6 +102,20 @@ class Professor(models.Model):
         return str(self.usuario)
 
 
+class Favorito(models.Model):
+    aluno = models.ForeignKey(Aluno, on_delete=models.CASCADE, related_name='favoritos')
+    professor = models.ForeignKey(Professor, on_delete=models.CASCADE, related_name='favoritos')
+    criado_em = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-criado_em', '-pk']
+        constraints = [models.UniqueConstraint(
+            fields=['aluno', 'professor'], name='favorito_aluno_professor_unico')]
+
+    def __str__(self):
+        return f'{self.aluno} — {self.professor}'
+
+
 class Disponibilidade(models.Model):
     professor = models.ForeignKey(Professor, on_delete=models.CASCADE,
                                   related_name='disponibilidades')  # define 1 — 0..*
