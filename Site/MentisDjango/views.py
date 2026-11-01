@@ -19,7 +19,7 @@ from django.views.decorators.http import require_GET, require_POST, require_http
 from .auth_limits import permitir_tentativa
 from .forms import AvaliacaoSiteForm, CadastroForm, EditarPerfilForm, LoginForm, RedefinirSenhaForm
 from .models import (Aluno, Aula, Avaliacao, AvaliacaoSite, Disciplina,
-                     Material, Professor, StatusAula, Usuario)
+                     Favorito, Material, Professor, StatusAula, Usuario)
 
 
 DIAS = [(0, 'Segunda'), (1, 'Terça'), (2, 'Quarta'), (3, 'Quinta'),
