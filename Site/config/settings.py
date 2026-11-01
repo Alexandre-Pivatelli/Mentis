@@ -150,6 +150,7 @@ if DEBUG:
         'https://localhost:8000',
         'http://127.0.0.1:8000',
         'https://127.0.0.1:8000',
+        'https://*.app.github.dev',
     ]))
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = 'Lax'
