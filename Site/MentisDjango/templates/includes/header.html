@@ -4,8 +4,8 @@
   <nav class="mentis-header__nav" aria-label="Navegação principal">
     <a href="{% url 'principal' %}#disciplinas">Disciplinas</a>
     <a href="{% url 'principal' %}#resultados">Professores</a>
-    <a href="{% url 'professor' %}#materiais">Materiais</a>
-    <a href="{% url 'principal' %}#como-funciona">Informações</a>
+    <a href="{% url 'materiais' %}">Materiais</a>
+    <a href="{% url 'sobre' %}">Informações</a>
   </nav>
   <div class="mentis-header__auth">
     {% if request.user.is_authenticated %}
