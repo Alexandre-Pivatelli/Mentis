@@ -1,5 +1,7 @@
+from datetime import time
+
 from django.contrib import messages
-from django.contrib.auth import login, logout, update_session_auth_hash
+from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db import IntegrityError
@@ -17,7 +19,11 @@ from django.views.decorators.http import require_GET, require_POST, require_http
 from .auth_limits import permitir_tentativa
 from .forms import AvaliacaoSiteForm, CadastroForm, EditarPerfilForm, LoginForm, RedefinirSenhaForm
 from .models import (Aluno, Aula, Avaliacao, AvaliacaoSite, Disciplina,
-                     Favorito, Professor, StatusAula, Usuario)
+                     Favorito, Material, Professor, StatusAula, Usuario)
+
+
+DIAS = [(0, 'Segunda'), (1, 'Terça'), (2, 'Quarta'), (3, 'Quinta'),
+        (4, 'Sexta'), (5, 'Sábado'), (6, 'Domingo')]
 
 
 def professores_queryset(usuario=None):
@@ -38,6 +44,10 @@ def identificar(professor):
     professor.nome_exibicao = nome
     professor.iniciais = ''.join(parte[0] for parte in nome.split()[:2]).upper()
     return professor
+
+
+def _professor_logado(request):
+    return Professor.objects.filter(usuario=request.user).first()
 
 
 @never_cache
@@ -148,9 +158,14 @@ def professor_view(request, pk=None):
     professor = identificar(get_object_or_404(professores_queryset(request.user), pk=pk))
     avaliacoes = Avaliacao.objects.filter(aula__professor=professor).select_related(
         'aula__aluno__usuario', 'aula__disciplina').order_by('-data', '-pk')
-    return render(request, 'professor.html', {'professor': professor,
-        'materiais': professor.materiais.select_related('disciplina').order_by('-data_publicacao', '-pk')[:12],
-        'avaliacoes': avaliacoes[:10], 'disponibilidades': professor.disponibilidades.order_by('dia_semana', 'hora_inicio')})
+    eh_dono = request.user.is_authenticated and request.user.pk == professor.usuario_id
+    return render(request, 'professor.html', {
+        'professor': professor,
+        'eh_dono': eh_dono,
+        'materiais': professor.materiais.select_related('disciplina').order_by('-data_publicacao')[:12],
+        'avaliacoes': avaliacoes[:10],
+        'disponibilidades': professor.disponibilidades.order_by('dia_semana', 'hora_inicio'),
+    })
 
 
 @sensitive_post_parameters('password1', 'password2')
@@ -193,8 +208,10 @@ def sessao_perfil_view(request):
 @login_required(login_url='login')
 @require_http_methods(['GET', 'POST'])
 def editar_perfil_view(request):
-    perfil_url = (reverse('professor_detalhe', args=[request.user.pk])
-                  if hasattr(request.user, 'professor') else reverse('perfil_aluno'))
+    if hasattr(request.user, 'professor'):
+        perfil_url = reverse('professor_detalhe', args=[request.user.professor.pk])
+    else:
+        perfil_url = reverse('perfil_aluno')
     form = EditarPerfilForm(request.POST if request.method == 'POST' else None,
                             request.FILES if request.method == 'POST' else None, instance=request.user)
     if request.method == 'POST' and form.is_valid():
@@ -276,4 +293,127 @@ def avaliar_site_view(request):
     AvaliacaoSite.objects.update_or_create(usuario=request.user, defaults={
         'nota': form.cleaned_data['nota'], 'comentario': form.cleaned_data['comentario']})
     return redirect(reverse('principal') + '?avaliacao=salva#avaliacoes')
-    
+
+
+def sobre_view(request):
+    return render(request, 'sobre.html')
+
+
+def materiais_view(request):
+    aluno = None
+    materiais = []
+    if request.user.is_authenticated:
+        aluno = Aluno.objects.filter(usuario=request.user).first()
+        if aluno:
+            materiais = (Material.objects.filter(professor__aulas__aluno=aluno)
+                         .select_related('professor__usuario', 'disciplina')
+                         .distinct()
+                         .order_by('professor__usuario__nome', '-data_publicacao'))
+    return render(request, 'materiais.html', {'materiais': materiais, 'aluno': aluno})
+
+
+# ===== PAINEL DO PROFESSOR =====
+
+@login_required(login_url='login')
+def painel_professor_view(request):
+    professor = _professor_logado(request)
+    if professor is None:
+        messages.error(request, 'Esta área é só para professores.')
+        return redirect('principal')
+
+    disponibilidades = {d.dia_semana: d for d in professor.disponibilidades.all()}
+    dias = []
+    for codigo, nome in DIAS:
+        d = disponibilidades.get(codigo)
+        dias.append({
+            'codigo': codigo,
+            'nome': nome,
+            'ativo': d is not None,
+            'inicio': d.hora_inicio if d else time(8, 0),
+            'fim': d.hora_fim if d else time(18, 0),
+        })
+
+    return render(request, 'painel_professor.html', {
+        'professor': professor,
+        'dias': dias,
+        'disciplinas': professor.disciplinas.all(),
+        'materiais': professor.materiais.select_related('disciplina').order_by('-data_publicacao'),
+    })
+
+
+@login_required(login_url='login')
+@require_POST
+def painel_professor_agenda(request):
+    professor = _professor_logado(request)
+    if professor is None:
+        messages.error(request, 'Esta área é só para professores.')
+        return redirect('principal')
+
+    horarios = []
+    for codigo, nome in DIAS:
+        if not request.POST.get(f'ativo_{codigo}'):
+            continue
+        try:
+            inicio = time.fromisoformat(request.POST.get(f'inicio_{codigo}', ''))
+            fim = time.fromisoformat(request.POST.get(f'fim_{codigo}', ''))
+        except ValueError:
+            messages.error(request, f'Horário inválido em {nome}.')
+            return redirect(reverse('painel_professor') + '#agenda')
+        if inicio >= fim:
+            messages.error(request, f'Em {nome}, o término deve ser depois do início.')
+            return redirect(reverse('painel_professor') + '#agenda')
+        horarios.append((codigo, inicio, fim))
+
+    professor.disponibilidades.all().delete()
+    for codigo, inicio, fim in horarios:
+        professor.disponibilidades.create(dia_semana=codigo, hora_inicio=inicio, hora_fim=fim)
+
+    messages.success(request, 'Agenda atualizada.')
+    return redirect(reverse('painel_professor') + '#agenda')
+
+
+@login_required(login_url='login')
+@require_POST
+def painel_professor_material_criar(request):
+    professor = _professor_logado(request)
+    if professor is None:
+        messages.error(request, 'Esta área é só para professores.')
+        return redirect('principal')
+
+    titulo = request.POST.get('titulo', '').strip()
+    url = request.POST.get('link', '').strip()
+    disciplina = Disciplina.objects.filter(pk=request.POST.get('disciplina') or None).first()
+
+    if disciplina is None:
+        messages.error(request, 'Selecione uma disciplina.')
+        return redirect(reverse('painel_professor') + '#materiais')
+    if not titulo:
+        messages.error(request, 'Informe um título para o material.')
+        return redirect(reverse('painel_professor') + '#materiais')
+    if not url:
+        messages.error(request, 'Informe o link do material.')
+        return redirect(reverse('painel_professor') + '#materiais')
+
+    Material.objects.create(
+        professor=professor,
+        disciplina=disciplina,
+        titulo=titulo,
+        tipo=request.POST.get('tipo', ''),
+        descricao=request.POST.get('descricao', '').strip(),
+        url=url,
+        data_publicacao=timezone.now(),
+    )
+    messages.success(request, 'Material publicado.')
+    return redirect(reverse('painel_professor') + '#materiais')
+
+
+@login_required(login_url='login')
+@require_POST
+def painel_professor_material_excluir(request, pk):
+    professor = _professor_logado(request)
+    if professor is None:
+        messages.error(request, 'Esta área é só para professores.')
+        return redirect('principal')
+    get_object_or_404(Material, pk=pk, professor=professor).delete()
+    messages.success(request, 'Material excluído.')
+    return redirect(reverse('painel_professor') + '#materiais')

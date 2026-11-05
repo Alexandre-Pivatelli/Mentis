@@ -24,4 +24,12 @@ urlpatterns = [
     path('mensagens/', mensagens_view, name='mensagens_aluno'),
     path('agenda/', agenda_view, name='agenda_aluno'),
     path('ambiente-aluno/', ambiente_aluno_view, name='ambiente_aluno'),
+    path('materiais/', views.materiais_view, name='materiais'),
+    path('sobre/', views.sobre_view, name='sobre'),
+
+    # Painel do professor
+    path('painel/professor/', views.painel_professor_view, name='painel_professor'),
+    path('painel/professor/agenda/', views.painel_professor_agenda, name='painel_professor_agenda'),
+    path('painel/professor/materiais/novo/', views.painel_professor_material_criar, name='painel_professor_material_criar'),
+    path('painel/professor/materiais/<int:pk>/excluir/', views.painel_professor_material_excluir, name='painel_professor_material_excluir'),
 ]

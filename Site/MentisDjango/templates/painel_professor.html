@@ -1,0 +1,170 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mentis – Painel do professor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="{% static 'css/header.css' %}">
+  <link rel="stylesheet" href="{% static 'css/painel_professor.css' %}?v=1">
+</head>
+<body class="pp-page">
+
+  {% include 'includes/header.html' %}
+
+  <main class="pp-main">
+
+    <header class="pp-hero">
+      <div class="pp-container">
+        <span class="pp-badge">Painel do professor</span>
+        <h1 class="pp-hero__titulo">Olá, <span>{{ professor.usuario.nome|default:professor.usuario.username }}</span></h1>
+        <p class="pp-hero__texto">Mantenha sua agenda atualizada e publique materiais para seus alunos.</p>
+
+        <nav class="pp-tabs" aria-label="Seções do painel">
+          <a class="pp-tab" href="#agenda">Agenda</a>
+          <a class="pp-tab" href="#materiais">Materiais</a>
+          <a class="pp-tab" href="{% url 'professor_detalhe' professor.pk %}">Ver meu perfil</a>
+        </nav>
+      </div>
+    </header>
+
+    {% if messages %}
+    <div class="pp-container">
+      {% for message in messages %}
+        <p class="pp-alerta pp-alerta--{{ message.tags }}" role="status">{{ message }}</p>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- ===== AGENDA ===== -->
+    <section class="pp-container pp-secao" id="agenda" aria-labelledby="titulo-agenda">
+      <div class="pp-secao__cabecalho">
+        <span class="pp-rotulo">Disponibilidade</span>
+        <h2 id="titulo-agenda">Sua agenda semanal</h2>
+        <p class="pp-texto-suave">Marque os dias em que você atende e informe o horário. Os alunos veem essas informações no seu perfil.</p>
+      </div>
+
+      <form class="pp-card pp-agenda" method="post" action="{% url 'painel_professor_agenda' %}">
+        {% csrf_token %}
+
+        <div class="pp-agenda__cabecalho" aria-hidden="true">
+          <span>Dia</span>
+          <span>Atende</span>
+          <span>Início</span>
+          <span>Término</span>
+        </div>
+
+        {% for dia in dias %}
+        <div class="pp-agenda__linha{% if dia.ativo %} is-ativo{% endif %}">
+          <span class="pp-agenda__dia">{{ dia.nome }}</span>
+
+          <label class="pp-switch">
+            <input type="checkbox" name="ativo_{{ dia.codigo }}" value="1"{% if dia.ativo %} checked{% endif %}>
+            <span class="pp-switch__trilho" aria-hidden="true"></span>
+            <span class="sr-only">Atende na {{ dia.nome }}</span>
+          </label>
+
+          <label class="pp-campo">
+            <span class="sr-only">Horário de início de {{ dia.nome }}</span>
+            <input type="time" name="inicio_{{ dia.codigo }}" value="{{ dia.inicio|time:'H:i' }}">
+          </label>
+
+          <label class="pp-campo">
+            <span class="sr-only">Horário de término de {{ dia.nome }}</span>
+            <input type="time" name="fim_{{ dia.codigo }}" value="{{ dia.fim|time:'H:i' }}">
+          </label>
+        </div>
+        {% endfor %}
+
+        <div class="pp-acoes">
+          <p class="pp-texto-suave">O término de cada dia deve ser depois do início.</p>
+          <button type="submit" class="pp-botao">Salvar agenda</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- ===== MATERIAIS ===== -->
+    <section class="pp-container pp-secao" id="materiais" aria-labelledby="titulo-materiais">
+      <div class="pp-secao__cabecalho">
+        <span class="pp-rotulo">Conteúdo</span>
+        <h2 id="titulo-materiais">Publicar material</h2>
+        <p class="pp-texto-suave">Publique um link para o material. Os alunos com aula com você verão o material no seu perfil.</p>
+      </div>
+
+      <div class="pp-grade-materiais">
+        <form class="pp-card pp-form" method="post" action="{% url 'painel_professor_material_criar' %}">
+          {% csrf_token %}
+
+          <div class="pp-campo-grupo">
+            <label class="pp-label" for="material-disciplina">Disciplina</label>
+            <select id="material-disciplina" name="disciplina" required>
+              <option value="">Selecione</option>
+              {% for disciplina in disciplinas %}
+                <option value="{{ disciplina.pk }}">{{ disciplina.nome }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="pp-campo-grupo">
+            <label class="pp-label" for="material-titulo">Título</label>
+            <input id="material-titulo" name="titulo" type="text" maxlength="120" required
+                   placeholder="Ex.: Lista 3 – Derivadas">
+          </div>
+
+          <div class="pp-campo-grupo">
+            <label class="pp-label" for="material-tipo">Tipo</label>
+            <select id="material-tipo" name="tipo" required>
+              <option value="pdf">PDF</option>
+              <option value="lista">Lista de exercícios</option>
+              <option value="video">Vídeo</option>
+              <option value="link">Link</option>
+            </select>
+          </div>
+
+          <div class="pp-campo-grupo">
+            <label class="pp-label" for="material-link">Link do material</label>
+            <input id="material-link" name="link" type="url" required placeholder="https://">
+          </div>
+
+          <div class="pp-campo-grupo">
+            <label class="pp-label" for="material-descricao">Descrição (opcional)</label>
+            <textarea id="material-descricao" name="descricao" rows="3" maxlength="500"
+                      placeholder="Ex.: Resolver até o exercício 15 antes da próxima aula."></textarea>
+          </div>
+
+          <button type="submit" class="pp-botao pp-botao--largo">Publicar material</button>
+        </form>
+
+        <div class="pp-lista-materiais">
+          <h3 class="pp-subtitulo">Publicados ({{ materiais|length }})</h3>
+
+          {% for material in materiais %}
+          <article class="pp-material">
+            <div class="pp-material__info">
+              <span class="pp-tag">{{ material.get_tipo_display }}</span>
+              <h4>{{ material.titulo }}</h4>
+              <p class="pp-texto-suave">{{ material.disciplina }} · {{ material.data_publicacao|date:"d/m/Y" }}</p>
+            </div>
+            <form method="post" action="{% url 'painel_professor_material_excluir' material.pk %}"
+                  onsubmit="return confirm('Excluir este material?');">
+              {% csrf_token %}
+              <button type="submit" class="pp-botao pp-botao--perigo">Excluir</button>
+            </form>
+          </article>
+          {% empty %}
+          <div class="pp-vazio">
+            <p>Você ainda não publicou materiais.</p>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+</body>
+</html>
