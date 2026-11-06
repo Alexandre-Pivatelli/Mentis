@@ -1,0 +1,156 @@
+/* ========== AGENDAR AULA (Sprint 8) ==========
+   As cores usam as variáveis do tema.css, assim a página funciona no modo claro e no escuro. */
+
+.agendar {
+  padding: 24px 0 40px;
+}
+
+/* ---------- Título ---------- */
+.agendar__voltar {
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.agendar__topo h1 {
+  margin-top: 12px;
+  font-size: 28px;
+}
+
+.agendar__topo p {
+  margin-top: 6px;
+  color: var(--secondary);
+  font-size: 14px;
+}
+
+/* ---------- Duas colunas: formulário e horários ---------- */
+.agendar__colunas {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 28px;
+  margin-top: 28px;
+  align-items: start;
+}
+
+/* ---------- Formulário ---------- */
+.agendar__form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 26px;
+  background: var(--surface);
+  border: 1px solid var(--separator);
+  border-radius: 18px;
+}
+
+.agendar__form label {
+  margin-top: 10px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.agendar__form select,
+.agendar__form input,
+.agendar__form textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--separator);
+  border-radius: 12px;
+  font-size: 14px;
+  background: var(--surface);
+  color: var(--foreground);
+}
+
+.agendar__form select:focus,
+.agendar__form input:focus,
+.agendar__form textarea:focus {
+  border-color: var(--focus);
+  outline: none;
+}
+
+.agendar__linha {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.agendar__linha label {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.agendar__erro {
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--danger-bg);
+  color: var(--danger);
+  font-size: 14px;
+}
+
+.agendar__valor {
+  margin-top: 14px;
+  font-size: 14px;
+  color: var(--secondary);
+}
+
+.agendar__valor strong {
+  color: var(--accent);
+  font-size: 18px;
+}
+
+.agendar__botao {
+  margin-top: 10px;
+  min-height: 48px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--action);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.agendar__botao:hover {
+  background: var(--action-hover);
+}
+
+/* ---------- Horários do professor ---------- */
+.agendar__horarios {
+  padding: 26px;
+  border-radius: 18px;
+  background: var(--action);
+  color: #fff;
+}
+
+.agendar__horarios h2 {
+  font-size: 20px;
+}
+
+.agendar__horarios ul {
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.agendar__horarios li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 14px;
+}
+
+.agendar__horarios li:last-child {
+  border-bottom: 0;
+}
+
+/* ---------- Celular ---------- */
+@media (max-width: 800px) {
+  .agendar__colunas {
+    grid-template-columns: 1fr;
+  }
+
+  .agendar__topo h1 {
+    font-size: 23px;
+  }
+}
