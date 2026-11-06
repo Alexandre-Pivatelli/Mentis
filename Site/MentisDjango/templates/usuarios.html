@@ -33,17 +33,38 @@
           <th>Ações</th>
         </tr>
       </thead>
-      <tbody id="user-table">{% for usuario in usuarios %}<tr>
-<td><div class="user-cell"><div class="avatar" aria-hidden="true">{{ usuario.iniciais }}</div><div><div class="user-name">{{ usuario.nome_exibicao }}</div><div class="user-email">{{ usuario.email }}</div></div></div></td>
-<td><span class="badge">{{ usuario.tipo_exibicao }}</span></td>
-<td>{{ usuario.date_joined|date:"d/m/Y" }}</td>
-<td>{% if usuario.is_active %}<span class="badge badge--ativo">Ativo</span>{% else %}<span class="badge badge--inativo">Inativo</span>{% endif %}</td>
-<td><div class="actions"><a href="{% url 'admin:MentisDjango_usuario_change' usuario.pk %}" aria-label="Editar {{ usuario.nome_exibicao }}">Editar</a><a href="{% url 'admin:MentisDjango_usuario_delete' usuario.pk %}" aria-label="Excluir {{ usuario.nome_exibicao }}">Excluir</a></div></td>
-</tr>{% empty %}<tr><td colspan="5">Nenhum usuário encontrado.</td></tr>{% endfor %}</tbody>
+      <tbody id="user-table">{% for usuario in usuarios %}
+        <tr>
+          <td><div class="user-cell"><div class="avatar" aria-hidden="true">{{ usuario.iniciais }}</div><div><div class="user-name">{{ usuario.nome_exibicao }}</div><div class="user-email">{{ usuario.email }}</div></div></div></td>
+          <td><span class="badge">{{ usuario.tipo_exibicao }}</span></td>
+          <td>{{ usuario.date_joined|date:"d/m/Y" }}</td>
+          <td>{% if usuario.is_active %}<span class="badge badge--ativo">Ativo</span>{% else %}<span class="badge badge--inativo">Inativo</span>{% endif %}</td>
+          <td>
+            <div class="actions">
+              <a href="{% url 'admin:MentisDjango_usuario_change' usuario.pk %}" aria-label="Editar {{ usuario.nome_exibicao }}">Editar</a>
+              <a href="{% url 'admin:MentisDjango_usuario_delete' usuario.pk %}" aria-label="Excluir {{ usuario.nome_exibicao }}">Excluir</a>
+            </div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="5">Nenhum usuário encontrado.</td>
+        </tr>{% endfor %}
+      </tbody>
     </table>
 
-<div class="table-footer"><span>{{ usuarios.paginator.count }} usuários encontrados</span>
-<nav class="pagination" aria-label="Paginação">
-{% if usuarios.has_previous %}<a class="page-btn" href="?q={{ busca|urlencode }}&amp;disciplina={{ disciplina_selecionada|urlencode }}&amp;page={{ usuarios.previous_page_number }}">‹</a>{% endif %}
-<span>Página {{ usuarios.number }} de {{ usuarios.paginator.num_pages }}</span>
-{% if usuarios.has_next %}<a class="page-btn" href="?q={{ busca|urlencode }}&amp;disciplina={{ disciplina_selecionada|urlencode }}&amp;page={{ usuarios.next_page_number }}">›</a>{% endif %}</nav></div></div></main>{% endblock %}
+<div class="table-footer">
+  <span>{{ usuarios.paginator.count }} usuários encontrados</span>
+  <nav class="pagination" aria-label="Paginação">
+  {% if usuarios.has_previous %}
+  <a class="page-btn" href="?q={{ busca|urlencode }}&amp;disciplina={{ disciplina_selecionada|urlencode }}&amp;page={{ usuarios.previous_page_number }}">‹</a>
+  {% endif %}
+  <span>Página {{ usuarios.number }} de {{ usuarios.paginator.num_pages }}</span>
+  {% if usuarios.has_next %}
+  <a class="page-btn" href="?q={{ busca|urlencode }}&amp;disciplina={{ disciplina_selecionada|urlencode }}&amp;page={{ usuarios.next_page_number }}">›</a>
+  {% endif %}
+</nav>
+</div>
+</div>
+</main>
+{% endblock %}
