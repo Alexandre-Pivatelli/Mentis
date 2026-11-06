@@ -85,7 +85,7 @@
           {% endif %}
           <p class="book__label">Valor por hora · {{ professor.modalidade }}</p>
           <p class="book__price">R$ {{ professor.valor_hora|floatformat:2 }}</p>
-          <a class="btn btn--primary btn--block" href="#horarios">Consultar horários</a>
+          <a class="btn btn--primary btn--block" href="{% url 'agendar_aula' professor.pk %}">Agendar aula</a>
         </div>
       </div>
     </section>
