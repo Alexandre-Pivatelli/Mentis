@@ -32,4 +32,6 @@ urlpatterns = [
     path('painel/professor/agenda/', views.painel_professor_agenda, name='painel_professor_agenda'),
     path('painel/professor/materiais/novo/', views.painel_professor_material_criar, name='painel_professor_material_criar'),
     path('painel/professor/materiais/<int:pk>/excluir/', views.painel_professor_material_excluir, name='painel_professor_material_excluir'),
+    path('professor/<int:pk>/assinatura/', views.assinatura_professor_view, name='assinatura_professor'),
 ]
+

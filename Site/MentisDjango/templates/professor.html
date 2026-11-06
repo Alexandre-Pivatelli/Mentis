@@ -121,6 +121,12 @@
             {% endfor %}
           </div>
 
+          {% if not eh_dono %}
+            <a class="pf-botao" href="{% url 'assinatura_professor' professor.pk %}" target="_blank" rel="noopener">
+              Assinar todos os materiais
+           </a>
+          {% endif %}
+
           {% if eh_dono %}
             <a class="pf-botao" href="{% url 'painel_professor' %}#materiais">Adicionar material</a>
           {% endif %}

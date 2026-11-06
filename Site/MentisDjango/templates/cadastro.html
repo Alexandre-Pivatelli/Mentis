@@ -1,44 +1,105 @@
 {% extends "base.html" %}
 {% load static %}
+
 {% block page_head %}
-  <title>Mentis - Cadastrar</title>
+  <title>Mentis – Cadastrar</title>
   <link rel="stylesheet" href="{% static 'css/login.css' %}?v=themes-2">
   <link rel="stylesheet" href="{% static 'css/cadastro.css' %}?v=themes-2">
   <link rel="stylesheet" href="{% static 'css/formularios.css' %}?v=themes-2">
   <script src="{% static 'js/auth.js' %}?v=themes-2" defer></script>
-  <script src="{% static 'js/cadastro_estudante.js' %}?v=themes-2" defer></script>
 {% endblock %}
+
 {% block content %}
+{% firstof form.data.user_type form.initial.user_type 'estudante' as tipo_atual %}
+
 <main class="container">
   <section class="register-section">
     <h1 class="welcome-title">Crie sua Conta</h1>
+
+    <!-- Seletor Estudante / Professor (mesmo visual do login) -->
+    <div class="toggle-container" role="group" aria-label="Tipo de conta">
+      <button type="button" id="btnEstudante"
+              class="toggle-btn{% if tipo_atual != 'professor' %} active{% endif %}"
+              aria-pressed="{% if tipo_atual != 'professor' %}true{% else %}false{% endif %}">
+        <i class="fa-regular fa-user" aria-hidden="true"></i>
+        Estudante
+      </button>
+      <button type="button" id="btnProfessor"
+              class="toggle-btn{% if tipo_atual == 'professor' %} active{% endif %}"
+              aria-pressed="{% if tipo_atual == 'professor' %}true{% else %}false{% endif %}">
+        <i class="fa-solid fa-graduation-cap" aria-hidden="true"></i>
+        Professor
+      </button>
+    </div>
+
     <form class="register-form" method="post" enctype="multipart/form-data" action="{% url 'cadastro' %}">
       {% csrf_token %}
-      {% if form.errors %}<div class="form-errors" role="alert" tabindex="-1" data-error-summary>Confira os campos indicados abaixo.{{ form.non_field_errors }}</div>{% endif %}
-      <fieldset class="profile-fields profile-choice">
-        <legend>{{ form.user_type.label }}</legend>
-        {{ form.user_type }}{{ form.user_type.errors }}
-      </fieldset>
+      <input type="hidden" name="user_type" id="userTypeInput" value="{{ tipo_atual }}">
+
+      {% if form.errors %}
+        <div class="form-errors" role="alert" tabindex="-1" data-error-summary>
+          Confira os campos indicados abaixo.
+          {{ form.non_field_errors }}
+        </div>
+      {% endif %}
+
       {% include 'includes/form_field.html' with field=form.nome %}
       {% include 'includes/form_field.html' with field=form.foto %}
       {% include 'includes/form_field.html' with field=form.username %}
       {% include 'includes/form_field.html' with field=form.email %}
       {% include 'includes/form_field.html' with field=form.password1 %}
       {% include 'includes/form_field.html' with field=form.password2 %}
-      <fieldset class="profile-fields" data-profile="estudante">
+
+      <!-- Dados do estudante -->
+      <fieldset class="profile-fields" data-profile="estudante"{% if tipo_atual == 'professor' %} hidden{% endif %}>
         <legend>Dados do estudante</legend>
         <p class="field-help">Conte em que etapa você está. Ao criar sua conta, você recebe a tag Novato.</p>
         {% include 'includes/form_field.html' with field=form.nivel_estudo %}
         {% include 'includes/form_field.html' with field=form.serie %}
         {% include 'includes/form_field.html' with field=form.escola %}
       </fieldset>
-      {% include 'includes/campos_professor.html' %}
+
+      <!-- Dados do professor -->
+      <div data-profile="professor"{% if tipo_atual != 'professor' %} hidden{% endif %}>
+        {% include 'includes/campos_professor.html' %}
+      </div>
+
       <button type="submit" class="submit-btn">Criar Conta</button>
       <p class="login-text">Já tem uma conta? <a href="{% url 'login' %}">Entrar</a></p>
     </form>
   </section>
+
   <section class="brand-section" aria-label="Mentis">
-    <div class="brand-content"><div class="big-logo-icon"><img src="{% static 'img/logo-b.png' %}" id="logo-branco" alt="Mentis"></div><h2 class="brand-title">MENTIS</h2></div>
+    <div class="brand-content">
+      <div class="big-logo-icon">
+        <img src="{% static 'img/logo-b.png' %}" id="logo-branco" alt="Mentis">
+      </div>
+      <h2 class="brand-title">MENTIS</h2>
+    </div>
   </section>
 </main>
+
+<script>
+  (function () {
+    const btnEstudante = document.getElementById('btnEstudante');
+    const btnProfessor = document.getElementById('btnProfessor');
+    const input = document.getElementById('userTypeInput');
+    const blocos = document.querySelectorAll('[data-profile]');
+
+    function selecionar(tipo) {
+      const ehProfessor = tipo === 'professor';
+      btnEstudante.classList.toggle('active', !ehProfessor);
+      btnProfessor.classList.toggle('active', ehProfessor);
+      btnEstudante.setAttribute('aria-pressed', String(!ehProfessor));
+      btnProfessor.setAttribute('aria-pressed', String(ehProfessor));
+      input.value = tipo;
+      blocos.forEach(function (bloco) {
+        bloco.hidden = bloco.dataset.profile !== tipo;
+      });
+    }
+
+    btnEstudante.addEventListener('click', function () { selecionar('estudante'); });
+    btnProfessor.addEventListener('click', function () { selecionar('professor'); });
+  })();
+</script>
 {% endblock %}

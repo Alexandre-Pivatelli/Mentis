@@ -1,0 +1,108 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mentis – Assinatura de {{ professor.nome_exibicao }}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="{% static 'css/tema.css' %}">
+  <link rel="stylesheet" href="{% static 'css/header.css' %}">
+  <link rel="stylesheet" href="{% static 'css/assinatura.css' %}?v=1">
+</head>
+<body class="as-page">
+
+  {% include 'includes/header.html' %}
+
+  <main class="as-main">
+    <div class="as-container">
+
+      <a class="as-voltar" href="{% url 'professor_detalhe' professor.pk %}">‹ Voltar ao perfil</a>
+
+      {% for message in messages %}
+        <p class="as-alerta" role="status">{{ message }}</p>
+      {% endfor %}
+
+      <section class="as-hero">
+        <span class="as-badge">Assinatura de materiais</span>
+        <h1>{{ professor.nome_exibicao }}</h1>
+        <p class="as-texto">
+          {% for disciplina in professor.disciplinas.all %}{{ disciplina.nome }}{% if not forloop.last %} · {% endif %}{% empty %}Professor particular{% endfor %}
+        </p>
+        <p class="as-preco">
+          {% if professor.valor_assinatura %}
+            R$ {{ professor.valor_assinatura|floatformat:2 }}<span> / mês</span>
+          {% else %}
+            Preço não informado
+          {% endif %}
+        </p>
+      </section>
+
+      <section class="as-card">
+        <h2>Sua assinatura</h2>
+        {% if eh_dono %}
+          <p class="as-texto">Esta é a sua página. Os alunos veem o preço e os materiais por aqui.</p>
+        {% elif tem_acesso %}
+          <p class="as-status as-status--ativa">Assinatura ativa. Você tem acesso a todos os materiais.</p>
+        {% elif assinatura %}
+          <p class="as-status as-status--pendente">Pedido registrado. Assim que o pagamento for confirmado, o acesso é liberado.</p>
+        {% elif aluno %}
+          <form method="post" action="{% url 'assinatura_professor' professor.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="as-botao">Quero assinar</button>
+          </form>
+        {% else %}
+          <p class="as-texto">Esta área é para estudantes. Entre com uma conta de estudante para assinar.</p>
+        {% endif %}
+      </section>
+
+      <section class="as-card">
+        <h2>Como realizar o pagamento</h2>
+        <ol class="as-passos">
+          <li>Clique em <strong>Quero assinar</strong> para registrar seu pedido.</li>
+          <li>Faça um PIX de <strong>R$ {{ professor.valor_assinatura|default:"—"|floatformat:2 }}</strong> para a chave abaixo.</li>
+          <li>Envie o comprovante ao professor pelo chat. O acesso é liberado após a confirmação.</li>
+        </ol>
+
+        {% if professor.chave_pix %}
+          <div class="as-pix">
+            <span>Chave PIX</span>
+            <code>{{ professor.chave_pix }}</code>
+          </div>
+        {% else %}
+          <p class="as-texto">
+            O professor ainda não cadastrou uma chave PIX.
+            <a href="{% url 'mensagens_aluno' %}">Fale com ele pelo chat</a>.
+          </p>
+        {% endif %}
+      </section>
+
+      <section class="as-card">
+        <h2>Materiais disponíveis ({{ materiais|length }})</h2>
+        <ul class="as-lista">
+          {% for material in materiais %}
+            <li>
+              <div>
+                <strong>{{ material.titulo }}</strong>
+                <span>{{ material.disciplina }} · {{ material.get_tipo_display }} · {{ material.data_publicacao|date:"d/m/Y" }}</span>
+              </div>
+              {% if tem_acesso %}
+                <a class="as-botao as-botao--sm" href="{{ material.url }}" target="_blank" rel="noopener noreferrer">Abrir</a>
+              {% else %}
+                <span class="as-bloqueado">Disponível após a assinatura</span>
+              {% endif %}
+            </li>
+          {% empty %}
+            <li class="as-vazio">Nenhum material publicado ainda.</li>
+          {% endfor %}
+        </ul>
+      </section>
+
+    </div>
+  </main>
+
+</body>
+</html>
