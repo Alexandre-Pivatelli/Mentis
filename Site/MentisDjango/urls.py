@@ -1,10 +1,12 @@
 from django.urls import path
 from . import views
+from .views_agendamento import agendar_aula
 from .views_aluno import ambiente_aluno_view
 from .views_estudante import mensagens_view, agenda_view
 from .views_favoritos import favoritos_view, favorito_professor_view
 
 urlpatterns = [
+    path('professor/<int:professor_id>/agendar/', agendar_aula, name='agendar_aula'),
     path('', views.principal_view, name='principal'),
     path('login/', views.login_view, name='login'),
     path('sair/', views.logout_view, name='logout'),
