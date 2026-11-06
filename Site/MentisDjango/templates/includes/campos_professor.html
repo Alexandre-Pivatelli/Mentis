@@ -27,7 +27,8 @@
 </style>
 
 <fieldset class="profile-fields" id="camposProfessor" data-profile="professor">
-  <legend>Dados do professor</legend>
+  <legend><span class="form-step__number" aria-hidden="true">3</span> Dados do professor</legend>
+  <p class="field-help">Essas informações aparecem no seu perfil para os alunos.</p>
   {% include 'includes/form_field.html' with field=form.formacao %}
   {% include 'includes/form_field.html' with field=form.valor_hora %}
   {% include 'includes/form_field.html' with field=form.modalidade %}

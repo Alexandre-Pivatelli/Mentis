@@ -63,13 +63,31 @@ class CadastroForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['username'].widget.attrs.pop('autofocus', None)
-        self.fields['username'].help_text = 'Use letras, números e os caracteres @ . + - _.'
         self.fields['password1'].label = 'Senha'
         self.fields['password1'].help_text = 'Use pelo menos 8 caracteres. Evite senhas comuns, só números ou parecidas com seus dados.'
         self.fields['password2'].label = 'Confirmar senha'
         self.fields['password2'].help_text = ''
         for name in ('password1', 'password2'):
             self.fields[name].widget.attrs['autocomplete'] = 'new-password'
+
+        # ===== Melhorias de UX: exemplos (placeholders) e dicas nos campos =====
+        placeholders = {
+            'nome': 'Ex.: Maria Souza',
+            'email': 'nome@exemplo.com',
+            'username': 'Ex.: maria.souza',
+            'password1': 'Crie uma senha',
+            'password2': 'Digite a senha novamente',
+            'escola': 'Ex.: Escola Estadual Machado de Assis',
+            'formacao': 'Ex.: Licenciatura em Matemática',
+            'valor_hora': 'Ex.: 60.00',
+        }
+        for name, texto in placeholders.items():
+            self.fields[name].widget.attrs['placeholder'] = texto
+
+        self.fields['email'].help_text = 'Usaremos para avisos sobre suas aulas. Não compartilhamos seu e-mail.'
+        self.fields['username'].help_text = 'É como você aparece no site. Use letras, números e @ . + - _ (sem espaços).'
+        self.fields['nivel_estudo'].label = 'Nível de estudo'
+        self.fields['serie'].label = 'Série'
 
     def clean_email(self):
         email = self.cleaned_data['email'].strip().lower()
