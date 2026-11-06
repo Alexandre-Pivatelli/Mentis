@@ -2,6 +2,7 @@
   {{ field.label_tag }}
 
   {% if field.field.widget.input_type == 'password' %}
+<<<<<<< HEAD
     <div class="auth-password">
       {{ field }}
       <button type="button"
@@ -22,5 +23,18 @@
     </div>
   {% endif %}
 
+=======
+  <div class="auth-password">
+    {{ field }}<button type="button" data-password="{{ field.auto_id }}" aria-controls="{{ field.auto_id }}" aria-pressed="false" hidden>Mostrar</button>
+  </div>
+  {% else %}
+  {{ field }}
+  {% endif %}
+  {% if field.help_text %}
+  <div class="auth-help" id="{{ field.auto_id }}_helptext">
+    {{ field.help_text|safe }}
+  </div>
+  {% endif %}
+>>>>>>> 2d926575d4898bd24afe0fe3875f30d84806f5b1
   {{ field.errors }}
 </div>
