@@ -417,3 +417,42 @@ def painel_professor_material_excluir(request, pk):
     get_object_or_404(Material, pk=pk, professor=professor).delete()
     messages.success(request, 'Material excluído.')
     return redirect(reverse('painel_professor') + '#materiais')
+
+from .models import (Aluno, Aula, Assinatura, Avaliacao, AvaliacaoSite, Disciplina,
+                     Material, Professor, StatusAula, Usuario)
+
+@login_required(login_url='login')
+@require_http_methods(['GET', 'POST'])
+def assinatura_professor_view(request, pk):
+    professor = identificar(get_object_or_404(professores_queryset(), pk=pk))
+    eh_dono = request.user.pk == professor.usuario_id
+    aluno = Aluno.objects.filter(usuario=request.user).first()
+
+    assinatura = None
+    if aluno is not None:
+        assinatura = Assinatura.objects.filter(aluno=aluno, professor=professor).first()
+        if assinatura and assinatura.status == Assinatura.Status.CANCELADA:
+            assinatura = None
+
+    if request.method == 'POST':
+        if aluno is None:
+            messages.error(request, 'Somente estudantes podem assinar materiais.')
+        elif assinatura is None:
+            Assinatura.objects.update_or_create(
+                aluno=aluno, professor=professor,
+                defaults={'status': Assinatura.Status.AGUARDANDO},
+            )
+            messages.success(request, 'Pedido registrado. Faça o PIX para liberar os materiais.')
+        return redirect('assinatura_professor', pk=professor.pk)
+
+    tem_acesso = eh_dono or (assinatura is not None and assinatura.status == Assinatura.Status.ATIVA)
+    materiais = professor.materiais.select_related('disciplina').order_by('-data_publicacao')
+
+    return render(request, 'assinatura_professor.html', {
+        'professor': professor,
+        'eh_dono': eh_dono,
+        'aluno': aluno,
+        'assinatura': assinatura,
+        'tem_acesso': tem_acesso,
+        'materiais': materiais,
+    })

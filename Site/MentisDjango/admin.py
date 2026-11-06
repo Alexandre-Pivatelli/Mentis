@@ -30,3 +30,13 @@ for m in [models.Responsavel, models.Aluno, models.Professor,
           models.Disciplina, models.Disponibilidade, models.Aula,
           models.Pagamento, models.Avaliacao, models.Material]:
     admin.site.register(m)
+
+from django.contrib import admin
+from .models import Assinatura
+
+
+@admin.register(Assinatura)
+class AssinaturaAdmin(admin.ModelAdmin):
+    list_display = ('aluno', 'professor', 'status', 'criado_em')
+    list_filter = ('status',)
+    list_editable = ('status',)
