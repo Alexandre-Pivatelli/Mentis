@@ -6,7 +6,9 @@
   <link rel="stylesheet" href="{% static 'css/login.css' %}?v=themes-2">
   <link rel="stylesheet" href="{% static 'css/cadastro.css' %}?v=themes-2">
   <link rel="stylesheet" href="{% static 'css/formularios.css' %}?v=themes-2">
-  <script src="{% static 'js/auth.js' %}?v=themes-2" defer></script>
+  <link rel="stylesheet" href="{% static 'css/cadastro_ux.css' %}?v=ux-1">
+  <script src="{% static 'js/auth.js' %}?v=cadastro-fix-1" defer></script>
+  <script src="{% static 'js/cadastro.js' %}?v=ux-1" defer></script>
 {% endblock %}
 
 {% block content %}
@@ -15,6 +17,7 @@
 <main class="container">
   <section class="register-section">
     <h1 class="welcome-title">Crie sua Conta</h1>
+    <p class="register-subtitle">Leva menos de 2 minutos. Primeiro, conte como você quer usar a Mentis:</p>
 
     <!-- Seletor Estudante / Professor (mesmo visual do login) -->
     <div class="toggle-container" role="group" aria-label="Tipo de conta">
@@ -22,13 +25,13 @@
               class="toggle-btn{% if tipo_atual != 'professor' %} active{% endif %}"
               aria-pressed="{% if tipo_atual != 'professor' %}true{% else %}false{% endif %}">
         <i class="fa-regular fa-user" aria-hidden="true"></i>
-        Estudante
+        Quero aprender
       </button>
       <button type="button" id="btnProfessor"
               class="toggle-btn{% if tipo_atual == 'professor' %} active{% endif %}"
               aria-pressed="{% if tipo_atual == 'professor' %}true{% else %}false{% endif %}">
         <i class="fa-solid fa-graduation-cap" aria-hidden="true"></i>
-        Professor
+        Quero ensinar
       </button>
     </div>
 
@@ -43,24 +46,35 @@
         </div>
       {% endif %}
 
-      {% include 'includes/form_field.html' with field=form.nome %}
-      {% include 'includes/form_field.html' with field=form.foto %}
-      {% include 'includes/form_field.html' with field=form.username %}
-      {% include 'includes/form_field.html' with field=form.email %}
-      {% include 'includes/form_field.html' with field=form.password1 %}
-      {% include 'includes/form_field.html' with field=form.password2 %}
+      <p class="required-note">Todos os campos são obrigatórios, exceto os marcados como opcionais.</p>
 
-      <!-- Dados do estudante -->
-      <fieldset class="profile-fields" data-profile="estudante"{% if tipo_atual == 'professor' %} hidden{% endif %}>
-        <legend>Dados do estudante</legend>
+      <!-- Etapa 1: dados pessoais -->
+      <fieldset class="form-step">
+        <legend><span class="form-step__number" aria-hidden="true">1</span> Seus dados</legend>
+        {% include 'includes/form_field.html' with field=form.nome %}
+        {% include 'includes/form_field.html' with field=form.foto %}
+      </fieldset>
+
+      <!-- Etapa 2: dados de acesso -->
+      <fieldset class="form-step">
+        <legend><span class="form-step__number" aria-hidden="true">2</span> Dados de acesso</legend>
+        {% include 'includes/form_field.html' with field=form.email %}
+        {% include 'includes/form_field.html' with field=form.username %}
+        {% include 'includes/form_field.html' with field=form.password1 %}
+        {% include 'includes/form_field.html' with field=form.password2 %}
+      </fieldset>
+
+      <!-- Etapa 3: dados do estudante -->
+      <fieldset class="profile-fields form-step" data-profile="estudante"{% if tipo_atual == 'professor' %} hidden{% endif %}>
+        <legend><span class="form-step__number" aria-hidden="true">3</span> Dados do estudante</legend>
         <p class="field-help">Conte em que etapa você está. Ao criar sua conta, você recebe a tag Novato.</p>
         {% include 'includes/form_field.html' with field=form.nivel_estudo %}
         {% include 'includes/form_field.html' with field=form.serie %}
         {% include 'includes/form_field.html' with field=form.escola %}
       </fieldset>
 
-      <!-- Dados do professor -->
-      <div data-profile="professor"{% if tipo_atual != 'professor' %} hidden{% endif %}>
+      <!-- Etapa 3: dados do professor -->
+      <div class="form-step" data-profile="professor"{% if tipo_atual != 'professor' %} hidden{% endif %}>
         {% include 'includes/campos_professor.html' %}
       </div>
 
@@ -79,27 +93,8 @@
   </section>
 </main>
 
-<script>
-  (function () {
-    const btnEstudante = document.getElementById('btnEstudante');
-    const btnProfessor = document.getElementById('btnProfessor');
-    const input = document.getElementById('userTypeInput');
-    const blocos = document.querySelectorAll('[data-profile]');
-
-    function selecionar(tipo) {
-      const ehProfessor = tipo === 'professor';
-      btnEstudante.classList.toggle('active', !ehProfessor);
-      btnProfessor.classList.toggle('active', ehProfessor);
-      btnEstudante.setAttribute('aria-pressed', String(!ehProfessor));
-      btnProfessor.setAttribute('aria-pressed', String(ehProfessor));
-      input.value = tipo;
-      blocos.forEach(function (bloco) {
-        bloco.hidden = bloco.dataset.profile !== tipo;
-      });
-    }
-
-    btnEstudante.addEventListener('click', function () { selecionar('estudante'); });
-    btnProfessor.addEventListener('click', function () { selecionar('professor'); });
-  })();
-</script>
+<!--
+  A troca Estudante / Professor é feita em static/js/auth.js.
+  As melhorias de UX (senha, série dependente, validação ao vivo) ficam em static/js/cadastro.js.
+-->
 {% endblock %}

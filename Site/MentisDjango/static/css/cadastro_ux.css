@@ -1,0 +1,162 @@
+/* ==========================================================================
+   Melhorias de experiência (UX) do cadastro
+   Usado junto com login.css, cadastro.css e formularios.css.
+   ========================================================================== */
+
+
+/* ----- Subtítulo abaixo de "Crie sua Conta" ----- */
+.register-subtitle {
+  max-width: 360px;
+  margin: -12px 0 24px;
+  color: var(--secondary, #615769);
+  font-size: 14px;
+  text-align: center;
+}
+
+
+/* ----- Blocos do formulário (Seus dados / Acesso / Perfil) ----- */
+.form-step {
+  margin: 0 0 8px;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.form-step + .form-step,
+.form-step + .profile-fields,
+.form-step + [data-profile] {
+  margin-top: 8px;
+  padding-top: 20px;
+  border-top: 1px solid var(--separator, #ece6f5);
+}
+
+.form-step legend,
+.profile-fields legend {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+  color: var(--foreground, #241b30);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* Número da etapa ao lado do título do bloco */
+.form-step__number {
+  display: inline-grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--surface-subtle, #efe7fd);
+  color: var(--accent, #6430d8);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+
+/* ----- Aviso de campos obrigatórios ----- */
+.required-note {
+  margin: 0 0 18px;
+  color: var(--secondary, #615769);
+  font-size: 13px;
+}
+
+
+/* ----- Senha: botão Mostrar / Ocultar ----- */
+.password-wrapper {
+  position: relative;
+}
+
+.password-wrapper input {
+  padding-right: 92px !important;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  transform: translateY(-50%);
+  min-width: 76px;
+  min-height: 36px;
+  padding: 6px 12px;
+  border: 0;
+  border-radius: 16px;
+  background: transparent;
+  color: var(--accent, #6430d8);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.password-toggle:hover {
+  background: var(--surface-hover, #f5f0ff);
+}
+
+
+/* ----- Medidor de força da senha ----- */
+.password-strength {
+  margin-top: 8px;
+}
+
+.password-strength__bar {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--separator, #ece6f5);
+  overflow: hidden;
+}
+
+.password-strength__bar span {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  transition: width .25s ease, background-color .25s ease;
+}
+
+.password-strength__text {
+  min-height: 1.2em;
+  margin: 6px 0 0 4px;
+  font-size: 13px;
+  color: var(--secondary, #615769);
+}
+
+.password-strength.is-weak   span { background: #c0392b; }
+.password-strength.is-medium span { background: #e08e0b; }
+.password-strength.is-good   span { background: #3a9d5d; }
+.password-strength.is-strong span { background: #23794a; }
+
+.password-strength.is-weak   .password-strength__text { color: #a42534; }
+.password-strength.is-strong .password-strength__text { color: #23794a; }
+
+
+/* ----- Erros mostrados em tempo real ----- */
+.field-live-error {
+  margin: 6px 0 0 4px;
+  color: var(--danger, #a42534);
+  font-size: 13px;
+}
+
+.input-group [aria-invalid="true"] {
+  border-color: var(--danger, #a42534) !important;
+}
+
+
+/* ----- Botão "Criar Conta" carregando ----- */
+.submit-btn.is-loading {
+  opacity: .75;
+  cursor: progress;
+}
+
+.submit-btn:disabled {
+  transform: none;
+}
+
+
+/* ----- Movimento reduzido ----- */
+@media (prefers-reduced-motion: reduce) {
+  .password-strength__bar span {
+    transition: none;
+  }
+}
