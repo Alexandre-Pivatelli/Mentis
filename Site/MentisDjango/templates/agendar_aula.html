@@ -1,0 +1,86 @@
+{% extends 'area_estudante.html' %}
+{% load static %}
+
+{% block title %}Agendar aula · Mentis{% endblock %}
+
+{% block student_content %}
+<link rel="stylesheet" href="{% static 'css/agendar_aula.css' %}">
+
+<div class="agendar">
+
+  <!-- Título da página -->
+  <header class="agendar__topo">
+    <a class="agendar__voltar" href="{% url 'professor_detalhe' professor.pk %}">‹ Voltar ao perfil</a>
+    <h1>Agendar aula com {{ nome_professor }}</h1>
+    <p>Escolha a disciplina, o dia e o horário. Cada aula dura 1 hora.</p>
+  </header>
+
+  <div class="agendar__colunas">
+
+    <!--
+    Formulário de agendamento.
+    Ele é enviado com POST para a mesma página.
+    O {% csrf_token %} é obrigatório para o Django aceitar o formulário.
+    -->
+    <form class="agendar__form" action="" method="post">
+      {% csrf_token %}
+
+      {% if erro %}
+        <p class="agendar__erro">{{ erro }}</p>
+      {% endif %}
+
+      <label for="disciplina">Disciplina</label>
+      <select id="disciplina" name="disciplina" required>
+        <option value="">Selecione</option>
+        {% for disciplina in disciplinas %}
+          <option value="{{ disciplina.pk }}" {% if dados.disciplina == disciplina.pk|stringformat:"s" %}selected{% endif %}>{{ disciplina.nome }}</option>
+        {% endfor %}
+      </select>
+
+      <div class="agendar__linha">
+        <div>
+          <label for="data">Dia</label>
+          <input type="date" id="data" name="data" min="{{ hoje }}" value="{{ dados.data }}" required>
+        </div>
+        <div>
+          <label for="hora">Horário</label>
+          <input type="time" id="hora" name="hora" step="1800" value="{{ dados.hora }}" required>
+        </div>
+      </div>
+
+      <label for="modalidade">Modalidade</label>
+      <select id="modalidade" name="modalidade" required>
+        {% if professor.modalidade != 'PRESENCIAL' %}
+          <option value="ONLINE" {% if dados.modalidade == 'ONLINE' %}selected{% endif %}>Online</option>
+        {% endif %}
+        {% if professor.modalidade != 'ONLINE' %}
+          <option value="PRESENCIAL" {% if dados.modalidade == 'PRESENCIAL' %}selected{% endif %}>Presencial</option>
+        {% endif %}
+      </select>
+
+      <label for="observacao">Observação para o professor (opcional)</label>
+      <textarea id="observacao" name="observacao" rows="3" maxlength="255" placeholder="Ex.: quero revisar funções para a prova.">{{ dados.observacao }}</textarea>
+
+      <p class="agendar__valor">Valor da aula: <strong>R$ {{ professor.valor_hora|floatformat:2 }}</strong></p>
+
+      <button type="submit" class="agendar__botao">Agendar aula</button>
+    </form>
+
+    <!-- Horários em que o professor atende -->
+    <aside class="agendar__horarios">
+      <h2>Horários do professor</h2>
+      <ul>
+        {% for horario in horarios %}
+          <li>
+            <span>{{ horario.dia }}</span>
+            <strong>{{ horario.inicio|time:"H:i" }} – {{ horario.fim|time:"H:i" }}</strong>
+          </li>
+        {% empty %}
+          <li>Este professor ainda não cadastrou horários.</li>
+        {% endfor %}
+      </ul>
+    </aside>
+
+  </div>
+</div>
+{% endblock %}

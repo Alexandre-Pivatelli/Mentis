@@ -16,11 +16,11 @@
 
       <!-- Botões de Seleção: Estudante / Professor -->
       <div class="toggle-container">
-        <button type="button" class="toggle-btn active" id="btnEstudante">
+        <button type="button" class="toggle-btn{% if request.POST.user_type != 'professor' %} active{% endif %}" id="btnEstudante">
           <i class="fa-regular fa-user"></i>
           Estudante
         </button>
-        <button type="button" class="toggle-btn" id="btnProfessor">
+        <button type="button" class="toggle-btn{% if request.POST.user_type == 'professor' %} active{% endif %}" id="btnProfessor">
           <i class="fa-solid fa-graduation-cap"></i>
           Professor
         </button>
@@ -30,7 +30,8 @@
         {% csrf_token %}
         <input type="hidden" name="next" value="{{ next }}">
         <!-- Campo oculto para enviar o tipo de perfil ao backend, se necessário -->
-        <input type="hidden" name="user_type" id="userTypeInput" value="estudante">
+        <!-- Se o login falhar, a página volta na mesma aba (estudante ou professor) da tentativa anterior -->
+        <input type="hidden" name="user_type" id="userTypeInput" value="{% if request.POST.user_type == 'professor' %}professor{% else %}estudante{% endif %}">
 
         {{ form.non_field_errors }}
 
