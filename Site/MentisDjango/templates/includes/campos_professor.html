@@ -1,35 +1,14 @@
 {% comment %}
-  ===== CAMPOS E LABELS DE PROFESSOR (Sprint 6) =====
-  Aparecem no cadastro só quando a pessoa escolhe "Professor".
-  Os nomes dos campos (formacao, valor_hora, modalidade) são os mesmos
-  do CadastroForm em forms.py, então o Django recebe e salva os dados.
-  A troca Estudante/Professor é feita pelo static/js/auth.js através do
-  atributo data-profile="professor" (habilita/desabilita e mostra/esconde).
+  ===== CAMPOS E LABELS DE PROFESSOR (Sprint 6 + Fluxo Guiado Figma) =====
+  Aparecem no passo 3 do cadastro quando a pessoa escolhe "Quero ensinar".
+  Os nomes dos campos (formacao, disciplina_principal, modalidade, valor_hora)
+  são os mesmos do CadastroForm em forms.py, então o Django recebe e salva os dados.
 {% endcomment %}
-<style>
-  /* O CSS do cadastro não estiliza campos numéricos; este deixa o valor igual aos outros campos. */
-  #camposProfessor input[type="number"] {
-    width: 100%;
-    padding: 10px 16px;
-    border: 1px solid #dcdcdc;
-    border-radius: 20px;
-    font-size: 14px;
-    font-family: inherit;
-    outline: none;
-    background-color: #fff;
-    color: #333;
-    transition: border-color 0.2s;
-  }
 
-  #camposProfessor input[type="number"]:focus {
-    border-color: #6a35d9;
-  }
-</style>
-
-<fieldset class="profile-fields" id="camposProfessor" data-profile="professor">
-  <legend><span class="form-step__number" aria-hidden="true">3</span> Dados do professor</legend>
-  <p class="field-help">Essas informações aparecem no seu perfil para os alunos.</p>
+<fieldset class="profile-fields wizard-fieldset" id="camposProfessor" data-profile="professor">
+  <legend class="sr-only">Dados do professor</legend>
   {% include 'includes/form_field.html' with field=form.formacao %}
-  {% include 'includes/form_field.html' with field=form.valor_hora %}
+  {% include 'includes/form_field.html' with field=form.disciplina_principal %}
   {% include 'includes/form_field.html' with field=form.modalidade %}
+  {% include 'includes/form_field.html' with field=form.valor_hora %}
 </fieldset>

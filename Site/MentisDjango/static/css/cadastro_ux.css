@@ -1,162 +1,560 @@
 /* ==========================================================================
-   Melhorias de experiência (UX) do cadastro
-   Usado junto com login.css, cadastro.css e formularios.css.
+   Fluxo guiado de cadastro (Figma 01 a 05) adaptado ao estilo da Mentis
+   - Usa as variáveis de tema.css (--page, --surface, --foreground, --accent,
+     --action, --separator, etc.), garantindo suporte completo ao modo escuro.
    ========================================================================== */
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
-/* ----- Subtítulo abaixo de "Crie sua Conta" ----- */
-.register-subtitle {
-  max-width: 360px;
-  margin: -12px 0 24px;
-  color: var(--secondary, #615769);
-  font-size: 14px;
-  text-align: center;
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--page, #fafafa);
+  color: var(--foreground, #241b30);
+  font-family: 'Poppins', system-ui, sans-serif;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Utilitário de acessibilidade para legendas apenas de leitores de tela */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 
-/* ----- Blocos do formulário (Seus dados / Acesso / Perfil) ----- */
-.form-step {
-  margin: 0 0 8px;
+/* ==========================================================================
+   Estrutura centralizada da página de cadastro
+   ========================================================================== */
+.wizard-page {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 56px 24px 72px;
+  background: var(--page, #fafafa);
+}
+
+.wizard-shell {
+  width: 100%;
+  max-width: 540px;
+}
+
+.wizard-form {
+  width: 100%;
+}
+
+
+/* ==========================================================================
+   Barra superior das etapas 2, 3 e 4 (Voltar + pontos de progresso)
+   ========================================================================== */
+.wizard-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.wizard-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 38px;
+  padding: 6px 12px 6px 8px;
+  margin-left: -8px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--secondary, #645a70);
+  font: 500 0.875rem/1 'Poppins', sans-serif;
+  cursor: pointer;
+  transition: background-color 0.18s ease, color 0.18s ease;
+}
+
+.wizard-back:hover {
+  background: var(--surface-hover, #f5f2fc);
+  color: var(--accent, #6430d8);
+}
+
+.wizard-progress {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wizard-progress__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--separator, #d9cfee);
+  transition: width 0.22s ease, background-color 0.22s ease;
+}
+
+.wizard-progress__dot.is-active {
+  width: 24px;
+  background: var(--action, #6430d8);
+}
+
+.wizard-progress__dot.is-done {
+  background: var(--accent, #6430d8);
+  opacity: 0.55;
+}
+
+
+/* ==========================================================================
+   Cabeçalho das etapas (título + subtítulo)
+   ========================================================================== */
+.wizard-header {
+  margin-bottom: 28px;
+}
+
+.wizard-title {
+  margin: 0 0 12px;
+  color: var(--foreground, #241b30);
+  font-size: clamp(1.85rem, 3.5vw, 2.35rem);
+  font-weight: 700;
+  line-height: 1.18;
+  letter-spacing: -0.02em;
+}
+
+.wizard-subtitle {
+  margin: 0;
+  color: var(--secondary, #645a70);
+  font-size: 0.95rem;
+  font-weight: 400;
+  line-height: 1.55;
+}
+
+/* Traço decorativo abaixo do subtítulo na etapa 4 (04A / 04P do Figma) */
+.wizard-divider {
+  display: block;
+  width: 48px;
+  height: 2px;
+  margin-top: 18px;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--accent, #6430d8) 50%,
+    transparent 100%
+  );
+}
+
+
+/* ==========================================================================
+   Etapa 1 — Cards de seleção de perfil ("Quero aprender" / "Quero ensinar")
+   ========================================================================== */
+.role-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 28px 0 22px;
+}
+
+.role-card {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) 24px;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  padding: 20px 22px;
+  border: 1px solid var(--separator, #d9cfee);
+  border-radius: 14px;
+  background: var(--surface, #fff);
+  color: var(--foreground, #241b30);
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
+}
+
+.role-card:hover {
+  border-color: var(--accent, #6430d8);
+  background: var(--surface-hover, #f5f2fc);
+  box-shadow: 0 8px 24px rgb(100 48 216 / 10%);
+}
+
+.role-card:active {
+  transform: translateY(1px);
+}
+
+.role-card.active {
+  border-color: var(--accent, #6430d8);
+  box-shadow: 0 0 0 2px rgb(100 48 216 / 14%);
+}
+
+.role-card__icon {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--surface-subtle, #f0ebfd);
+  color: var(--accent, #6430d8);
+}
+
+.role-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.role-card__title {
+  color: var(--foreground, #241b30);
+  font-size: 1.08rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.role-card__desc {
+  color: var(--secondary, #645a70);
+  font-size: 0.85rem;
+  font-weight: 400;
+  line-height: 1.45;
+}
+
+.role-card__chevron {
+  display: inline-grid;
+  place-items: center;
+  color: var(--accent, #6430d8);
+  transition: transform 0.2s ease;
+}
+
+.role-card:hover .role-card__chevron {
+  transform: translateX(3px);
+}
+
+
+/* ==========================================================================
+   Campos do formulário nas etapas 2, 3 e 4
+   ========================================================================== */
+.wizard-fields,
+.wizard-fieldset {
+  margin: 0;
   padding: 0;
   border: 0;
   min-width: 0;
 }
 
-.form-step + .form-step,
-.form-step + .profile-fields,
-.form-step + [data-profile] {
-  margin-top: 8px;
-  padding-top: 20px;
-  border-top: 1px solid var(--separator, #ece6f5);
+.wizard-step .input-group {
+  margin-bottom: 20px;
 }
 
-.form-step legend,
-.profile-fields legend {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 14px;
+.wizard-step .input-group label {
+  display: block;
+  margin-bottom: 8px;
   color: var(--foreground, #241b30);
-  font-size: 15px;
+  font-size: 0.85rem;
   font-weight: 600;
 }
 
-/* Número da etapa ao lado do título do bloco */
-.form-step__number {
-  display: inline-grid;
-  place-items: center;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background: var(--surface-subtle, #efe7fd);
-  color: var(--accent, #6430d8);
-  font-size: 13px;
-  font-weight: 700;
+.wizard-step .input-group input:not([type="checkbox"]):not([type="file"]),
+.wizard-step .input-group select,
+.wizard-step .input-group textarea {
+  width: 100%;
+  min-height: 50px;
+  padding: 13px 16px;
+  border: 1px solid var(--separator, #d9cfee);
+  border-radius: 12px;
+  background: var(--surface, #fff);
+  color: var(--foreground, #241b30);
+  font: 400 0.93rem/1.45 'Poppins', system-ui, sans-serif;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.wizard-step .input-group textarea {
+  min-height: 132px;
+  padding: 14px 16px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.wizard-step .input-group select {
+  cursor: pointer;
+}
+
+.wizard-step .input-group input:focus,
+.wizard-step .input-group select:focus,
+.wizard-step .input-group textarea:focus {
+  outline: none;
+  border-color: var(--accent, #6430d8);
+  box-shadow: 0 0 0 3px rgb(100 48 216 / 14%);
+}
+
+.wizard-step .field-help {
+  margin: 7px 0 0;
+  color: var(--secondary, #645a70);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+/* Textos de observação abaixo dos campos (ex.: "O ícone de olho permite...") */
+.wizard-footnote {
+  margin: 6px 0 24px;
+  color: var(--secondary, #645a70);
+  font-size: 0.8rem;
+  line-height: 1.5;
 }
 
 
-/* ----- Aviso de campos obrigatórios ----- */
-.required-note {
-  margin: 0 0 18px;
-  color: var(--secondary, #615769);
-  font-size: 13px;
-}
-
-
-/* ----- Senha: botão Mostrar / Ocultar ----- */
+/* ==========================================================================
+   Campo de senha com ícone de olho (02A / 02P do Figma)
+   ========================================================================== */
 .password-wrapper {
   position: relative;
 }
 
 .password-wrapper input {
-  padding-right: 92px !important;
+  padding-right: 48px !important;
 }
 
 .password-toggle {
   position: absolute;
   top: 50%;
-  right: 6px;
+  right: 8px;
   transform: translateY(-50%);
-  min-width: 76px;
-  min-height: 36px;
-  padding: 6px 12px;
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
   border: 0;
-  border-radius: 16px;
+  border-radius: 8px;
   background: transparent;
-  color: var(--accent, #6430d8);
-  font: inherit;
-  font-size: 13px;
-  font-weight: 600;
+  color: var(--secondary, #645a70);
   cursor: pointer;
+  transition: background-color 0.18s ease, color 0.18s ease;
 }
 
 .password-toggle:hover {
-  background: var(--surface-hover, #f5f0ff);
+  background: var(--surface-hover, #f5f2fc);
+  color: var(--accent, #6430d8);
+}
+
+.password-toggle svg {
+  width: 20px;
+  height: 20px;
 }
 
 
-/* ----- Medidor de força da senha ----- */
-.password-strength {
-  margin-top: 8px;
+/* ==========================================================================
+   Contador de caracteres do resumo/apresentação e foto opcional (Etapa 4)
+   ========================================================================== */
+.bio-field-wrapper {
+  position: relative;
 }
 
-.password-strength__bar {
-  height: 6px;
-  border-radius: 999px;
-  background: var(--separator, #ece6f5);
-  overflow: hidden;
-}
-
-.password-strength__bar span {
+.char-counter {
   display: block;
-  width: 0;
-  height: 100%;
-  border-radius: inherit;
-  transition: width .25s ease, background-color .25s ease;
+  margin-top: -12px;
+  margin-bottom: 18px;
+  color: var(--secondary, #645a70);
+  font-size: 0.78rem;
+  text-align: right;
 }
 
-.password-strength__text {
-  min-height: 1.2em;
-  margin: 6px 0 0 4px;
-  font-size: 13px;
-  color: var(--secondary, #615769);
+.optional-photo-box {
+  margin-top: 8px;
+  margin-bottom: 18px;
+  padding: 14px 16px;
+  border: 1px dashed var(--separator, #d9cfee);
+  border-radius: 12px;
+  background: var(--surface, #fff);
 }
 
-.password-strength.is-weak   span { background: #c0392b; }
-.password-strength.is-medium span { background: #e08e0b; }
-.password-strength.is-good   span { background: #3a9d5d; }
-.password-strength.is-strong span { background: #23794a; }
-
-.password-strength.is-weak   .password-strength__text { color: #a42534; }
-.password-strength.is-strong .password-strength__text { color: #23794a; }
-
-
-/* ----- Erros mostrados em tempo real ----- */
-.field-live-error {
-  margin: 6px 0 0 4px;
-  color: var(--danger, #a42534);
-  font-size: 13px;
+.optional-photo-box .input-group {
+  margin-bottom: 0;
 }
 
-.input-group [aria-invalid="true"] {
-  border-color: var(--danger, #a42534) !important;
+.optional-photo-box input[type="file"] {
+  font-size: 0.85rem;
+  color: var(--secondary, #645a70);
 }
 
 
-/* ----- Botão "Criar Conta" carregando ----- */
-.submit-btn.is-loading {
-  opacity: .75;
+/* ==========================================================================
+   Botão principal ("Continuar" / "Criar minha conta" / "Encontrar professores")
+   ========================================================================== */
+.wizard-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 52px;
+  padding: 14px 24px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--action, #6430d8);
+  color: #fff;
+  font: 600 0.95rem/1.2 'Poppins', system-ui, sans-serif;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.18s ease, transform 0.15s ease, opacity 0.18s ease;
+}
+
+.wizard-btn:hover {
+  background: var(--action-hover, #4a1fa3);
+}
+
+.wizard-btn:active {
+  transform: translateY(1px);
+}
+
+.wizard-btn.is-loading {
+  opacity: 0.75;
   cursor: progress;
 }
 
-.submit-btn:disabled {
+.wizard-btn:disabled {
   transform: none;
 }
 
+.wizard-login-hint {
+  margin: 22px 0 0;
+  color: var(--secondary, #645a70);
+  font-size: 0.85rem;
+  text-align: center;
+}
 
-/* ----- Movimento reduzido ----- */
+.wizard-login-hint a {
+  color: var(--accent, #6430d8);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.wizard-login-hint a:hover {
+  text-decoration: underline;
+}
+
+
+/* ==========================================================================
+   Erros de validação (servidor e em tempo real)
+   ========================================================================== */
+.form-errors {
+  margin: 0 0 22px;
+  padding: 14px 16px;
+  border: 1px solid var(--danger, #a42536);
+  border-radius: 12px;
+  background: var(--danger-bg, #fceef0);
+  color: var(--danger, #a42536);
+  font-size: 0.88rem;
+}
+
+.field-live-error,
+.wizard-step .errorlist {
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--danger, #a42536);
+  font-size: 0.8rem;
+}
+
+.wizard-step .input-group [aria-invalid="true"] {
+  border-color: var(--danger, #a42536) !important;
+}
+
+
+/* ==========================================================================
+   Tela 5 — Conta criada (05A / 05P do Figma)
+   ========================================================================== */
+.wizard-shell--done {
+  padding-top: 8px;
+}
+
+.done-badge {
+  display: inline-grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  margin-bottom: 22px;
+  border-radius: 50%;
+  background: var(--success-bg, #e9f5ee);
+  color: var(--success, #23613e);
+}
+
+.done-summary-card {
+  margin: 28px 0 24px;
+  padding: 24px 26px;
+  border: 1px solid var(--separator, #d9cfee);
+  border-radius: 16px;
+  background: var(--surface, #fff);
+  box-shadow: 0 8px 28px rgb(36 27 48 / 5%);
+}
+
+.done-summary-card__name {
+  margin: 0 0 6px;
+  color: var(--foreground, #241b30);
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.done-summary-card__meta {
+  margin: 0 0 12px;
+  color: var(--secondary, #645a70);
+  font-size: 0.85rem;
+}
+
+.done-summary-card__detail {
+  margin: 0;
+  color: var(--foreground, #241b30);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+
+/* ==========================================================================
+   Ajustes de Modo Escuro e Responsividade
+   ========================================================================== */
+[data-theme='dark'] .role-card,
+[data-theme='dark'] .done-summary-card,
+[data-theme='dark'] .optional-photo-box {
+  background: var(--surface);
+  border-color: var(--separator);
+}
+
+[data-theme='dark'] .role-card:hover {
+  background: var(--surface-hover);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 35%);
+}
+
+[data-theme='dark'] .wizard-btn {
+  color: #fff;
+}
+
+@media (max-width: 600px) {
+  .wizard-page {
+    padding: 32px 18px 48px;
+  }
+
+  .role-card {
+    grid-template-columns: 40px minmax(0, 1fr) 20px;
+    gap: 12px;
+    padding: 16px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .password-strength__bar span {
-    transition: none;
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
   }
 }
