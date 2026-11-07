@@ -16,7 +16,8 @@
   </header>
 
   <div class="site-reviews__layout">
-    <div class="site-reviews__list">
+    <div class="site-reviews__list" data-review-carousel>
+      <div id="review-slides" data-review-slides>
       {% for review in avaliacoes_site %}
         <article class="site-review">
           <header>
@@ -48,6 +49,23 @@
           <p>Ainda não há avaliações do site. Conte como foi sua experiência com a Mentis.</p>
         </div>
       {% endfor %}
+      {% if avaliacoes_site|length < 2 %}
+        <article class="site-review">
+          <header><span class="site-review__avatar site-review__initials" aria-hidden="true">E</span><div class="site-review__identity"><h3>Exemplo de estudante</h3><p class="site-reviews__help">Demonstração — avaliação fictícia</p></div></header>
+          <p class="site-review__comment">Comparar os perfis e conhecer os materiais ajuda a escolher um professor para estudar.</p>
+        </article>
+        <article class="site-review">
+          <header><span class="site-review__avatar site-review__initials" aria-hidden="true">P</span><div class="site-review__identity"><h3>Exemplo de professor</h3><p class="site-reviews__help">Demonstração — avaliação fictícia</p></div></header>
+          <p class="site-review__comment">Um espaço para apresentar minha didática, compartilhar conteúdos e me conectar com estudantes.</p>
+        </article>
+      {% endif %}
+      </div>
+      <div class="review-controls" data-review-controls hidden>
+        <button type="button" data-review-prev aria-label="Avaliação anterior" aria-controls="review-slides">‹</button>
+        <span data-review-position aria-live="off"></span>
+        <button type="button" data-review-next aria-label="Próxima avaliação" aria-controls="review-slides">›</button>
+        <button type="button" data-review-pause>Pausar avaliações</button>
+      </div>
 
       {% if avaliacoes_site.has_other_pages %}
         <nav class="site-reviews__pagination" aria-label="Páginas de avaliações">

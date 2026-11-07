@@ -148,6 +148,7 @@ main:focus { outline: none; }
   transition: background-color var(--ease), border-color var(--ease), color var(--ease);
 }
 
+.cta__buttons .btn { gap: 10px; }
 .btn--primary { background: var(--action, var(--purple)); color: #fff; }
 .btn--ghost { border-color: var(--purple); color: var(--purple); }
 .btn--white { background: #fff; color: #4a1fa3; }

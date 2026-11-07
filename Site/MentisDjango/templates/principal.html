@@ -6,11 +6,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="{% static 'css/principal.css' %}?v=themes-2">
+  <link rel="stylesheet" href="{% static 'css/principal.css' %}?v=themes-3">
   <meta name="description" content="Encontre professores particulares de qualquer disciplina, a qualquer distância.">
   <meta name="theme-color" content="#6430D8">
   <script src="{% static 'js/principal.js' %}?v=themes-2" defer></script>
-  <link rel="stylesheet" href="{% static 'css/avaliacoes_site.css' %}?v=themes-2">
+  <script src="{% static 'js/movimento.js' %}?v=2" defer></script>
+  <script src="{% static 'js/avaliacoes.js' %}?v=1" defer></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="{% static 'css/avaliacoes_site.css' %}?v=themes-3">
   {% if request.user.is_authenticated %}<script src="{% static 'js/editar_perfil.js' %}?v=themes-2" defer></script>{% endif %}
 {% endblock %}
 {% block body_class %}principal-page{% endblock %}
@@ -108,8 +111,8 @@
         <a href="{% url 'principal' %}#resultados" class="btn btn--white">Encontrar um professor</a>
         {% if request.user.professor %}<a href="{% url 'professor_detalhe' request.user.pk %}" class="btn btn--outline">Meu perfil</a>{% else %}<a href="{% url 'perfil_aluno' %}" class="btn btn--outline">Meu perfil</a>{% endif %}
         {% else %}
-        <a href="{% url 'cadastro' %}" class="btn btn--white">Começar como estudante</a>
-        <a href="{% url 'cadastro' %}?tipo=professor" class="btn btn--outline">Sou professor</a>
+        <a href="{% url 'cadastro' %}" class="btn btn--white"><i class="fa-regular fa-user" aria-hidden="true"></i> Começar como estudante</a>
+        <a href="{% url 'cadastro' %}?tipo=professor" class="btn btn--outline"><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i> Sou professor</a>
         {% endif %}
       </div>
     </section>
