@@ -1,7 +1,7 @@
 from datetime import time
 
 from django.contrib import messages
-from django.contrib.auth import login, logout
+from django.contrib.auth import login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db import IntegrityError
@@ -193,8 +193,60 @@ def cadastro_view(request):
                 form.add_error(None, 'Não foi possível criar a conta com estes dados. Confira o usuário e o e-mail.')
             else:
                 login(request, usuario)
+                if request.POST.get('wizard_mode') == '1':
+                    return redirect('cadastro_concluido')
                 return redirect('principal')
     return render(request, 'cadastro.html', {'form': form})
+
+
+@never_cache
+@login_required(login_url='login')
+@require_GET
+def cadastro_concluido_view(request):
+    usuario = request.user
+    eh_professor = hasattr(usuario, 'professor')
+
+    if eh_professor:
+        professor = usuario.professor
+        primeira_disc = professor.disciplinas.order_by('nome').first()
+        disciplina_nome = primeira_disc.nome if primeira_disc else professor.formacao
+        modalidades_map = {
+            'ONLINE': 'Online',
+            'PRESENCIAL': 'Presencial',
+            'HIBRIDA': 'Online e presencial',
+        }
+        modalidade_exibicao = modalidades_map.get(professor.modalidade, professor.modalidade)
+        valor_formatado = f'{professor.valor_hora:.2f}'.replace('.', ',')
+        return render(request, 'cadastro_concluido.html', {
+            'eh_professor': True,
+            'nome': usuario.nome or usuario.username,
+            'subtitulo_card': f'Professor(a) · {disciplina_nome}' if disciplina_nome else 'Professor(a)',
+            'detalhe_card': f'{modalidade_exibicao} · R$ {valor_formatado} por hora',
+            'destino_url': reverse('painel_professor_agenda'),
+            'destino_texto': 'Organizar minha agenda',
+        })
+
+    aluno = getattr(usuario, 'aluno', None)
+    nivel_label = aluno.get_nivel_estudo_display().lower() if (aluno and aluno.nivel_estudo) else ''
+    serie_label = aluno.serie if aluno else ''
+    if serie_label and nivel_label:
+        subtitulo_card = f'Estudante · {serie_label} do {nivel_label}'
+    elif serie_label:
+        subtitulo_card = f'Estudante · {serie_label}'
+    else:
+        subtitulo_card = 'Estudante'
+
+    detalhe_card = f'Objetivo: {usuario.bio}' if usuario.bio else (
+        f'Instituição: {aluno.escola}' if (aluno and aluno.escola) else 'Conta criada com a tag Novato.'
+    )
+    return render(request, 'cadastro_concluido.html', {
+        'eh_professor': False,
+        'nome': usuario.nome or usuario.username,
+        'subtitulo_card': subtitulo_card,
+        'detalhe_card': detalhe_card,
+        'destino_url': reverse('professores'),
+        'destino_texto': 'Encontrar professores',
+    })
 
 
 @never_cache

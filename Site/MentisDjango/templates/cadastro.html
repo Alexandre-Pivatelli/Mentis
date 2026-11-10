@@ -2,99 +2,258 @@
 {% load static %}
 
 {% block page_head %}
-  <title>Mentis – Cadastrar</title>
-  <link rel="stylesheet" href="{% static 'css/login.css' %}?v=themes-2">
-  <link rel="stylesheet" href="{% static 'css/cadastro.css' %}?v=themes-2">
+  <title>Mentis – Criar conta</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'css/formularios.css' %}?v=themes-2">
-  <link rel="stylesheet" href="{% static 'css/cadastro_ux.css' %}?v=ux-1">
-  <script src="{% static 'js/auth.js' %}?v=cadastro-fix-1" defer></script>
-  <script src="{% static 'js/cadastro.js' %}?v=ux-1" defer></script>
+  <link rel="stylesheet" href="{% static 'css/cadastro_ux.css' %}?v=figma-flow-1">
+  <script src="{% static 'js/auth.js' %}?v=figma-flow-1" defer></script>
+  <script src="{% static 'js/cadastro.js' %}?v=figma-flow-1" defer></script>
 {% endblock %}
 
 {% block content %}
 {% firstof form.data.user_type form.initial.user_type 'estudante' as tipo_atual %}
 
-<main class="container">
-  <section class="register-section">
-    <h1 class="welcome-title">Crie sua Conta</h1>
-    <p class="register-subtitle">Leva menos de 2 minutos. Primeiro, conte como você quer usar a Mentis:</p>
+<main class="wizard-page">
+  <section class="wizard-shell" aria-label="Cadastro guiado">
 
-    <!-- Seletor Estudante / Professor (mesmo visual do login) -->
-    <div class="toggle-container" role="group" aria-label="Tipo de conta">
-      <button type="button" id="btnEstudante"
-              class="toggle-btn{% if tipo_atual != 'professor' %} active{% endif %}"
-              aria-pressed="{% if tipo_atual != 'professor' %}true{% else %}false{% endif %}">
-        <i class="fa-regular fa-user" aria-hidden="true"></i>
-        Quero aprender
-      </button>
-      <button type="button" id="btnProfessor"
-              class="toggle-btn{% if tipo_atual == 'professor' %} active{% endif %}"
-              aria-pressed="{% if tipo_atual == 'professor' %}true{% else %}false{% endif %}">
-        <i class="fa-solid fa-graduation-cap" aria-hidden="true"></i>
-        Quero ensinar
-      </button>
-    </div>
-
-    <form class="register-form" method="post" enctype="multipart/form-data" action="{% url 'cadastro' %}">
+    <form class="wizard-form register-form"
+          method="post"
+          enctype="multipart/form-data"
+          action="{% url 'cadastro' %}"
+          data-has-errors="{% if form.errors %}true{% else %}false{% endif %}"
+          data-initial-role="{% if request.GET.tipo == 'professor' %}professor{% endif %}"
+          novalidate>
       {% csrf_token %}
       <input type="hidden" name="user_type" id="userTypeInput" value="{{ tipo_atual }}">
+      <input type="hidden" name="wizard_mode" value="1">
+
+      <!-- Barra de topo do fluxo (botão Voltar + indicador de progresso discreto) -->
+      <div class="wizard-topbar" id="wizardTopbar" hidden>
+        <button type="button" class="wizard-back" id="wizardBackBtn" aria-label="Voltar para a etapa anterior">
+          <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true">
+            <path d="M12.5 4.5 7 10l5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>Voltar</span>
+        </button>
+
+        <div class="wizard-progress" role="progressbar" aria-label="Progresso do cadastro" aria-valuemin="1" aria-valuemax="4" aria-valuenow="1">
+          <span class="wizard-progress__dot is-active" data-step-dot="1"></span>
+          <span class="wizard-progress__dot" data-step-dot="2"></span>
+          <span class="wizard-progress__dot" data-step-dot="3"></span>
+          <span class="wizard-progress__dot" data-step-dot="4"></span>
+        </div>
+      </div>
 
       {% if form.errors %}
         <div class="form-errors" role="alert" tabindex="-1" data-error-summary>
-          Confira os campos indicados abaixo.
+          Confira os campos destacados abaixo para concluir seu cadastro.
           {{ form.non_field_errors }}
         </div>
       {% endif %}
 
-      <p class="required-note">Todos os campos são obrigatórios, exceto os marcados como opcionais.</p>
+      <!-- ===================================================================
+           ETAPA 1 — Como você quer usar a Mentis? (01 do Figma)
+           =================================================================== -->
+      <section class="wizard-step" data-wizard-step="1" aria-labelledby="step1Title">
+        <header class="wizard-header">
+          <h1 class="wizard-title" id="step1Title">Seu próximo passo<br>começa aqui.</h1>
+          <p class="wizard-subtitle">Escolha como você quer participar da Mentis.</p>
+        </header>
 
-      <!-- Etapa 1: dados pessoais -->
-      <fieldset class="form-step">
-        <legend><span class="form-step__number" aria-hidden="true">1</span> Seus dados</legend>
-        {% include 'includes/form_field.html' with field=form.nome %}
-        {% include 'includes/form_field.html' with field=form.foto %}
-      </fieldset>
+        <div class="role-cards" role="group" aria-label="Tipo de conta">
+          <!-- Card: Quero aprender -->
+          <button type="button"
+                  id="btnEstudante"
+                  class="role-card{% if tipo_atual != 'professor' %} active{% endif %}"
+                  data-choose-role="estudante"
+                  aria-pressed="{% if tipo_atual != 'professor' %}true{% else %}false{% endif %}">
+            <span class="role-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="24" height="24">
+                <path d="M3 5.5A2.5 2.5 0 0 1 5.5 3H11v16H5.5A2.5 2.5 0 0 0 3 21.5v-16Zm18 0A2.5 2.5 0 0 0 18.5 3H13v16h5.5a2.5 2.5 0 0 1 2.5 2.5v-16Z"
+                      fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
 
-      <!-- Etapa 2: dados de acesso -->
-      <fieldset class="form-step">
-        <legend><span class="form-step__number" aria-hidden="true">2</span> Dados de acesso</legend>
-        {% include 'includes/form_field.html' with field=form.email %}
-        {% include 'includes/form_field.html' with field=form.username %}
-        {% include 'includes/form_field.html' with field=form.password1 %}
-        {% include 'includes/form_field.html' with field=form.password2 %}
-      </fieldset>
+            <span class="role-card__body">
+              <strong class="role-card__title">Quero aprender</strong>
+              <span class="role-card__desc">Encontre professores e avance nos seus estudos.</span>
+            </span>
 
-      <!-- Etapa 3: dados do estudante -->
-      <fieldset class="profile-fields form-step" data-profile="estudante"{% if tipo_atual == 'professor' %} hidden{% endif %}>
-        <legend><span class="form-step__number" aria-hidden="true">3</span> Dados do estudante</legend>
-        <p class="field-help">Conte em que etapa você está. Ao criar sua conta, você recebe a tag Novato.</p>
-        {% include 'includes/form_field.html' with field=form.nivel_estudo %}
-        {% include 'includes/form_field.html' with field=form.serie %}
-        {% include 'includes/form_field.html' with field=form.escola %}
-      </fieldset>
+            <span class="role-card__chevron" aria-hidden="true">
+              <svg viewBox="0 0 20 20" width="18" height="18">
+                <path d="M7.5 4.5 13 10l-5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+          </button>
 
-      <!-- Etapa 3: dados do professor -->
-      <div class="form-step" data-profile="professor"{% if tipo_atual != 'professor' %} hidden{% endif %}>
-        {% include 'includes/campos_professor.html' %}
-      </div>
+          <!-- Card: Quero ensinar -->
+          <button type="button"
+                  id="btnProfessor"
+                  class="role-card{% if tipo_atual == 'professor' %} active{% endif %}"
+                  data-choose-role="professor"
+                  aria-pressed="{% if tipo_atual == 'professor' %}true{% else %}false{% endif %}">
+            <span class="role-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="24" height="24">
+                <rect x="3" y="4" width="18" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                <path d="M7 9h6M7 12h4M12 16v4m-4 0h8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+            </span>
 
-      <button type="submit" class="submit-btn">Criar Conta</button>
-      <p class="login-text">Já tem uma conta? <a href="{% url 'login' %}">Entrar</a></p>
+            <span class="role-card__body">
+              <strong class="role-card__title">Quero ensinar</strong>
+              <span class="role-card__desc">Compartilhe seu conhecimento e receba novos alunos.</span>
+            </span>
+
+            <span class="role-card__chevron" aria-hidden="true">
+              <svg viewBox="0 0 20 20" width="18" height="18">
+                <path d="M7.5 4.5 13 10l-5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+          </button>
+        </div>
+
+        <p class="wizard-footnote">Você verá apenas as perguntas relevantes para o seu perfil.</p>
+      </section>
+
+      <!-- ===================================================================
+           ETAPA 2 — Sua conta (02A e 02P do Figma)
+           =================================================================== -->
+      <section class="wizard-step" data-wizard-step="2" aria-labelledby="step2Title" hidden>
+        <header class="wizard-header">
+          <h1 class="wizard-title" id="step2Title">Vamos começar pelo básico.</h1>
+          <p class="wizard-subtitle"
+             id="step2Subtitle"
+             data-copy-estudante="Crie seu acesso para começar a aprender."
+             data-copy-professor="Crie seu acesso para começar a ensinar.">
+            {% if tipo_atual == 'professor' %}
+              Crie seu acesso para começar a ensinar.
+            {% else %}
+              Crie seu acesso para começar a aprender.
+            {% endif %}
+          </p>
+        </header>
+
+        <div class="wizard-fields">
+          {% include 'includes/form_field.html' with field=form.nome %}
+          {% include 'includes/form_field.html' with field=form.email %}
+          {% include 'includes/form_field.html' with field=form.password1 %}
+
+          <!-- Campo de confirmação de senha: fica sincronizado no modo guiado
+               e visível caso o usuário navegue sem JavaScript -->
+          <div class="confirm-password-group" data-confirm-password-group>
+            {% include 'includes/form_field.html' with field=form.password2 %}
+          </div>
+        </div>
+
+        <p class="wizard-footnote">O ícone de olho permite conferir a senha antes de continuar.</p>
+
+        <button type="button" class="wizard-btn" data-wizard-next="3">Continuar</button>
+      </section>
+
+      <!-- ===================================================================
+           ETAPA 3 — Seus estudos (03A) / Seu ensino (03P)
+           =================================================================== -->
+      <section class="wizard-step" data-wizard-step="3" aria-labelledby="step3Title" hidden>
+        <header class="wizard-header">
+          <h1 class="wizard-title"
+              id="step3Title"
+              data-copy-estudante="Em que momento&#10;você está?"
+              data-copy-professor="O que você&#10;quer ensinar?">
+            {% if tipo_atual == 'professor' %}
+              O que você<br>quer ensinar?
+            {% else %}
+              Em que momento<br>você está?
+            {% endif %}
+          </h1>
+          <p class="wizard-subtitle"
+             id="step3Subtitle"
+             data-copy-estudante="Isso ajuda seus professores a entenderem o que você está estudando."
+             data-copy-professor="Organize as informações que os alunos verão no seu perfil.">
+            {% if tipo_atual == 'professor' %}
+              Organize as informações que os alunos verão no seu perfil.
+            {% else %}
+              Isso ajuda seus professores a entenderem o que você está estudando.
+            {% endif %}
+          </p>
+        </header>
+
+        <!-- Campos do Estudante (03A) -->
+        <fieldset class="profile-fields wizard-fieldset" data-profile="estudante"{% if tipo_atual == 'professor' %} hidden{% endif %}>
+          <legend class="sr-only">Dados do estudante</legend>
+          {% include 'includes/form_field.html' with field=form.nivel_estudo %}
+          {% include 'includes/form_field.html' with field=form.serie %}
+          {% include 'includes/form_field.html' with field=form.escola %}
+          <p class="wizard-footnote">A série é apresentada de acordo com o nível escolhido.</p>
+        </fieldset>
+
+        <!-- Campos do Professor (03P) -->
+        <div data-profile="professor"{% if tipo_atual != 'professor' %} hidden{% endif %}>
+          {% include 'includes/campos_professor.html' %}
+        </div>
+
+        <button type="button" class="wizard-btn" data-wizard-next="4">Continuar</button>
+      </section>
+
+      <!-- ===================================================================
+           ETAPA 4 — Um pouco sobre você (04A) / Sua apresentação (04P)
+           =================================================================== -->
+      <section class="wizard-step" data-wizard-step="4" aria-labelledby="step4Title" hidden>
+        <header class="wizard-header">
+          <h1 class="wizard-title"
+              id="step4Title"
+              data-copy-estudante="Conte um pouco&#10;sobre você."
+              data-copy-professor="Mostre seu jeito&#10;de ensinar.">
+            {% if tipo_atual == 'professor' %}
+              Mostre seu jeito<br>de ensinar.
+            {% else %}
+              Conte um pouco<br>sobre você.
+            {% endif %}
+          </h1>
+          <p class="wizard-subtitle"
+             id="step4Subtitle"
+             data-copy-estudante="Ajude seus professores a conhecerem seus objetivos."
+             data-copy-professor="Uma boa apresentação ajuda os alunos a conhecerem você.">
+            {% if tipo_atual == 'professor' %}
+              Uma boa apresentação ajuda os alunos a conhecerem você.
+            {% else %}
+              Ajude seus professores a conhecerem seus objetivos.
+            {% endif %}
+          </p>
+          <span class="wizard-divider" aria-hidden="true"></span>
+        </header>
+
+        <div class="wizard-fields">
+          {% include 'includes/form_field.html' with field=form.username %}
+
+          <div class="bio-field-wrapper">
+            {% include 'includes/form_field.html' with field=form.bio %}
+            <span class="char-counter" id="bioCharCounter" aria-live="polite">0 / 300</span>
+          </div>
+
+          <div class="optional-photo-box">
+            {% include 'includes/form_field.html' with field=form.foto %}
+          </div>
+        </div>
+
+        <p class="wizard-footnote"
+           id="step4Footnote"
+           data-copy-estudante="Seu resumo aparece no perfil para seus professores."
+           data-copy-professor="Sua apresentação aparece no seu perfil de professor.">
+          {% if tipo_atual == 'professor' %}
+            Sua apresentação aparece no seu perfil de professor.
+          {% else %}
+            Seu resumo aparece no perfil para seus professores.
+          {% endif %}
+        </p>
+
+        <button type="submit" class="wizard-btn submit-btn" id="wizardSubmitBtn">Criar minha conta</button>
+      </section>
+
+      <p class="wizard-login-hint">
+        Já tem conta? <a href="{% url 'login' %}">Entrar</a>
+      </p>
     </form>
-  </section>
 
-  <section class="brand-section" aria-label="Mentis">
-    <div class="brand-content">
-      <div class="big-logo-icon">
-        <img src="{% static 'img/logo-b.png' %}" id="logo-branco" alt="Mentis">
-      </div>
-      <h2 class="brand-title">MENTIS</h2>
-    </div>
   </section>
 </main>
-
-<!--
-  A troca Estudante / Professor é feita em static/js/auth.js.
-  As melhorias de UX (senha, série dependente, validação ao vivo) ficam em static/js/cadastro.js.
--->
 {% endblock %}
