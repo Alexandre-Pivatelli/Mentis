@@ -1,0 +1,427 @@
+/* ========== RESET & VARIÁVEIS ========== */
+:root {
+  --purple: #6430D8;
+  --purple-dark: #4A1FA3;
+  --purple-light: #E6DEFB;
+  --lavender: #F0EBFD;
+  --text: #1E1208;
+  --muted: #6B6B6B;
+  --bg: #FAFAFA;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+/* ========== HEADER ========== */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 44px;
+  height: 100px;
+  background: var(--bg);
+}
+
+.logo {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--purple);
+  letter-spacing: -1px;
+}
+
+.nav {
+  display: flex;
+  gap: 20px;
+  font-size: 1.1rem;
+}
+
+.nav a:hover,
+.auth a:hover {
+  color: var(--purple);
+}
+
+.auth {
+  font-size: 1.1rem;
+  color: var(--purple);
+}
+
+/* ========== LAYOUT DA PÁGINA ========== */
+.page {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 500px;
+  gap: 56px;
+  align-items: start;
+  padding: 10px 30px 70px 44px;
+}
+
+/* ========== ABAS ========== */
+.tabs {
+  display: flex;
+  align-items: center;
+  gap: 34px;
+}
+
+.tab {
+  font-size: 1.6rem;
+  font-weight: 400;
+  color: var(--text);
+  transition: color 0.15s ease;
+}
+
+.tab:hover {
+  color: var(--purple);
+}
+
+.tab--active {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 2.2rem;
+  font-weight: 700;
+}
+
+.tab--active svg {
+  width: 26px;
+  height: 26px;
+  margin-top: 4px;
+}
+
+/* ========== CONTEÚDO ESQUERDO ========== */
+.about {
+  margin-top: 6px;
+  font-size: 1.2rem;
+  line-height: 1.55;
+  text-align: justify;
+}
+
+.section-heading {
+  margin-top: 30px;
+  font-size: 2.2rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+/* ========== CHIPS ========== */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 12px;
+}
+
+.chip {
+  padding: 9px 18px;
+  background: var(--lavender);
+  border: 1.5px solid var(--purple);
+  border-radius: 999px;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: background 0.15s ease;
+}
+
+.chip:hover {
+  background: var(--purple-light);
+}
+
+/* ========== AVALIAÇÕES ========== */
+.reviews {
+  display: flex;
+  gap: 32px;
+  margin-top: 20px;
+  padding: 6px 4px 22px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: var(--purple-light) transparent;
+}
+
+.review {
+  flex: 0 0 320px;
+  scroll-snap-align: start;
+  padding: 14px 16px 24px;
+  background: #fff;
+  border-radius: 38px;
+  box-shadow: 0 4px 24px rgba(100, 48, 216, 0.07);
+}
+
+.review__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Troque o background por: url("img/professor.jpg") center/cover */
+.avatar {
+  flex: 0 0 64px;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #8d6ee6 0%, #3b1a8c 100%);
+}
+
+.review__who {
+  flex: 1;
+  min-width: 0;
+}
+
+.review__name {
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.review__meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2px;
+  font-size: 1rem;
+  color: #888;
+}
+
+.review__rating {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.review__rating i {
+  font-style: normal;
+  color: #F7A21B;
+}
+
+.review hr {
+  margin: 12px 0;
+  border: none;
+  border-top: 1px solid #8a8a8a;
+}
+
+.review p {
+  font-size: 1rem;
+  line-height: 1.45;
+  text-align: justify;
+}
+
+/* ========== CARD DO PERFIL ========== */
+.profile {
+  overflow: hidden;
+  padding-bottom: 24px;
+  background: #fff;
+  border-radius: 40px;
+  box-shadow: 0 4px 30px rgba(100, 48, 216, 0.08);
+}
+
+.profile__photo {
+  position: relative;
+  height: 360px;
+  /* Troque o gradiente por: url("img/aluno.jpg") center/cover */
+  background:
+    linear-gradient(to top, #fff 0%, rgba(255, 255, 255, 0) 30%),
+    linear-gradient(135deg, #b9a2f2 0%, #6430d8 55%, #3b1a8c 100%);
+}
+
+.profile__flame {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  background: #fff;
+  border-radius: 50%;
+}
+
+.profile__flame svg {
+  width: 28px;
+  height: 28px;
+}
+
+.profile__body {
+  padding: 0 24px;
+  text-align: center;
+}
+
+.profile__name {
+  margin-top: -6px;
+  font-size: 2.2rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.profile__role {
+  margin-top: 2px;
+  font-size: 0.95rem;
+  color: #8a8a8a;
+}
+
+.stats {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+  margin-top: 22px;
+}
+
+.stat strong {
+  display: block;
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--purple);
+}
+
+.stat span {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 28px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: var(--lavender);
+  border: 1.5px solid var(--purple);
+  border-radius: 999px;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.badge svg {
+  width: 22px;
+  height: 22px;
+}
+
+.btn-edit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  width: 100%;
+  margin-top: 22px;
+  padding: 20px;
+  border: none;
+  border-radius: 999px;
+  background: var(--purple);
+  color: #fff;
+  font-size: 1.4rem;
+  font-weight: 700;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.btn-edit:hover {
+  background: var(--purple-dark);
+  transform: translateY(-2px);
+}
+
+.btn-edit svg {
+  width: 30px;
+  height: 30px;
+}
+
+/* ========== RESPONSIVO ========== */
+@media (max-width: 1100px) {
+  .page {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    padding: 10px 30px 60px;
+  }
+
+  .profile {
+    order: -1;
+    max-width: 560px;
+    width: 100%;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 900px) {
+  .header {
+    padding: 0 24px;
+    height: 80px;
+  }
+
+  .nav {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .page {
+    padding: 10px 20px 50px;
+  }
+
+  .tabs {
+    gap: 20px;
+  }
+
+  .tab {
+    font-size: 1.2rem;
+  }
+
+  .tab--active {
+    font-size: 1.7rem;
+  }
+
+  .about {
+    font-size: 1.05rem;
+  }
+
+  .section-heading {
+    font-size: 1.6rem;
+  }
+
+  .chips {
+    gap: 12px;
+  }
+
+  .review {
+    flex-basis: 280px;
+  }
+
+  .profile__photo {
+    height: 300px;
+  }
+
+  .profile__name {
+    font-size: 1.8rem;
+  }
+
+  .stats {
+    gap: 40px;
+  }
+}
