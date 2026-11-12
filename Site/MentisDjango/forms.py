@@ -4,7 +4,7 @@ from django import forms
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm, UserCreationForm
 from django.db import transaction
 
-from .models import Aluno, Professor, Usuario, AvaliacaoSite
+from .models import Aluno, Disciplina, Professor, Usuario, AvaliacaoSite
 
 
 class FotoPerfilInput(forms.ClearableFileInput):
@@ -52,24 +52,72 @@ class CadastroForm(UserCreationForm):
         widget=forms.NumberInput(attrs={'step': '0.01', 'min': '0.01', 'inputmode': 'decimal'}))
     modalidade = forms.ChoiceField(label='Modalidade', required=False, choices=[
         ('', 'Selecione'), ('ONLINE', 'Online'), ('PRESENCIAL', 'Presencial'), ('HIBRIDA', 'Online e presencial')])
+    disciplina_principal = forms.CharField(
+        label='Disciplina principal',
+        max_length=100,
+        required=False,
+        widget=forms.Select(),
+    )
+    bio = forms.CharField(
+        label='Seu resumo (opcional)',
+        max_length=300,
+        required=False,
+        widget=forms.Textarea(attrs={'rows': 4, 'maxlength': '300'}),
+    )
 
     class Meta(UserCreationForm.Meta):
         model = Usuario
         fields = ('user_type', 'nome', 'foto', 'username', 'email', 'password1', 'password2',
-                  'nivel_estudo', 'serie', 'escola', 'formacao', 'valor_hora', 'modalidade')
+                  'nivel_estudo', 'serie', 'escola', 'formacao', 'disciplina_principal',
+                  'valor_hora', 'modalidade', 'bio')
         labels = {'username': 'Nome de usuário'}
         widgets = {'username': forms.TextInput(attrs={'autocomplete': 'username', 'autocapitalize': 'none'})}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['username'].widget.attrs.pop('autofocus', None)
-        self.fields['username'].help_text = 'Use letras, números e os caracteres @ . + - _.'
         self.fields['password1'].label = 'Senha'
-        self.fields['password1'].help_text = 'Use pelo menos 8 caracteres. Evite senhas comuns, só números ou parecidas com seus dados.'
+        self.fields['password1'].help_text = 'Use pelo menos 8 caracteres. Evite senhas comuns.'
         self.fields['password2'].label = 'Confirmar senha'
         self.fields['password2'].help_text = ''
         for name in ('password1', 'password2'):
             self.fields[name].widget.attrs['autocomplete'] = 'new-password'
+
+        # Popula as opções da disciplina principal a partir do banco (ou lista padrão)
+        nomes_banco = list(Disciplina.objects.order_by('nome').values_list('nome', flat=True))
+        nomes_padrao = ['Matemática', 'Português', 'Redação', 'Química', 'Física', 'História', 'Geografia', 'Biologia', 'Inglês']
+        opcoes_disc = nomes_banco if nomes_banco else nomes_padrao
+        self.fields['disciplina_principal'].widget.choices = [
+            ('', 'Selecione a disciplina'),
+            *[(nome, nome) for nome in opcoes_disc],
+        ]
+
+        # ===== Exemplos (placeholders) e dicas alinhados ao protótipo do Figma =====
+        placeholders = {
+            'nome': 'Como você se chama?',
+            'email': 'voce@exemplo.com',
+            'username': 'maria.souza',
+            'password1': 'Crie uma senha',
+            'password2': 'Confirme sua senha',
+            'escola': 'Nome da sua escola',
+            'formacao': 'Ex.: Licenciatura em Matemática',
+            'valor_hora': 'R$ 60,00',
+            'bio': (
+                'Estou no 2º ano do ensino médio e quero melhorar em Matemática. '
+                'Aprendo melhor com exemplos práticos e exercícios passo a passo.'
+            ),
+        }
+        for name, texto in placeholders.items():
+            self.fields[name].widget.attrs['placeholder'] = texto
+
+        self.fields['nome'].help_text = 'Use o nome pelo qual quer ser reconhecido.'
+        self.fields['email'].help_text = 'Seu e-mail será usado para acessar a conta.'
+        self.fields['username'].help_text = 'Sugestão editável. Use letras, números, ponto ou sublinhado.'
+        self.fields['escola'].help_text = 'Você pode adicionar ou alterar depois.'
+        self.fields['valor_hora'].help_text = 'Informe o valor de uma aula de 60 minutos.'
+        self.fields['bio'].help_text = 'O que você quer aprender? Como gosta de estudar?'
+        self.fields['nivel_estudo'].label = 'Nível de estudo'
+        self.fields['serie'].label = 'Série ou etapa'
 
     def clean_email(self):
         email = self.cleaned_data['email'].strip().lower()
@@ -98,14 +146,31 @@ class CadastroForm(UserCreationForm):
 
     @transaction.atomic
     def save(self):
-        user = super().save()
+        user = super().save(commit=False)
+        resumo = (self.cleaned_data.get('bio') or '').strip()
+        user.bio = resumo
+        user.save()
+
         if self.cleaned_data['user_type'] == 'professor':
-            Professor.objects.create(usuario=user, formacao=self.cleaned_data['formacao'],
-                valor_hora=self.cleaned_data['valor_hora'], modalidade=self.cleaned_data['modalidade'])
+            professor = Professor.objects.create(
+                usuario=user,
+                bio=resumo,
+                formacao=self.cleaned_data['formacao'],
+                valor_hora=self.cleaned_data['valor_hora'],
+                modalidade=self.cleaned_data['modalidade'],
+            )
+            nome_disc = (self.cleaned_data.get('disciplina_principal') or '').strip()
+            if nome_disc:
+                disciplina, _ = Disciplina.objects.get_or_create(nome=nome_disc)
+                professor.disciplinas.add(disciplina)
         else:
-            Aluno.objects.create(usuario=user, nivel_estudo=self.cleaned_data['nivel_estudo'],
-                                 serie=self.cleaned_data['serie'], novato=True,
-                                 escola=self.cleaned_data.get('escola', ''))
+            Aluno.objects.create(
+                usuario=user,
+                nivel_estudo=self.cleaned_data['nivel_estudo'],
+                serie=self.cleaned_data['serie'],
+                novato=True,
+                escola=self.cleaned_data.get('escola', ''),
+            )
         return user
 
 

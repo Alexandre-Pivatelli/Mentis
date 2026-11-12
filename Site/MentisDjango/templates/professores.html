@@ -1,11 +1,39 @@
 {% extends 'area_estudante.html' %}
+
 {% block title %}Encontre seu professor – Mentis{% endblock %}
+
 {% block student_content %}
-<section class="teacher-directory" aria-labelledby="directory-title">
-  <header class="directory-heading"><div><h1 id="directory-title">Encontre seu professor</h1><p>Explore disciplinas, conheça os perfis e salve os professores com quem você quer aprender.</p></div>{% if request.user.aluno %}<a class="directory-action" href="{% url 'favoritos_aluno' %}">Ver meus favoritos</a>{% endif %}</header>
-  {% include 'includes/professores_filtros.html' %}
-  <p class="directory-count" role="status">{{ professores.paginator.count }} professor{{ professores.paginator.count|pluralize:'es' }} encontrado{{ professores.paginator.count|pluralize }}{% if busca %} para “{{ busca }}”{% endif %}</p>
-  {% if professores %}<div class="teacher-grid">{% for professor in professores %}{% include 'includes/professor_card.html' %}{% endfor %}</div>{% include 'includes/professores_paginacao.html' %}
-  {% else %}<div class="directory-empty"><h2>Nenhum professor encontrado</h2><p>Tente outro nome ou disciplina, ou remova os filtros para explorar os perfis.</p><a class="directory-action" href="{% url 'professores' %}">Limpar filtros</a></div>{% endif %}
-</section>
+  <section class="teacher-directory" aria-labelledby="directory-title">
+    <header class="directory-heading">
+      <div>
+        <h1 id="directory-title">Encontre seu professor</h1>
+        <p>Explore disciplinas, conheça os perfis e salve os professores com quem você quer aprender.</p>
+      </div>
+      {% if request.user.aluno %}
+        <a class="directory-action" href="{% url 'favoritos_aluno' %}">Ver meus favoritos</a>
+      {% endif %}
+    </header>
+
+    {% include 'includes/professores_filtros.html' %}
+
+    <p class="directory-count" role="status">
+      {{ professores.paginator.count }} professor{{ professores.paginator.count|pluralize:'es' }} encontrado{{ professores.paginator.count|pluralize }}{% if busca %} para “{{ busca }}”{% endif %}
+    </p>
+
+    {% if professores %}
+      <div class="teacher-grid">
+        {% for professor in professores %}
+          {% include 'includes/professor_card.html' %}
+        {% endfor %}
+      </div>
+
+      {% include 'includes/professores_paginacao.html' %}
+    {% else %}
+      <div class="directory-empty">
+        <h2>Nenhum professor encontrado</h2>
+        <p>Tente outro nome ou disciplina, ou remova os filtros para explorar os perfis.</p>
+        <a class="directory-action" href="{% url 'professores' %}">Limpar filtros</a>
+      </div>
+    {% endif %}
+  </section>
 {% endblock %}

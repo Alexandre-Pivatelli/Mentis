@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block page_head %}
+  <title>Mentis – Conta criada</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/formularios.css' %}?v=themes-2">
+  <link rel="stylesheet" href="{% static 'css/cadastro_ux.css' %}?v=figma-flow-1">
+{% endblock %}
+
+{% block content %}
+<main class="wizard-page">
+  <section class="wizard-shell wizard-shell--done" aria-labelledby="doneTitle">
+
+    <div class="done-badge" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="22" height="22">
+        <path d="M5 12.5 9.5 17 19 7.5"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    {% if eh_professor %}
+      <h1 class="wizard-title" id="doneTitle">
+        Tudo pronto para<br>compartilhar conhecimento.
+      </h1>
+      <p class="wizard-subtitle">
+        Sua conta de professor foi criada. Complete sua agenda para receber alunos.
+      </p>
+    {% else %}
+      <h1 class="wizard-title" id="doneTitle">
+        Seu próximo capítulo<br>já pode começar.
+      </h1>
+      <p class="wizard-subtitle">
+        Sua conta foi criada. Encontre um professor para dar o próximo passo.
+      </p>
+    {% endif %}
+
+    <!-- Card de resumo do perfil recém-criado -->
+    <article class="done-summary-card" aria-label="Resumo da conta criada">
+      <h2 class="done-summary-card__name">{{ nome }}</h2>
+      <p class="done-summary-card__meta">{{ subtitulo_card }}</p>
+      <p class="done-summary-card__detail">{{ detalhe_card }}</p>
+    </article>
+
+    <a href="{{ destino_url }}" class="wizard-btn wizard-btn--link">
+      {{ destino_texto }}
+    </a>
+
+  </section>
+</main>
+{% endblock %}

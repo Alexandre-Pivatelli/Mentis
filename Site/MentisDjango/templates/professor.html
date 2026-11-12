@@ -1,9 +1,7 @@
+{% extends "base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+{% block page_head %}
   <title>Mentis – Perfil do professor</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,11 +9,10 @@
 
   <link rel="stylesheet" href="{% static 'css/professor.css' %}">
   <link rel="stylesheet" href="{% static 'css/dados.css' %}">
-  <link rel="stylesheet" href="{% static 'css/header.css' %}">
   <link rel="stylesheet" href="{% static 'css/fotos_perfil.css' %}?v=3">
-</head>
-<body>
+{% endblock %}
 
+{% block content %}
   <!-- ÍCONES (sprite) -->
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <symbol id="i-check" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></symbol>
@@ -31,9 +28,6 @@
     <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></symbol>
     <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
   </svg>
-
-  <!-- HEADER -->
-  
 
   <main>
 
@@ -51,7 +45,9 @@
 
           <div>
             <div class="tags">
-              {% if professor.verificado %}<span class="tag tag--verified">Verificado</span>{% endif %}
+              {% if professor.verificado %}
+                <span class="tag tag--verified">Verificado</span>
+              {% endif %}
             </div>
             <h1>{{ professor.nome_exibicao }}</h1>
 
@@ -75,6 +71,8 @@
         </div>
 
         <div class="book">
+          {% include 'includes/favorito_botao.html' %}
+
           {% if request.user.aluno %}
             <form method="post" action="{% url 'mensagens_aluno' %}">
               {% csrf_token %}
@@ -83,9 +81,10 @@
               <button class="btn btn--primary btn--block" type="submit">Enviar mensagem</button>
             </form>
           {% endif %}
+
           <p class="book__label">Valor por hora · {{ professor.modalidade }}</p>
           <p class="book__price">R$ {{ professor.valor_hora|floatformat:2 }}</p>
-          <a class="btn btn--primary btn--block" href="#horarios">Consultar horários</a>
+          <a class="btn btn--primary btn--block" href="{% url 'agendar_aula' professor.pk %}">Agendar aula</a>
         </div>
       </div>
     </section>
@@ -108,7 +107,9 @@
               <article class="material">
                 <p class="material__kind">{{ material.get_tipo_display }}</p>
                 <h3>{{ material.titulo }}</h3>
-                {% if material.descricao %}<p>{{ material.descricao }}</p>{% endif %}
+                {% if material.descricao %}
+                  <p>{{ material.descricao }}</p>
+                {% endif %}
                 <div class="material__foot">
                   {% if material.url %}
                     <a href="{{ material.url }}" target="_blank" rel="noopener noreferrer">Abrir material</a>
@@ -120,6 +121,12 @@
               <p>Nenhum material publicado.</p>
             {% endfor %}
           </div>
+
+          {% if not eh_dono %}
+            <a class="pf-botao" href="{% url 'assinatura_professor' professor.pk %}" target="_blank" rel="noopener">
+              Assinar todos os materiais
+            </a>
+          {% endif %}
 
           {% if eh_dono %}
             <a class="pf-botao" href="{% url 'painel_professor' %}#materiais">Adicionar material</a>
@@ -194,3 +201,4 @@
       <span>Aprenda com quem entende de verdade.</span>
     </div>
   </footer>
+{% endblock %}

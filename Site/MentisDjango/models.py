@@ -223,3 +223,29 @@ class AvaliacaoSite(models.Model):
 
     def __str__(self):
         return f'{self.usuario} — {self.nota}/5'
+
+# Dentro de class Professor, junto dos outros campos:
+valor_assinatura = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
+chave_pix = models.CharField(max_length=120, blank=True)
+
+
+# Nova classe, no final do arquivo:
+class Assinatura(models.Model):
+    class Status(models.TextChoices):
+        AGUARDANDO = 'aguardando_pagamento', 'Aguardando pagamento'
+        ATIVA = 'ativa', 'Ativa'
+        CANCELADA = 'cancelada', 'Cancelada'
+
+    aluno = models.ForeignKey('Aluno', on_delete=models.CASCADE, related_name='assinaturas')
+    professor = models.ForeignKey('Professor', on_delete=models.CASCADE, related_name='assinaturas')
+    status = models.CharField(max_length=24, choices=Status.choices, default=Status.AGUARDANDO)
+    criado_em = models.DateTimeField(auto_now_add=True)
+    atualizado_em = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['aluno', 'professor'], name='unique_assinatura_aluno_professor'),
+        ]
+
+    def __str__(self):
+        return f'{self.aluno} → {self.professor} ({self.get_status_display()})'
