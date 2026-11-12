@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mentis – Materiais</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="materiais.css">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <a href="#" class="logo">Mentis</a>
+
+    <nav class="nav">
+      <a href="#">Disciplinas</a>
+      <a href="#">Professores</a>
+      <a href="#">Materiais</a>
+      <a href="#">Informações</a>
+    </nav>
+
+    <div class="auth">
+      <a href="#">Entrar</a> <span>|</span> <a href="#">Cadastrar</a>
+    </div>
+  </header>
+
+  <main class="page">
+
+    <!-- TÍTULO + BUSCA -->
+    <section class="intro">
+      <h1 class="section-title">Encontre o <span>material</span> ideal</h1>
+
+      <form class="search" action="#" onsubmit="return false;">
+        <input type="text" placeholder="Procure por material, professor ou assunto..." aria-label="Buscar material">
+        <button type="submit" class="btn btn--primary">Buscar</button>
+      </form>
+    </section>
+
+    <div class="layout">
+
+      <!-- FILTROS -->
+      <aside class="filters">
+        <form action="#" onsubmit="return false;">
+
+          <h2 class="filters__title">Filtros</h2>
+
+          <fieldset class="group">
+            <legend>Disciplina</legend>
+            <div class="fchips">
+              <label class="fchip"><input type="checkbox" name="disciplina" value="matematica"><span>Matemática</span></label>
+              <label class="fchip"><input type="checkbox" name="disciplina" value="portugues"><span>Português</span></label>
+              <label class="fchip"><input type="checkbox" name="disciplina" value="redacao"><span>Redação</span></label>
+              <label class="fchip"><input type="checkbox" name="disciplina" value="historia"><span>História</span></label>
+              <label class="fchip"><input type="checkbox" name="disciplina" value="quimica"><span>Química</span></label>
+              <label class="fchip"><input type="checkbox" name="disciplina" value="fisica"><span>Física</span></label>
+            </div>
+          </fieldset>
+
+          <fieldset class="group">
+            <legend>Tipo de material</legend>
+            <label class="option"><input type="checkbox" name="tipo" value="flashcards"> Flashcards</label>
+            <label class="option"><input type="checkbox" name="tipo" value="video"> Vídeo</label>
+            <label class="option"><input type="checkbox" name="tipo" value="apostila"> Apostila</label>
+            <label class="option"><input type="checkbox" name="tipo" value="exercicios"> Lista de exercícios</label>
+          </fieldset>
+
+          <fieldset class="group">
+            <legend>Acesso</legend>
+            <label class="option"><input type="radio" name="acesso" value="todos" checked> Todos</label>
+            <label class="option"><input type="radio" name="acesso" value="gratis"> Grátis</label>
+            <label class="option"><input type="radio" name="acesso" value="assinatura"> Assinatura</label>
+          </fieldset>
+
+          <fieldset class="group">
+            <legend>Nível</legend>
+            <label class="option"><input type="checkbox" name="nivel" value="fundamental"> Ensino Fundamental</label>
+            <label class="option"><input type="checkbox" name="nivel" value="medio"> Ensino Médio</label>
+            <label class="option"><input type="checkbox" name="nivel" value="enem"> ENEM e Vestibulares</label>
+          </fieldset>
+
+          <fieldset class="group">
+            <legend>Avaliação mínima</legend>
+            <label class="option"><input type="radio" name="nota" value="0" checked> Qualquer</label>
+            <label class="option"><input type="radio" name="nota" value="4"> 4.0 <i class="star">★</i> ou mais</label>
+            <label class="option"><input type="radio" name="nota" value="4.5"> 4.5 <i class="star">★</i> ou mais</label>
+          </fieldset>
+
+          <fieldset class="group">
+            <legend>Formato</legend>
+            <label class="option"><input type="checkbox" name="formato" value="pdf"> PDF</label>
+            <label class="option"><input type="checkbox" name="formato" value="online"> Online</label>
+          </fieldset>
+
+          <button type="submit" class="btn btn--primary btn--block">Aplicar filtros</button>
+          <button type="reset" class="btn btn--ghost btn--block">Limpar filtros</button>
+
+        </form>
+      </aside>
+
+      <!-- RESULTADOS -->
+      <section class="results">
+
+        <div class="results__bar">
+          <p class="results__count"><strong>XX</strong> materiais encontrados</p>
+
+          <label class="sort">
+            Ordenar por
+            <select name="ordem">
+              <option>Mais relevantes</option>
+              <option>Melhor avaliados</option>
+              <option>Mais recentes</option>
+              <option>Menor preço</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="materials">
+
+          <article class="material">
+            <span class="badge badge--free">Grátis</span>
+            <div class="material__thumb">Flashcards</div>
+            <p class="material__kind">Química</p>
+            <h3>Tabela periódica sem decoreba</h3>
+            <p class="material__teacher">por Nome do Professor</p>
+            <div class="material__foot">
+              <span class="material__rating">5.0 <i>★</i></span>
+              <strong>Grátis</strong>
+            </div>
+          </article>
+
+          <article class="material">
+            <span class="badge badge--sub">Assinatura</span>
+            <div class="material__thumb">Vídeo</div>
+            <p class="material__kind">Matemática</p>
+            <h3>Funções passo a passo</h3>
+            <p class="material__teacher">por Nome do Professor</p>
+            <div class="material__foot">
+              <span class="material__rating">4.9 <i>★</i></span>
+              <strong>R$XX,XX</strong>
+            </div>
+          </article>
+
+          <article class="material">
+            <span class="badge badge--sub">Assinatura</span>
+            <div class="material__thumb">Apostila</div>
+            <p class="material__kind">Português</p>
+            <h3>Interpretação de texto em mapas</h3>
+            <p class="material__teacher">por Nome do Professor</p>
+            <div class="material__foot">
+              <span class="material__rating">4.8 <i>★</i></span>
+              <strong>R$XX,XX</strong>
+            </div>
+          </article>
+
+          <article class="material">
+            <span class="badge badge--free">Grátis</span>
+            <div class="material__thumb">Exercícios</div>
+            <p class="material__kind">História</p>
+            <h3>Brasil República: lista comentada</h3>
+            <p class="material__teacher">por Nome do Professor</p>
+            <div class="material__foot">
+              <span class="material__rating">5.0 <i>★</i></span>
+              <strong>Grátis</strong>
+            </div>
+          </article>
+
+          <article class="material">
+            <span class="badge badge--sub">Assinatura</span>
+            <div class="material__thumb">Vídeo</div>
+            <p class="material__kind">Redação</p>
+            <h3>Estrutura da redação do ENEM</h3>
+            <p class="material__teacher">por Nome do Professor</p>
+            <div class="material__foot">
+              <span class="material__rating">4.7 <i>★</i></span>
+              <strong>R$XX,XX</strong>
+            </div>
+          </article>
+
+          <article class="material">
+            <span class="badge badge--free">Grátis</span>
+            <div class="material__thumb">Flashcards</div>
+            <p class="material__kind">Física</p>
+            <h3>Fórmulas de cinemática</h3>
+            <p class="material__teacher">por Nome do Professor</p>
+            <div class="material__foot">
+              <span class="material__rating">4.6 <i>★</i></span>
+              <strong>Grátis</strong>
+            </div>
+          </article>
+
+        </div>
+
+        <div class="dots" role="tablist" aria-label="Páginas de resultados">
+          <button class="dot is-active" aria-label="Página 1"></button>
+          <button class="dot" aria-label="Página 2"></button>
+          <button class="dot" aria-label="Página 3"></button>
+        </div>
+
+      </section>
+    </div>
+  </main>
+
+</body>
+</html>
