@@ -1,3 +1,12 @@
 __pycache__/
 *.pyc
+
+# Banco de dados local: cada um gera o seu com "python manage.py migrate"
 db.sqlite3
+
+# Ambiente virtual: cada um instala com "pip install -r requirements.txt"
+venv/
+.venv/
+
+# Fotos enviadas pelos usuários enquanto testam o site
+Site/media/

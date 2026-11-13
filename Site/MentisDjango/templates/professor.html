@@ -117,8 +117,10 @@
                   <p>{{ material.descricao }}</p>
                 {% endif %}
                 <div class="material__foot">
-                  {% if material.url %}
+                  {% if tem_acesso_materiais and material.url %}
                     <a href="{{ material.url }}" target="_blank" rel="noopener noreferrer">Abrir material</a>
+                  {% elif not tem_acesso_materiais %}
+                    <a href="{% url 'assinatura_professor' professor.pk %}">🔒 Assine para acessar</a>
                   {% endif %}
                   <span>{{ material.data_publicacao|date:"d/m/Y" }}</span>
                 </div>
@@ -129,8 +131,8 @@
             {% endfor %}
           </div>
 
-          {% if not eh_dono %}
-            <a class="pf-botao" href="{% url 'assinatura_professor' professor.pk %}" target="_blank" rel="noopener">
+          {% if not eh_dono and not tem_acesso_materiais %}
+            <a class="pf-botao" href="{% url 'assinatura_professor' professor.pk %}">
               Assinar todos os materiais
             </a>
           {% endif %}

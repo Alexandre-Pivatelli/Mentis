@@ -1,7 +1,7 @@
 from django.urls import path
 from . import views
 from .views_agendamento import agendar_aula
-from .views_aluno import ambiente_aluno_view
+from .views_aluno import ambiente_aluno_view, avaliar_aula_view
 from .views_estudante import mensagens_view, agenda_view
 from .views_favoritos import favoritos_view, favorito_professor_view
 from .views_filtro import filtro_professores
@@ -29,12 +29,14 @@ urlpatterns = [
     path('mensagens/', mensagens_view, name='mensagens_aluno'),
     path('agenda/', agenda_view, name='agenda_aluno'),
     path('ambiente-aluno/', ambiente_aluno_view, name='ambiente_aluno'),
+    path('aula/<int:pk>/avaliar/', avaliar_aula_view, name='avaliar_aula'),
     path('materiais/', views.materiais_view, name='materiais'),
     path('sobre/', views.sobre_view, name='sobre'),
 
     # Painel do professor
     path('painel/professor/', views.painel_professor_view, name='painel_professor'),
     path('painel/professor/agenda/', views.painel_professor_agenda, name='painel_professor_agenda'),
+    path('painel/professor/assinatura/', views.painel_professor_assinatura, name='painel_professor_assinatura'),
     path('painel/professor/materiais/novo/', views.painel_professor_material_criar, name='painel_professor_material_criar'),
     path('painel/professor/materiais/<int:pk>/excluir/', views.painel_professor_material_excluir, name='painel_professor_material_excluir'),
     path('professor/<int:pk>/assinatura/', views.assinatura_professor_view, name='assinatura_professor'),

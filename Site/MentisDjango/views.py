@@ -1,4 +1,5 @@
 from datetime import time
+from decimal import Decimal, InvalidOperation
 
 from django.contrib import messages
 from django.contrib.auth import login, logout, update_session_auth_hash
@@ -18,8 +19,8 @@ from django.views.decorators.http import require_GET, require_POST, require_http
 
 from .auth_limits import permitir_tentativa
 from .forms import AvaliacaoSiteForm, CadastroForm, EditarPerfilForm, LoginForm, RedefinirSenhaForm
-from .models import (Aluno, Aula, Avaliacao, AvaliacaoSite, Disciplina,
-                     Favorito, Material, Professor, StatusAula, Usuario)
+from .models import (Aluno, Assinatura, Aula, Avaliacao, AvaliacaoSite, Disciplina,
+                     Favorito, Material, Professor, StatusAula, TipoMaterial, Usuario)
 
 
 DIAS = [(0, 'Segunda'), (1, 'Terça'), (2, 'Quarta'), (3, 'Quinta'),
@@ -48,6 +49,26 @@ def identificar(professor):
 
 def _professor_logado(request):
     return Professor.objects.filter(usuario=request.user).first()
+
+
+def pode_ver_materiais(usuario, professor):
+    '''
+    Diz se o usuário pode abrir os links dos materiais do professor.
+    Pode: o próprio professor, o aluno com assinatura ativa e o aluno que já
+    marcou aula com ele (aula não cancelada).
+    '''
+    if not usuario.is_authenticated:
+        return False
+    if usuario.pk == professor.usuario_id:
+        return True
+    aluno = Aluno.objects.filter(usuario=usuario).first()
+    if aluno is None:
+        return False
+    if Assinatura.objects.filter(aluno=aluno, professor=professor,
+                                 status=Assinatura.Status.ATIVA).exists():
+        return True
+    return Aula.objects.filter(aluno=aluno, professor=professor).exclude(
+        status=StatusAula.CANCELADA).exists()
 
 
 @never_cache
@@ -162,6 +183,7 @@ def professor_view(request, pk=None):
     return render(request, 'professor.html', {
         'professor': professor,
         'eh_dono': eh_dono,
+        'tem_acesso_materiais': pode_ver_materiais(request.user, professor),
         'materiais': professor.materiais.select_related('disciplina').order_by('-data_publicacao')[:12],
         'avaliacoes': avaliacoes[:10],
         'disponibilidades': professor.disponibilidades.order_by('dia_semana', 'hora_inicio'),
@@ -351,16 +373,20 @@ def sobre_view(request):
     return render(request, 'sobre.html')
 
 
+@login_required(login_url='login')
 def materiais_view(request):
-    aluno = None
+    # Professor tem a própria área de materiais no painel.
+    if _professor_logado(request) is not None:
+        return redirect(reverse('painel_professor') + '#materiais')
     materiais = []
-    if request.user.is_authenticated:
-        aluno = Aluno.objects.filter(usuario=request.user).first()
-        if aluno:
-            materiais = (Material.objects.filter(professor__aulas__aluno=aluno)
-                         .select_related('professor__usuario', 'disciplina')
-                         .distinct()
-                         .order_by('professor__usuario__nome', '-data_publicacao'))
+    aluno = Aluno.objects.filter(usuario=request.user).first()
+    if aluno:
+        com_aula = Aula.objects.filter(aluno=aluno).exclude(
+            status=StatusAula.CANCELADA).values('professor')
+        assinados = Assinatura.objects.filter(aluno=aluno, status=Assinatura.Status.ATIVA).values('professor')
+        materiais = (Material.objects.filter(Q(professor__in=com_aula) | Q(professor__in=assinados))
+                     .select_related('professor__usuario', 'disciplina')
+                     .order_by('professor__usuario__nome', '-data_publicacao'))
     return render(request, 'materiais.html', {'materiais': materiais, 'aluno': aluno})
 
 
@@ -426,6 +452,41 @@ def painel_professor_agenda(request):
 
 @login_required(login_url='login')
 @require_POST
+def painel_professor_assinatura(request):
+    '''Salva o preço mensal da assinatura e a chave PIX do professor.'''
+    professor = _professor_logado(request)
+    if professor is None:
+        messages.error(request, 'Esta área é só para professores.')
+        return redirect('principal')
+
+    valor_texto = request.POST.get('valor_assinatura', '').strip().replace(',', '.')
+    chave_pix = request.POST.get('chave_pix', '').strip()
+    destino = reverse('painel_professor') + '#assinatura'
+
+    valor = None
+    if valor_texto:
+        try:
+            valor = Decimal(valor_texto)
+        except InvalidOperation:
+            messages.error(request, 'Informe o valor da assinatura como número, por exemplo 49,90.')
+            return redirect(destino)
+        if valor <= 0 or valor >= Decimal('1000000'):
+            messages.error(request, 'O valor da assinatura deve ser maior que zero.')
+            return redirect(destino)
+        valor = valor.quantize(Decimal('0.01'))
+    if len(chave_pix) > 120:
+        messages.error(request, 'A chave PIX pode ter no máximo 120 caracteres.')
+        return redirect(destino)
+
+    professor.valor_assinatura = valor
+    professor.chave_pix = chave_pix
+    professor.save(update_fields=['valor_assinatura', 'chave_pix'])
+    messages.success(request, 'Plano de assinatura atualizado.')
+    return redirect(destino)
+
+
+@login_required(login_url='login')
+@require_POST
 def painel_professor_material_criar(request):
     professor = _professor_logado(request)
     if professor is None:
@@ -445,12 +506,16 @@ def painel_professor_material_criar(request):
     if not url:
         messages.error(request, 'Informe o link do material.')
         return redirect(reverse('painel_professor') + '#materiais')
+    tipo = request.POST.get('tipo', '')
+    if tipo not in TipoMaterial.values:
+        messages.error(request, 'Escolha um tipo de material válido.')
+        return redirect(reverse('painel_professor') + '#materiais')
 
     Material.objects.create(
         professor=professor,
         disciplina=disciplina,
         titulo=titulo,
-        tipo=request.POST.get('tipo', ''),
+        tipo=tipo,
         descricao=request.POST.get('descricao', '').strip(),
         url=url,
         data_publicacao=timezone.now(),
@@ -497,7 +562,7 @@ def assinatura_professor_view(request, pk):
             messages.success(request, 'Pedido registrado. Faça o PIX para liberar os materiais.')
         return redirect('assinatura_professor', pk=professor.pk)
 
-    tem_acesso = eh_dono or (assinatura is not None and assinatura.status == Assinatura.Status.ATIVA)
+    tem_acesso = pode_ver_materiais(request.user, professor)
     materiais = professor.materiais.select_related('disciplina').order_by('-data_publicacao')
 
     return render(request, 'assinatura_professor.html', {

@@ -26,6 +26,7 @@
       <nav class="tabs" aria-label="Seções do ambiente do aluno">
         <a class="tab tab--active" href="#sobre">Meu ambiente</a>
         <a class="tab" href="#agenda">Agenda</a>
+        <a class="tab" href="#avaliar">Avaliar aulas{% if para_avaliar %} ({{ para_avaliar|length }}){% endif %}</a>
         <a class="tab" href="#avaliacoes">Avaliações</a>
         <a class="tab" href="{% url 'favoritos_aluno' %}">Favoritos</a>
         <a class="tab" href="{% url 'mensagens_aluno' %}">Mensagens</a>
@@ -88,6 +89,34 @@
           <li class="vazio">Nenhuma aula agendada.</li>
         {% endfor %}
       </ul>
+
+      <!-- Aulas que já aconteceram e ainda não foram avaliadas -->
+      <h2 class="section-heading" id="avaliar">Avaliar aulas</h2>
+      <div class="avaliar">
+        {% for aula in para_avaliar %}
+          <form class="avaliar__card" method="post" action="{% url 'avaliar_aula' aula.pk %}">
+            {% csrf_token %}
+            <p class="avaliar__titulo">
+              <strong>{{ aula.disciplina.nome }}</strong> com
+              <a href="{% url 'professor_detalhe' aula.professor.pk %}">{{ aula.professor.usuario.nome|default:aula.professor.usuario.username }}</a>
+              <span>{{ aula.data_hora|date:"d/m/Y, H:i" }}</span>
+            </p>
+            <fieldset class="avaliar__estrelas">
+              <legend>Sua nota</legend>
+              {% for n in notas %}
+                <input type="radio" id="nota-{{ aula.pk }}-{{ n }}" name="nota" value="{{ n }}" required>
+                <label for="nota-{{ aula.pk }}-{{ n }}" title="{{ n }} de 5">★<span class="sr-only"> {{ n }} de 5</span></label>
+              {% endfor %}
+            </fieldset>
+            <label class="sr-only" for="comentario-{{ aula.pk }}">Comentário</label>
+            <textarea id="comentario-{{ aula.pk }}" name="comentario" rows="2" maxlength="1000"
+                      placeholder="Conte como foi a aula (opcional)"></textarea>
+            <button type="submit" class="avaliar__botao">Enviar avaliação</button>
+          </form>
+        {% empty %}
+          <p class="vazio">Nenhuma aula esperando avaliação.</p>
+        {% endfor %}
+      </div>
 
       <!-- Avaliações -->
       <h2 class="section-heading" id="avaliacoes">Suas avaliações de aulas</h2>

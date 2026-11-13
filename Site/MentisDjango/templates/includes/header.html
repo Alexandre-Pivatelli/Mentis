@@ -13,7 +13,11 @@
   <nav class="mentis-header__nav" aria-label="Navegação principal">
     <a href="{% url 'principal' %}#disciplinas">Disciplinas</a>
     <a href="{% url 'professores' %}">Professores</a>
-    <a href="{% url 'materiais' %}">Materiais</a>
+    {% if request.user.professor %}
+      <a href="{% url 'painel_professor' %}#materiais">Materiais</a>
+    {% else %}
+      <a href="{% url 'materiais' %}">Materiais</a>
+    {% endif %}
     <a href="{% url 'sobre' %}">Informações</a>
   </nav>
 

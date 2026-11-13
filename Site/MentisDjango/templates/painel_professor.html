@@ -28,6 +28,7 @@
         <nav class="pp-tabs" aria-label="Seções do painel">
           <a class="pp-tab" href="#agenda">Agenda</a>
           <a class="pp-tab" href="#materiais">Materiais</a>
+          <a class="pp-tab" href="#assinatura">Assinatura</a>
           <a class="pp-tab" href="{% url 'professor_detalhe' professor.pk %}">Ver meu perfil</a>
         </nav>
       </div>
@@ -120,10 +121,10 @@
           <div class="pp-campo-grupo">
             <label class="pp-label" for="material-tipo">Tipo</label>
             <select id="material-tipo" name="tipo" required>
-              <option value="pdf">PDF</option>
-              <option value="lista">Lista de exercícios</option>
-              <option value="video">Vídeo</option>
-              <option value="link">Link</option>
+              <option value="PDF">PDF</option>
+              <option value="LISTA_EXERCICIOS">Lista de exercícios</option>
+              <option value="VIDEO">Vídeo</option>
+              <option value="LINK">Link</option>
             </select>
           </div>
 
@@ -165,6 +166,30 @@
           {% endfor %}
         </div>
       </div>
+    </section>
+
+    <!-- ===== PLANO DE ASSINATURA ===== -->
+    <section class="pp-container pp-secao" id="assinatura" aria-labelledby="titulo-assinatura">
+      <div class="pp-secao__cabecalho">
+        <span class="pp-rotulo">Assinatura</span>
+        <h2 id="titulo-assinatura">Plano de assinatura dos materiais</h2>
+        <p class="pp-texto-suave">Defina o preço mensal e a chave PIX. Os alunos veem esses dados na <a href="{% url 'assinatura_professor' professor.pk %}">sua página de assinatura</a>.</p>
+      </div>
+
+      <form class="pp-card pp-form" method="post" action="{% url 'painel_professor_assinatura' %}">
+        {% csrf_token %}
+        <div class="pp-campo-grupo">
+          <label class="pp-label" for="valor-assinatura">Valor por mês (R$)</label>
+          <input id="valor-assinatura" name="valor_assinatura" type="text" inputmode="decimal"
+                 placeholder="Ex.: 49,90" value="{% if professor.valor_assinatura %}{{ professor.valor_assinatura }}{% endif %}">
+        </div>
+        <div class="pp-campo-grupo">
+          <label class="pp-label" for="chave-pix">Chave PIX</label>
+          <input id="chave-pix" name="chave_pix" type="text" maxlength="120"
+                 placeholder="E-mail, telefone, CPF ou chave aleatória" value="{{ professor.chave_pix }}">
+        </div>
+        <button type="submit" class="pp-botao pp-botao--largo">Salvar plano</button>
+      </form>
     </section>
 
   </main>

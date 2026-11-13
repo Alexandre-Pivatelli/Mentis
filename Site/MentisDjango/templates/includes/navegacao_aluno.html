@@ -22,7 +22,7 @@
       Meu ambiente
     </a>
     <a href="{% url 'perfil_aluno' %}"{% if active == 'sobre' %} aria-current="page"{% endif %}>
-      Sobre
+      Meu perfil
     </a>
   {% else %}
     <a href="{% url 'professor_detalhe' request.user.pk %}">
