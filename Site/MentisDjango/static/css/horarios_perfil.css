@@ -1,0 +1,17 @@
+/* ========== HORÁRIOS DO PERFIL (Sprint 9) ==========
+   Cada horário da "Disponibilidade semanal" no perfil do professor virou um link
+   para a página de agendar aula. Este arquivo só arruma a aparência desse link. */
+
+.horario-link {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+
+.horario-link:hover strong,
+.horario-link:focus-visible strong {
+  text-decoration: underline;
+}

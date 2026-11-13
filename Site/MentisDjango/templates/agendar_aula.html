@@ -69,11 +69,15 @@
     <!-- Horários em que o professor atende -->
     <aside class="agendar__horarios">
       <h2>Horários do professor</h2>
+      <!-- Sprint 9: cada horário é um link. Clicar nele preenche o dia e a hora do formulário. -->
+      <p class="agendar__dica">Clique num horário para preencher o formulário.</p>
       <ul>
         {% for horario in horarios %}
           <li>
-            <span>{{ horario.dia }}</span>
-            <strong>{{ horario.inicio|time:"H:i" }} – {{ horario.fim|time:"H:i" }}</strong>
+            <a class="agendar__horario-link" href="?dia={{ horario.dia_semana }}&hora={{ horario.inicio|time:'H:i' }}">
+              <span>{{ horario.dia }}</span>
+              <strong>{{ horario.inicio|time:"H:i" }} – {{ horario.fim|time:"H:i" }}</strong>
+            </a>
           </li>
         {% empty %}
           <li>Este professor ainda não cadastrou horários.</li>

@@ -1,0 +1,185 @@
+/* ========== FILTRO DE PROFESSORES (Sprint 9) ==========
+   Segue o mesmo jeito da página de agendar aula (agendar_aula.css).
+   As cores usam as variáveis do tema.css, assim a página funciona no modo claro e no escuro.
+   Os cards de professor já têm estilo próprio (favoritos.css), então aqui não mexemos neles. */
+
+.filtro {
+  padding: 24px 0 40px;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* ---------- Título ---------- */
+.filtro__voltar {
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.filtro__topo h1 {
+  margin-top: 12px;
+  font-size: 28px;
+}
+
+.filtro__topo p {
+  margin-top: 6px;
+  color: var(--secondary);
+  font-size: 14px;
+}
+
+/* ---------- Duas colunas: filtros à esquerda, resultado à direita ---------- */
+.filtro__colunas {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 28px;
+  margin-top: 28px;
+  align-items: start;
+}
+
+/* ---------- Formulário de filtros ---------- */
+.filtro__form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 24px;
+  background: var(--surface);
+  border: 1px solid var(--separator);
+  border-radius: 18px;
+  position: sticky;   /* o formulário acompanha a rolagem da página */
+  top: 20px;
+}
+
+.filtro__form label {
+  margin-top: 8px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.filtro__form select,
+.filtro__form input[type="search"],
+.filtro__form input[type="number"] {
+  width: 100%;
+  padding: 11px 13px;
+  border: 1px solid var(--separator);
+  border-radius: 12px;
+  font-size: 14px;
+  background: var(--surface);
+  color: var(--foreground);
+}
+
+.filtro__form select:focus,
+.filtro__form input:focus {
+  border-color: var(--focus);
+  outline: none;
+}
+
+/* Título de um grupo de campos (ex.: "Preço por hora") */
+.filtro__grupo {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--separator);
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* Dois campos lado a lado */
+.filtro__linha {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.filtro__linha label {
+  display: block;
+  margin-bottom: 6px;
+}
+
+/* Caixinha "Só professores verificados" */
+.filtro__check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px !important;
+  font-weight: 500 !important;
+  cursor: pointer;
+}
+
+.filtro__check input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--action);
+}
+
+.filtro__botao {
+  margin-top: 16px;
+  min-height: 48px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--action);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.filtro__botao:hover {
+  background: var(--action-hover);
+}
+
+.filtro__limpar {
+  text-align: center;
+  color: var(--accent);
+  font-size: 13px;
+}
+
+/* ---------- Resultado ---------- */
+.filtro__contagem {
+  margin-bottom: 16px;
+  color: var(--secondary);
+  font-size: 14px;
+}
+
+.filtro__grade {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.filtro__vazio {
+  grid-column: 1 / -1;   /* ocupa as duas colunas da grade */
+  padding: 48px 24px;
+  text-align: center;
+  background: var(--surface-subtle);
+  border-radius: 18px;
+}
+
+.filtro__vazio h2 {
+  font-size: 20px;
+}
+
+.filtro__vazio p {
+  margin-top: 8px;
+  color: var(--secondary);
+  font-size: 14px;
+}
+
+/* ---------- Telas menores ---------- */
+@media (max-width: 1000px) {
+  .filtro__grade {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 800px) {
+  .filtro__colunas {
+    grid-template-columns: 1fr;
+  }
+
+  .filtro__form {
+    position: static;
+  }
+
+  .filtro__topo h1 {
+    font-size: 23px;
+  }
+}

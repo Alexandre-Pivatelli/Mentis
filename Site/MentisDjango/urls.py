@@ -4,6 +4,7 @@ from .views_agendamento import agendar_aula
 from .views_aluno import ambiente_aluno_view
 from .views_estudante import mensagens_view, agenda_view
 from .views_favoritos import favoritos_view, favorito_professor_view
+from .views_filtro import filtro_professores
 
 urlpatterns = [
     path('professor/<int:professor_id>/agendar/', agendar_aula, name='agendar_aula'),
@@ -19,6 +20,7 @@ urlpatterns = [
     path('redefinir-senha/', views.redefinir_senha_view, name='redefinir_senha_atalho'),
     path('perfil/sessao/', views.sessao_perfil_view, name='sessao_perfil'),
     path('professores/', views.professores_view, name='professores'),
+    path('professores/filtro/', filtro_professores, name='filtro_professores'),  # Sprint 9
     path('favoritos/', favoritos_view, name='favoritos_aluno'),
     path('professor/<int:pk>/favorito/', favorito_professor_view, name='favorito_professor'),
     path('professor/', views.professor_view, name='professor'),
