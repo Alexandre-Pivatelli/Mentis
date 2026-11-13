@@ -54,3 +54,24 @@
   .mentis-header__auth .mentis-header__signup { padding-inline: 10px; }
   .mentis-header__nav { gap: 0 16px; font-size: .75rem; }
 }
+
+/* ========== REDES SOCIAIS (rodapés e página de informações) ========== */
+.redes-sociais {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 20px;
+  font-size: .875rem;
+}
+
+.redes-sociais a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-weight: 600;
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.redes-sociais--centro { justify-content: center; margin-top: 12px; }

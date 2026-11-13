@@ -12,7 +12,7 @@
 
   <nav class="mentis-header__nav" aria-label="Navegação principal">
     <a href="{% url 'principal' %}#disciplinas">Disciplinas</a>
-    <a href="{% url 'principal' %}#resultados">Professores</a>
+    <a href="{% url 'professores' %}">Professores</a>
     <a href="{% url 'materiais' %}">Materiais</a>
     <a href="{% url 'sobre' %}">Informações</a>
   </nav>
@@ -36,8 +36,12 @@
 
     {% if request.user.is_authenticated %}
       {% if request.user.professor %}
+        <a href="{% url 'painel_professor' %}">Meu painel</a>
         <a href="{% url 'professor_detalhe' request.user.pk %}">Meu perfil</a>
       {% else %}
+        {% if request.user.aluno %}
+          <a href="{% url 'ambiente_aluno' %}">Meu ambiente</a>
+        {% endif %}
         <a href="{% url 'perfil_aluno' %}">Meu perfil</a>
       {% endif %}
 

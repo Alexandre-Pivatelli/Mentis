@@ -87,7 +87,10 @@
 
           <p class="book__label">Valor por hora · {{ professor.modalidade }}</p>
           <p class="book__price">R$ {{ professor.valor_hora|floatformat:2 }}</p>
-          <a class="btn btn--primary btn--block" href="{% url 'agendar_aula' professor.pk %}">Agendar aula</a>
+          {# Só estudantes e visitantes agendam aula; professores não veem o botão. #}
+          {% if not request.user.professor %}
+            <a class="btn btn--primary btn--block" href="{% url 'agendar_aula' professor.pk %}">Agendar aula</a>
+          {% endif %}
         </div>
       </div>
     </section>
@@ -173,8 +176,9 @@
           <ul>
             {% for disponibilidade in disponibilidades %}
               <li>
-                <!-- Link para agendar com o dia e a hora já preenchidos -->
-                <a class="horario-link" href="{% url 'agendar_aula' professor.pk %}?dia={{ disponibilidade.dia_semana }}&hora={{ disponibilidade.hora_inicio|time:'H:i' }}">
+                <!-- Link para agendar com o dia e a hora já preenchidos (professores só veem o horário) -->
+                {% if request.user.professor %}<div class="horario-link">{% else %}
+                <a class="horario-link" href="{% url 'agendar_aula' professor.pk %}?dia={{ disponibilidade.dia_semana }}&hora={{ disponibilidade.hora_inicio|time:'H:i' }}">{% endif %}
                 <span>
                   {% if disponibilidade.dia_semana == 0 %}Segunda-feira
                   {% elif disponibilidade.dia_semana == 1 %}Terça-feira
@@ -185,7 +189,7 @@
                   {% else %}Domingo{% endif %}
                 </span>
                 <strong>{{ disponibilidade.hora_inicio|time:"H:i" }}–{{ disponibilidade.hora_fim|time:"H:i" }}</strong>
-                </a>
+                {% if request.user.professor %}</div>{% else %}</a>{% endif %}
               </li>
             {% empty %}
               <li>Sem horários informados.</li>
@@ -206,6 +210,7 @@
     <div class="wrap footer__in">
       <strong>Mentis</strong>
       <span>Aprenda com quem entende de verdade.</span>
+      {% include 'includes/redes_sociais.html' %}
     </div>
   </footer>
 {% endblock %}

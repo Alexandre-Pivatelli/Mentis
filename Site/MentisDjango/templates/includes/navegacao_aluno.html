@@ -15,6 +15,12 @@
     <a href="{% url 'agenda_aluno' %}"{% if active == 'agenda' %} aria-current="page"{% endif %}>
       Agenda
     </a>
+    <a href="{% url 'materiais' %}">
+      Materiais
+    </a>
+    <a href="{% url 'ambiente_aluno' %}">
+      Meu ambiente
+    </a>
     <a href="{% url 'perfil_aluno' %}"{% if active == 'sobre' %} aria-current="page"{% endif %}>
       Sobre
     </a>
