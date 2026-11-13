@@ -17,6 +17,7 @@
 <main class="wizard-page">
   <section class="wizard-shell" aria-label="Cadastro guiado">
 
+    {# As etapas fazem parte do mesmo formulário para enviar os dados em um único POST. #}
     <form class="wizard-form register-form"
           method="post"
           enctype="multipart/form-data"
@@ -119,6 +120,7 @@
       <!-- ===================================================================
            ETAPA 2 — Sua conta (02A e 02P do Figma)
            =================================================================== -->
+      {# O script usa data-wizard-step para localizar a etapa e alternar o atributo hidden. #}
       <section class="wizard-step" data-wizard-step="2" aria-labelledby="step2Title" hidden>
         <header class="wizard-header">
           <h1 class="wizard-title" id="step2Title">Vamos começar pelo básico.</h1>

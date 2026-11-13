@@ -49,6 +49,7 @@
         <p class="pp-texto-suave">Marque os dias em que você atende e informe o horário. Os alunos veem essas informações no seu perfil.</p>
       </div>
 
+      {# O formulário envia os horários à rota de atualização de disponibilidade. #}
       <form class="pp-card pp-agenda" method="post" action="{% url 'painel_professor_agenda' %}">
         {% csrf_token %}
 
@@ -150,6 +151,7 @@
               <h4>{{ material.titulo }}</h4>
               <p class="pp-texto-suave">{{ material.disciplina }} · {{ material.data_publicacao|date:"d/m/Y" }}</p>
             </div>
+            {# O identificador na URL vincula a ação de remoção ao material deste cartão. #}
             <form method="post" action="{% url 'painel_professor_material_excluir' material.pk %}"
                   onsubmit="return confirm('Excluir este material?');">
               {% csrf_token %}

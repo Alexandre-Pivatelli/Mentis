@@ -19,6 +19,7 @@
   window.addEventListener('pageshow', reset);
 
   form.addEventListener('submit', async (event) => {
+    // Adia o envio até que o servidor confirme a sessão atual.
     event.preventDefault();
     if (sending) return;
 
@@ -28,6 +29,7 @@
     form.setAttribute('aria-busy', 'true');
     message.hidden = true;
 
+    // Limita o tempo da consulta para que o formulário possa ser desbloqueado em caso de demora.
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 10000);
     let recovery = 'Não foi possível confirmar sua sessão. Confira a conexão e tente salvar novamente.';
@@ -47,6 +49,7 @@
       if (!response.ok) throw new Error();
 
       const session = await response.json();
+      // Compara a conta da sessão com a conta usada ao renderizar o formulário.
       if (String(session.userId) !== form.dataset.userId) {
         recovery = 'A conta conectada mudou em outra aba. Recarregue esta página antes de editar o perfil.';
         throw new Error();
@@ -57,6 +60,7 @@
       }
 
       form.querySelector('[name="csrfmiddlewaretoken"]').value = session.csrfToken;
+      // Envia o formulário diretamente para evitar disparar este mesmo listener outra vez.
       HTMLFormElement.prototype.submit.call(form);
     } catch {
       message.textContent = recovery;

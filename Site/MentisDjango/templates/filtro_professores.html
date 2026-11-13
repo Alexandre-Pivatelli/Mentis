@@ -23,6 +23,7 @@
     Ele usa GET: os filtros vão para o endereço da página (ex.: ?modalidade=ONLINE&dia=2).
     Por isso não precisa de csrf_token, porque não muda nada no banco.
     -->
+    {# O método GET mantém os critérios na URL, o que permite voltar à busca ou compartilhar o link. #}
     <form class="filtro__form" method="get" action="{% url 'filtro_professores' %}">
 
       <label for="q">Nome ou disciplina</label>
@@ -116,6 +117,7 @@
       <div class="filtro__grade">
         {% for professor in professores %}
           {% include 'includes/professor_card.html' %}
+        {# O Django usa este trecho quando a coleção do laço está vazia. #}
         {% empty %}
           <div class="filtro__vazio">
             <h2>Nenhum professor com esses filtros</h2>

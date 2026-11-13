@@ -13,10 +13,12 @@
 <main class="container">
   <section class="edit-section">
     <h1 class="welcome-title">Editar Perfil</h1>
+    {# O envio multipart inclui a foto. Os atributos data fornecem a URL de sessão e o ID da conta ao script. #}
     <form class="edit-form" method="post" enctype="multipart/form-data" data-session-url="{% url 'sessao_perfil' %}" data-user-id="{{ request.user.pk }}">
       {% csrf_token %}
       {% if form.errors %}<div class="form-errors" role="alert" tabindex="-1" data-error-summary>Confira os campos indicados abaixo.{{ form.non_field_errors }}</div>{% endif %}
       {% if request.user.foto %}<img class="edit-photo" src="{{ request.user.foto.url }}" alt="Sua foto atual">{% endif %}
+      {# O Django renderiza aqui o componente compartilhado com os dados disponíveis neste contexto. #}
       {% include 'includes/form_field.html' with field=form.foto %}
       {% include 'includes/form_field.html' with field=form.nome %}
       {% include 'includes/form_field.html' with field=form.username %}

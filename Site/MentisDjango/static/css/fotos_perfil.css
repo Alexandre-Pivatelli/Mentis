@@ -12,6 +12,7 @@
   width: 100%;
   height: 100%;
   max-width: 100%;
+  /* Preenche a área disponível sem distorcer a imagem, recortando o excedente. */
   object-fit: cover;
   object-position: center;
 }

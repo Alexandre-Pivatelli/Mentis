@@ -58,6 +58,7 @@
       <div class="chips">
         {% for disciplina in disciplinas %}
           <a class="chip" href="{% url 'principal' %}?disciplina={{ disciplina.pk }}#resultados">{{ disciplina.nome }}</a>
+        {# O Django usa este trecho quando a coleção do laço está vazia. #}
         {% empty %}
           <p class="vazio">Você ainda não tem aulas. <a href="{% url 'principal' %}#resultados">Encontre um professor</a>.</p>
         {% endfor %}
@@ -111,6 +112,7 @@
     </section>
 
     <!-- ===== CARD DO PERFIL (lado direito) ===== -->
+    {# O Django renderiza aqui o componente compartilhado com os dados disponíveis neste contexto. #}
     {% include 'includes/card_estudante.html' %}
 
   {% else %}

@@ -2,6 +2,7 @@
 {% load aluno_extras %}
 <aside class="profile profile--estudante" aria-label="Seu perfil">
   <div class="profile__photo profile__photo--usuario">
+    {# O cartão usa as iniciais como alternativa quando a conta não possui foto. #}
     {% if aluno.usuario.foto %}
     <img class="profile-photo" src="{{ aluno.usuario.foto.url }}" alt="Foto de {{ aluno.usuario.nome|default:aluno.usuario.username }}">
     {% else %}

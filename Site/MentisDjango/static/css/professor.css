@@ -206,6 +206,7 @@ button:focus-visible {
 .profile__photo .profile-photo {
   width: 100%;
   height: 100%;
+  /* Preenche a área disponível sem distorcer a imagem, recortando o excedente. */
   object-fit: cover;
 }
 
@@ -332,6 +333,7 @@ button:focus-visible {
 /* ========== MATERIAIS ========== */
 .materials {
   display: grid;
+  /* Divide o espaço em colunas iguais, que podem encolher abaixo da largura intrínseca do conteúdo. */
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 20px;
   margin-top: 20px;
@@ -572,6 +574,7 @@ button:focus-visible {
   }
 }
 
+/* Aplica os ajustes abaixo quando o sistema solicita menos movimento. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

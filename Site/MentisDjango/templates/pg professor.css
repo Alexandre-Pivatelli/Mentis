@@ -364,6 +364,7 @@ button:focus-visible {
 /* ========== MATERIAIS ========== */
 .materials {
   display: grid;
+  /* Divide o espaço em colunas iguais, que podem encolher abaixo da largura intrínseca do conteúdo. */
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 20px;
   margin-top: 20px;
@@ -686,6 +687,7 @@ button:focus-visible {
 }
 
 /* ========== RESPONSIVO ========== */
+/* Aplica as regras deste bloco somente quando a janela está dentro da largura indicada. */
 @media (max-width: 960px) {
   .hero__in,
   .layout {

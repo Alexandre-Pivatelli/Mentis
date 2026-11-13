@@ -175,6 +175,7 @@
 
     const normalizar = t => t.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 
+    // Filtra os cartões já renderizados e oculta os grupos que ficam sem resultados.
     function filtrar() {
       const termo = normalizar(busca.value.trim());
       let total = 0;

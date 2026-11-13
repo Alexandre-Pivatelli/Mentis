@@ -140,6 +140,7 @@
       }
     };
 
+    // Recalcula as opções de série quando o nível de ensino muda.
     nivel.addEventListener('change', atualizarSeries);
     atualizarSeries();
   }
@@ -160,6 +161,7 @@
     const sincronizarSenha = () => {
       senha2.value = senha1.value;
     };
+    // Atualiza a indicação de senha à medida que o usuário digita.
     senha1.addEventListener('input', sincronizarSenha);
     sincronizarSenha();
   }
@@ -394,6 +396,7 @@
   }
 
   // Enter dentro das etapas 2 e 3 avança para a próxima etapa em vez de enviar antes da hora
+  // Trata Enter durante o cadastro guiado antes do envio padrão do navegador.
   form.addEventListener('keydown', (evento) => {
     if (evento.key !== 'Enter') return;
     if (evento.target.tagName === 'TEXTAREA' || evento.target.tagName === 'BUTTON') return;
@@ -413,6 +416,7 @@
   const submitBtn = document.getElementById('wizardSubmitBtn');
   const textoOriginalSubmit = submitBtn ? submitBtn.textContent : '';
 
+  // Aplica as regras do cadastro guiado antes de enviar os campos ao servidor.
   form.addEventListener('submit', (evento) => {
     if (senha1 && senha2) {
       senha2.value = senha1.value;
@@ -430,6 +434,7 @@
     }
   });
 
+  // Restaura os controles se a página voltar do histórico do navegador.
   window.addEventListener('pageshow', () => {
     if (!submitBtn) return;
     submitBtn.disabled = false;

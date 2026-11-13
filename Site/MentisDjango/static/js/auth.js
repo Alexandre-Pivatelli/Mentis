@@ -2,6 +2,7 @@
 // Melhoria progressiva: cadastro e login funcionam também sem JavaScript.
 (() => {
   document.querySelectorAll('[data-password]').forEach((button) => {
+    // O atributo data-password contém o ID do campo associado ao botão.
     const input = document.getElementById(button.dataset.password);
     if (!input) return;
 
@@ -40,6 +41,7 @@
       section.hidden = !active;
 
       section.querySelectorAll('input, select').forEach((input) => {
+        // Campos desativados ficam fora dos dados enviados pelo formulário.
         input.disabled = !active;
       });
     });
@@ -72,6 +74,7 @@
     });
   });
 
+  // Restaura os botões quando o navegador recupera a página pelo histórico.
   window.addEventListener('pageshow', () => {
     document.querySelectorAll('[data-loading]').forEach((button) => {
       button.disabled = false;

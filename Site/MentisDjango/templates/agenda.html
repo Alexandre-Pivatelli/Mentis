@@ -16,6 +16,7 @@
 
   <div class="agenda-layout">
     <section class="calendar" aria-label="Calendário de aulas">
+      {# Os links alteram o mês pela URL, e o servidor monta o calendário para o mês solicitado. #}
       <header class="calendar-toolbar">
         <h2>{{ mes|date:"F Y"|capfirst }}</h2>
         <div>
@@ -56,6 +57,7 @@
       </footer>
     </section>
 
+    {# A lista usa o dia selecionado no calendário para mostrar os compromissos correspondentes. #}
     <section class="day-schedule" aria-label="Aulas do dia">
       <h2>{{ dia|date:"d \d\e F" }}</h2>
       <p class="quiet">{{ dia|date:"l"|capfirst }}</p>

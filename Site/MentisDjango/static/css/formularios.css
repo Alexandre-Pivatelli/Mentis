@@ -1,4 +1,5 @@
 /* Padroniza campos, rótulos, estados de foco e mensagens de erro. */
+/* Garante que controles marcados como hidden continuem ocultos mesmo se outra regra definir display. */
 [hidden] { display: none !important; }
 .profile-fields { border: 0; padding: 0; margin: 24px 0; min-width: 0; }
 .profile-fields legend { font-weight: 600; margin-bottom: 16px; }

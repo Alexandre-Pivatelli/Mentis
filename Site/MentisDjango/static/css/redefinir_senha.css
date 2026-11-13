@@ -241,6 +241,7 @@
   font-size: .82rem;
 }
 
+/* Aplica as regras deste bloco somente quando a janela está dentro da largura indicada. */
 @media (max-width: 600px) {
   .reset-main {
     padding: 28px 16px 48px;

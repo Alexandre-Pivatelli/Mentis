@@ -10,6 +10,7 @@
 
 .edit-form {
   width: 100%;
+  /* Limita a largura do formulário em telas grandes, mantendo os campos fluidos em telas menores. */
   max-width: 380px;
 }
 

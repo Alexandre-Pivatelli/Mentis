@@ -540,6 +540,7 @@ body {
   color: #fff;
 }
 
+/* Aplica as regras deste bloco somente quando a janela está dentro da largura indicada. */
 @media (max-width: 600px) {
   .wizard-page {
     padding: 32px 18px 48px;
@@ -552,6 +553,7 @@ body {
   }
 }
 
+/* Aplica os ajustes abaixo quando o sistema solicita menos movimento. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

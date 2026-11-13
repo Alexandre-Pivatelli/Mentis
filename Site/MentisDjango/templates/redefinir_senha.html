@@ -26,6 +26,7 @@
     </header>
 
     <form class="reset-form" method="post" action="{% url 'redefinir_senha' %}" data-session-url="{% url 'sessao_perfil' %}" data-user-id="{{ request.user.pk }}">
+      {# O token permite que o Django verifique se o POST partiu de um formulário autorizado. #}
       {% csrf_token %}
       {% if form.errors %}
       <div class="reset-errors" role="alert" tabindex="-1" data-error-summary>

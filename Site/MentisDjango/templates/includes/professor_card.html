@@ -17,6 +17,7 @@
       <p class="teacher-result__subjects">
         {% for disciplina in professor.disciplinas.all %}
           {{ disciplina.nome }}{% if not forloop.last %} · {% endif %}
+        {# O Django usa este trecho quando a coleção do laço está vazia. #}
         {% empty %}
           Professor particular
         {% endfor %}
@@ -42,6 +43,7 @@
 
   <div class="teacher-result__footer">
     <strong>R$ {{ professor.valor_hora|floatformat:2 }} <span>/ hora</span></strong>
+    {# O Django renderiza aqui o componente compartilhado com os dados disponíveis neste contexto. #}
     {% include 'includes/favorito_botao.html' %}
   </div>
 

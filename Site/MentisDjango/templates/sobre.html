@@ -53,6 +53,7 @@
   <section class="sobre-secao">
     <div class="sobre-container">
       <h2 class="sobre-titulo">Para quem é a <span>Mentis</span></h2>
+      {# O script de movimento observa cada cartão para revelá-lo quando entra na área visível. #}
       <div class="sobre-publicos">
         <article class="sobre-publico sobre-publico--aluno">
           <span class="sobre-publico__tag">Alunos</span>
@@ -95,6 +96,7 @@
     <div class="sobre-container">
       <h2 class="sobre-titulo">Por trás da <span>Mentis</span></h2>
       <p class="sobre-subtitulo">Um pouco da equipe e do caminho até aqui.</p>
+      {# Cada imagem é carregada sob demanda e o script revela os cartões conforme a rolagem. #}
       <div class="sobre-galeria">
         <figure class="sobre-foto">
           <img src="{% static 'img/foto1.png' %}" alt="Ilustração de integrante da equipe Mentis" loading="lazy">

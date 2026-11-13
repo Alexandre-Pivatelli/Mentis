@@ -19,11 +19,13 @@
   // A troca circular permite voltar da última avaliação para a primeira.
   function show(index, animate = true) {
     animation?.cancel();
+    // O resto da divisão mantém o índice entre o primeiro e o último cartão.
     current = (index + slides.length) % slides.length;
     slides.forEach((slide, i) => {
       slide.hidden = i !== current;
       slide.setAttribute('role', 'group');
       slide.setAttribute('aria-label', `Avaliação ${i + 1} de ${slides.length}`);
+      // Os leitores de tela recebem apenas a avaliação ativa, mesmo com espaço reservado para as demais.
       slide.setAttribute('aria-hidden', String(i !== current));
     });
     position.textContent = `${current + 1} de ${slides.length}`;
@@ -37,6 +39,7 @@
 
   // Recalcula o temporizador quando a seção perde visibilidade ou recebe interação.
   function schedule() {
+    // Cancela o agendamento anterior para evitar duas trocas simultâneas.
     clearTimeout(timer);
     pause.textContent = paused ? 'Reproduzir avaliações' : 'Pausar avaliações';
     if (paused || !visible || hovering || document.hidden || root.contains(document.activeElement)) return;
@@ -62,6 +65,7 @@
     schedule();
   });
   if ('IntersectionObserver' in window) {
+    // A rotação só é agendada enquanto a seção intercepta a área visível.
     new IntersectionObserver(entries => {
       visible = entries[0].isIntersecting;
       schedule();

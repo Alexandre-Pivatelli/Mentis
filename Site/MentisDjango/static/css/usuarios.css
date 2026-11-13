@@ -270,6 +270,7 @@
       color: #fff;
     }
 
+    /* Aplica as regras deste bloco somente quando a janela está dentro da largura indicada. */
     @media (max-width: 640px) {
       .header { padding: 0 20px; }
       .container { padding: 24px 16px 60px; }

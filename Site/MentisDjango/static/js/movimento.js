@@ -3,6 +3,7 @@
 // Sem JavaScript ou suporte às APIs, todo o conteúdo continua visível.
 (() => {
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  // Encerra o script cedo quando o sistema pede movimento reduzido ou a API de animação não existe.
   if (reducedMotion.matches || !Element.prototype.animate) return;
 
   const animations = new Set();
@@ -44,12 +45,14 @@
           animation.play();
           pending.delete(entry.target);
         }
+        // Cada elemento é revelado uma vez e deixa de ser observado.
         observer.unobserve(entry.target);
       });
     }, { threshold: 0.12, rootMargin: '0px 0px -24px 0px' });
 
     observers.add(observer);
     elements.forEach(element => {
+      // Mantém a animação pausada até o elemento entrar na área visível.
       pending.set(element, reveal(element, { paused: true }));
       observer.observe(element);
     });
@@ -100,6 +103,7 @@
     if (event.matches) showEverything();
   });
   // Conteúdo alcançado pelo teclado aparece imediatamente, mesmo antes do observer.
+  // Mostra o elemento imediatamente se o teclado alcançar um controle ainda oculto.
   document.addEventListener('focusin', event => {
     for (const [element, animation] of pending) {
       if (element.contains(event.target)) {

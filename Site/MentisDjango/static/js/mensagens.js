@@ -2,6 +2,7 @@
 (() => {
   const search = document.querySelector('[data-contact-search]');
   const contacts = [...document.querySelectorAll('[data-contact]')];
+  // Normaliza acentos e maiúsculas para comparar o texto digitado com os nomes.
   const norm = (s) =>
     s
       .normalize('NFD')
@@ -44,6 +45,7 @@
     const timeout = setTimeout(() => controller.abort(), 8000);
 
     try {
+      // Usa o ID da última mensagem como cursor para pedir somente as posteriores.
       const last = history.querySelector('[data-message-id]:last-child')?.dataset.messageId || 0;
       const r = await fetch(`${history.dataset.pollUrl}&apos=${last}`, {
         credentials: 'same-origin',
@@ -64,6 +66,7 @@
         item.dataset.messageId = m.id;
 
         const text = document.createElement('p');
+        // Insere a mensagem como texto, sem interpretar marcação enviada por outro usuário.
         text.textContent = m.texto;
 
         const time = document.createElement('time');
@@ -78,6 +81,7 @@
         }
       });
 
+      // Acompanha as novas mensagens só quando o usuário já estava perto do fim da conversa.
       if (isAtBottom) {
         history.scrollTop = history.scrollHeight;
       }

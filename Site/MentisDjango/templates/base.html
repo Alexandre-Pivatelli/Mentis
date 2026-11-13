@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="{% static 'css/header.css' %}?v=themes-2">
     <link rel="stylesheet" href="{% static 'css/fotos_perfil.css' %}?v=themes-2">
 
+    {# Cada tela pode declarar título, estilos e scripts próprios neste ponto. #}
     {% block page_head %}{% endblock %}
 
     {% include 'includes/tema.html' %}
@@ -16,6 +17,7 @@
   <body class="{% block body_class %}{% endblock %}">
     {% include 'includes/header.html' %}
 
+    {# O conteúdo específico entra depois do cabeçalho compartilhado. #}
     {% block content %}{% endblock %}
   </body>
 </html>

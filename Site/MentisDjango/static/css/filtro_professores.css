@@ -45,6 +45,7 @@
   background: var(--surface);
   border: 1px solid var(--separator);
   border-radius: 18px;
+  /* Mantém o elemento junto ao limite definido quando o contêiner é rolado. */
   position: sticky;   /* o formulário acompanha a rolagem da página */
   top: 20px;
 }
@@ -142,6 +143,7 @@
 
 .filtro__grade {
   display: grid;
+  /* Divide o espaço em colunas iguais, que podem encolher abaixo da largura intrínseca do conteúdo. */
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 20px;
 }
@@ -165,6 +167,7 @@
 }
 
 /* ---------- Telas menores ---------- */
+/* Aplica as regras deste bloco somente quando a janela está dentro da largura indicada. */
 @media (max-width: 1000px) {
   .filtro__grade {
     grid-template-columns: 1fr;

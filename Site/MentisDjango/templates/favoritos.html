@@ -4,6 +4,7 @@
 {% block title %}Meus professores favoritos – Mentis{% endblock %}
 
 {% block student_content %}
+  {# O Django renderiza aqui o componente compartilhado com os dados disponíveis neste contexto. #}
   {% include "includes/navegacao_aluno.html" with active="favoritos" %}
 
   <section class="teacher-directory" data-favorites-page aria-labelledby="favorites-title">

@@ -120,6 +120,7 @@
 
 .mat-recentes__lista {
   display: grid;
+  /* Divide o espaço em colunas iguais, que podem encolher abaixo da largura intrínseca do conteúdo. */
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 20px;
   margin-top: 16px;
@@ -150,6 +151,7 @@
   font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
+  /* Indica com reticências que parte do texto ficou fora da largura disponível. */
   text-overflow: ellipsis;
 }
 
@@ -488,6 +490,7 @@
   .mat-mais { flex-direction: column; align-items: flex-start; padding: 28px 24px; margin-bottom: 56px; }
 }
 
+/* Aplica os ajustes abaixo quando o sistema solicita menos movimento. */
 @media (prefers-reduced-motion: reduce) {
   .mat-recente, .mat-card, .mat-botao { transition: none; }
 }

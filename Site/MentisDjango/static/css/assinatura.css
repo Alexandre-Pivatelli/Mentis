@@ -82,6 +82,7 @@
 .as-bloqueado { font-size: .8rem; color: var(--secondary, #645a70); white-space: nowrap; }
 .as-vazio { color: var(--secondary, #645a70); }
 
+/* Aplica as regras deste bloco somente quando a janela está dentro da largura indicada. */
 @media (max-width: 600px) {
   .as-container { width: calc(100% - 40px); }
   .as-hero, .as-card { padding: 22px; }

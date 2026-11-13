@@ -153,6 +153,7 @@ button {
   margin-top: 20px;
   padding: 6px 4px 22px;
   overflow-x: auto;
+  /* Encaixa a rolagem horizontal nos pontos definidos pelos cartões. */
   scroll-snap-type: x mandatory;
   scrollbar-width: thin;
   scrollbar-color: var(--purple-light) transparent;
@@ -193,6 +194,7 @@ button {
   line-height: 1.2;
   white-space: nowrap;
   overflow: hidden;
+  /* Indica com reticências que parte do texto ficou fora da largura disponível. */
   text-overflow: ellipsis;
 }
 
@@ -355,6 +357,7 @@ button {
 }
 
 /* ========== RESPONSIVO ========== */
+/* Aplica as regras deste bloco somente quando a janela está dentro da largura indicada. */
 @media (max-width: 1100px) {
   .page {
     grid-template-columns: 1fr;

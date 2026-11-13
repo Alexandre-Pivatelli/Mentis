@@ -2,6 +2,7 @@
 <div class="input-group">
   {{ field.label_tag }}
   {{ field }}
+  {# A ajuda só ocupa espaço quando existe, e seu ID é derivado do ID do campo. #}
   {% if field.help_text %}
   <div class="field-help" id="{{ field.auto_id }}_helptext">
     {{ field.help_text }}

@@ -51,6 +51,7 @@
       </h2>
       {% endif %}
 
+{# Os atributos data permitem ao script identificar a faixa rolável e seus controles. #}
 <div class="carousel" data-carousel>
   <button class="carousel__arrow carousel__arrow--prev" type="button" aria-label="Professores anteriores" data-prev>‹</button>
   <div class="cards" id="professores" tabindex="0" aria-label="Professores em destaque" data-track>
@@ -70,6 +71,7 @@
   <button class="carousel__arrow carousel__arrow--next" type="button" aria-label="Próximos professores" data-next>›</button>
 </div>
 <div class="dots" data-dots></div>
+{# A paginação preserva o termo da busca e a disciplina selecionada nos links. #}
 {% if professores.has_other_pages %}
 <nav class="pagination" aria-label="Páginas de professores">
   {% if professores.has_previous %}<a class="page-btn" href="?q={{ busca|urlencode }}&amp;disciplina={{ disciplina_selecionada|urlencode }}&amp;page={{ professores.previous_page_number }}#resultados">Anterior</a>{% endif %}

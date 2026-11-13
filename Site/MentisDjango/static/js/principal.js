@@ -13,6 +13,7 @@
   let offsets = [0];
   let current = 0;
   const sync = () => {
+    // Seleciona o grupo cuja posição inicial está mais próxima da rolagem atual.
     current = offsets.reduce((best, offset, index) =>
       Math.abs(offset - track.scrollLeft) < Math.abs(offsets[best] - track.scrollLeft) ? index : best, 0);
     prev.disabled = track.scrollLeft < 2;
@@ -28,6 +29,7 @@
     });
   };
   const goTo = (index) => {
+    // Limita o índice para que as setas não tentem acessar um grupo inexistente.
     const target = Math.max(0, Math.min(index, offsets.length - 1));
     track.scrollTo({ left: offsets[target], behavior: motion.matches ? 'instant' : 'smooth' });
   };
@@ -35,6 +37,7 @@
     const limit = Math.max(0, track.scrollWidth - track.clientWidth);
     const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
     const width = cards[0]?.getBoundingClientRect().width || track.clientWidth;
+    // Calcula quantos cartões cabem com base na largura disponível e no espaçamento.
     const visible = Math.max(1, Math.floor((track.clientWidth + gap + 1) / (width + gap)));
     offsets = [0];
     for (let index = visible; index < cards.length; index += visible) {
@@ -68,6 +71,7 @@
   let frame;
   track.addEventListener('scroll', () => {
     cancelAnimationFrame(frame);
+    // Agrupa atualizações rápidas de rolagem no próximo quadro do navegador.
     frame = requestAnimationFrame(sync);
   }, { passive: true });
   track.addEventListener('keydown', (event) => {
@@ -79,6 +83,7 @@
   });
   if ('ResizeObserver' in window) new ResizeObserver(layout).observe(track);
   else window.addEventListener('resize', layout, { passive: true });
+  // Recalcula as medidas após o carregamento das fontes, que pode mudar a largura do conteúdo.
   document.fonts?.ready.then(layout);
   layout();
 })();

@@ -5,6 +5,7 @@
 
 .horario-link {
   display: flex;
+  /* Distribui a descrição e o horário nas extremidades do link. */
   justify-content: space-between;
   gap: 12px;
   width: 100%;

@@ -9,6 +9,7 @@
 .page-btn { display: inline-flex; align-items: center; justify-content: center; min-width: 40px; min-height: 40px; color: var(--accent, #6430d8); }
 .auth form { display: inline; margin-left: 12px; }
 .auth button { border: 0; background: transparent; font: inherit; color: inherit; cursor: pointer; }
+/* O contêiner recebe a rolagem horizontal quando a tabela ultrapassa a largura disponível. */
 .table-wrap { overflow-x: auto; }
 .table-wrap table { min-width: 760px; }
 .search-wrap { display: flex; align-items: center; gap: 8px; }

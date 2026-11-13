@@ -17,6 +17,7 @@
       <a class="directory-action" href="{% url 'filtro_professores' %}">Mais filtros</a>
     </header>
 
+    {# O Django renderiza aqui o componente compartilhado com os dados disponíveis neste contexto. #}
     {% include 'includes/professores_filtros.html' %}
 
     <p class="directory-count" role="status">

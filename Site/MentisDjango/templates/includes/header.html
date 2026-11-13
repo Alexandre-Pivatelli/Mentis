@@ -46,6 +46,7 @@
       {% endif %}
 
       <form action="{% url 'logout' %}" method="post">
+        {# O token permite que o Django verifique se o POST partiu de um formulário autorizado. #}
         {% csrf_token %}
         <button type="submit">Sair</button>
       </form>

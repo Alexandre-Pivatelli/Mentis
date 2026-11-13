@@ -1,5 +1,6 @@
 {# Compartilha os atalhos da área do estudante e indica a página atual. #}
 <nav class="student-nav" aria-label="Área do estudante">
+  {# O parâmetro active controla aria-current, que identifica a seção atual para tecnologias assistivas. #}
   <a href="{% url 'mensagens_aluno' %}"{% if active == 'mensagens' %} aria-current="page"{% endif %}>
     Mensagens
   </a>

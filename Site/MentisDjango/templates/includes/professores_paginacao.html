@@ -1,6 +1,7 @@
 {# Monta a navegação de páginas preservando os filtros na URL. #}
 {% if professores.has_other_pages %}
   <nav class="directory-pagination" aria-label="Páginas de professores">
+    {# O link anterior só existe quando a página atual tem uma página predecessora. #}
     {% if professores.has_previous %}
       <a href="?q={{ busca|urlencode }}&amp;disciplina={{ disciplina_selecionada|urlencode }}&amp;tipo={{ tipo_selecionado|default:''|urlencode }}&amp;page={{ professores.previous_page_number }}">
         Anterior

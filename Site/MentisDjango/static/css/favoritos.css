@@ -52,6 +52,7 @@
 .directory-pagination { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 24px; margin-top: 32px; font-size: .85rem; }
 .directory-pagination a { display: inline-flex; align-items: center; min-height: 44px; color: var(--accent); }
 [hidden] { display: none !important; }
+/* Aplica as regras deste bloco somente quando a janela está dentro da largura indicada. */
 @media (max-width: 1100px) { .teacher-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 650px) {
   .teacher-directory { margin-top: 16px; }

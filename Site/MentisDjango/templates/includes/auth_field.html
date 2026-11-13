@@ -2,6 +2,7 @@
 <div class="auth-field{% if field.errors %} auth-field--invalid{% endif %}">
   {{ field.label_tag }}
 
+  {# O botão de exibir o valor é renderizado apenas para campos cujo widget é de senha. #}
   {% if field.field.widget.input_type == 'password' %}
     <div class="auth-password">
       {{ field }}

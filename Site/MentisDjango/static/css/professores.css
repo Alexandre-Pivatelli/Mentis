@@ -99,6 +99,7 @@ body {
 /* Grelha de Cards */
 .teachers-grid {
   display: grid;
+  /* Preenche a linha com as colunas que couberem e distribui entre elas o espaço restante. */
   grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
   gap: 25px;
 }

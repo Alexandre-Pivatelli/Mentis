@@ -16,6 +16,7 @@
         <details class="new-conversation">
           <summary>Nova conversa</summary>
           <form method="post">
+            {# O token permite que o Django verifique se o POST partiu de um formulário autorizado. #}
             {% csrf_token %}
             <input type="hidden" name="acao" value="nova">
             <label for="teacher">Escolha um professor</label>
@@ -91,6 +92,7 @@
           <p class="conversation-note" data-empty-history{% if mensagens %} hidden{% endif %}>Este é o início da conversa. Combine os detalhes da próxima aula por aqui.</p>
 
           {% for m in mensagens %}
+            {# O ID da mensagem serve como cursor da consulta e permite evitar duplicatas no histórico. #}
             <article class="message{% if m.autor_id == request.user.pk %} message--own{% endif %}" data-message-id="{{ m.pk }}">
               <p>{{ m.texto }}</p>
               <time datetime="{{ m.enviada_em|date:'c' }}">{{ m.enviada_em|date:"d/m · H:i" }}</time>

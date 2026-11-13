@@ -8,6 +8,7 @@
   status.setAttribute('aria-live', 'polite');
   document.body.append(status);
   let timeout;
+  // Os formulários continuam funcionando de modo tradicional quando o script não está disponível.
   forms.forEach(form => form.addEventListener('submit', async event => {
     event.preventDefault();
     const related = [...forms].filter(item => item.dataset.professorId === form.dataset.professorId);
@@ -19,6 +20,7 @@
     const controller = new AbortController();
     const requestTimeout = setTimeout(() => controller.abort(), 10000);
     try {
+      // Reutiliza a URL e os campos do formulário para manter a mesma ação e o token CSRF.
       const response = await fetch(form.action, {
         method: 'POST', body: new FormData(form), credentials: 'same-origin', signal: controller.signal,
         headers: { Accept: 'application/json' },
@@ -41,6 +43,7 @@
       });
       status.textContent = data.mensagem;
       clearTimeout(timeout);
+      // Remove o aviso após alguns segundos para que ele não permaneça na tela.
       timeout = setTimeout(() => { status.textContent = ''; }, 5000);
     } catch (failure) {
       error.textContent = 'Não foi possível salvar. Verifique sua conexão, atualize a página e tente novamente.';

@@ -77,6 +77,7 @@
 
           {% if request.user.aluno %}
             <form method="post" action="{% url 'mensagens_aluno' %}">
+              {# O token permite que o Django verifique se o POST partiu de um formulário autorizado. #}
               {% csrf_token %}
               <input type="hidden" name="acao" value="nova">
               <input type="hidden" name="professor" value="{{ professor.pk }}">
@@ -119,6 +120,7 @@
                   <span>{{ material.data_publicacao|date:"d/m/Y" }}</span>
                 </div>
               </article>
+            {# O Django usa este trecho quando a coleção do laço está vazia. #}
             {% empty %}
               <p>Nenhum material publicado.</p>
             {% endfor %}

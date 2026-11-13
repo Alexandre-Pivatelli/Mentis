@@ -4,6 +4,7 @@
 
 .mentis-header {
   box-sizing: border-box;
+  /* Mantém o elemento junto ao limite definido quando o contêiner é rolado. */
   position: sticky;
   top: 0;
   z-index: 50;
@@ -40,6 +41,7 @@
 @media (hover: hover) {
   .mentis-header__nav a:hover, .mentis-header__auth a:hover, .mentis-header__auth button:hover { text-decoration: underline; text-underline-offset: 6px; color: var(--accent-hover, #4a1fa3); }
 }
+/* Aplica as regras deste bloco somente quando a janela está dentro da largura indicada. */
 @media (max-width: 1100px) {
   .mentis-header { grid-template-columns: minmax(0, 1fr) auto; gap: 8px 20px; padding: 12px 32px; }
   .mentis-header__nav { grid-column: 1 / -1; grid-row: 2; width: 100%; flex-wrap: wrap; }

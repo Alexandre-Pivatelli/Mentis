@@ -3,11 +3,13 @@
   const key = 'mentis-tema';
   const system = window.matchMedia('(prefers-color-scheme: dark)');
   let preference;
+  // A leitura pode falhar em ambientes com armazenamento restrito.
   try { preference = localStorage.getItem(key); } catch (_) { /* Navegação com armazenamento restrito. */ }
   if (!['light', 'dark'].includes(preference)) preference = null;
 
   // Atualiza os atributos que as folhas de estilo e o controle de tema consultam.
   function apply(theme) {
+    // O atributo data-theme na raiz ativa as regras de cor correspondentes.
     document.documentElement.dataset.theme = theme;
     document.querySelectorAll('[data-theme-toggle]').forEach(button => {
       const dark = theme === 'dark';
@@ -32,9 +34,11 @@
       });
     });
   });
+  // Uma mudança no sistema é refletida se o usuário ainda não escolheu um tema manualmente.
   system.addEventListener('change', event => {
     if (!preference) apply(event.matches ? 'dark' : 'light');
   });
+  // Propaga para esta aba uma preferência alterada em outra.
   window.addEventListener('storage', event => {
     if (event.key !== key && event.key !== null) return;
     preference = ['light', 'dark'].includes(event.newValue) ? event.newValue : null;
