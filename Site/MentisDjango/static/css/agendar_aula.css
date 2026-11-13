@@ -144,6 +144,26 @@
   border-bottom: 0;
 }
 
+/* ---------- Sprint 9: horários clicáveis ---------- */
+.agendar__dica {
+  margin-top: 6px;
+  font-size: 13px;
+  opacity: 0.85;
+}
+
+.agendar__horario-link {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+
+.agendar__horario-link:hover strong {
+  text-decoration: underline;
+}
+
 /* ---------- Celular ---------- */
 @media (max-width: 800px) {
   .agendar__colunas {

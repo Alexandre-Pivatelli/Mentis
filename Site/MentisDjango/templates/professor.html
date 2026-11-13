@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="{% static 'css/professor.css' %}">
   <link rel="stylesheet" href="{% static 'css/dados.css' %}">
   <link rel="stylesheet" href="{% static 'css/fotos_perfil.css' %}?v=3">
+  <link rel="stylesheet" href="{% static 'css/horarios_perfil.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -169,6 +170,8 @@
           <ul>
             {% for disponibilidade in disponibilidades %}
               <li>
+                <!-- Sprint 9: o horário leva para a página de agendar, já com o dia e a hora preenchidos -->
+                <a class="horario-link" href="{% url 'agendar_aula' professor.pk %}?dia={{ disponibilidade.dia_semana }}&hora={{ disponibilidade.hora_inicio|time:'H:i' }}">
                 <span>
                   {% if disponibilidade.dia_semana == 0 %}Segunda-feira
                   {% elif disponibilidade.dia_semana == 1 %}Terça-feira
@@ -179,6 +182,7 @@
                   {% else %}Domingo{% endif %}
                 </span>
                 <strong>{{ disponibilidade.hora_inicio|time:"H:i" }}–{{ disponibilidade.hora_fim|time:"H:i" }}</strong>
+                </a>
               </li>
             {% empty %}
               <li>Sem horários informados.</li>
