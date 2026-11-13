@@ -1,8 +1,4 @@
 /* Define os estados visuais dos horários que funcionam como links para agendamento. */
-/* ========== HORÁRIOS DO PERFIL (Sprint 9) ==========
-   Cada horário da "Disponibilidade semanal" no perfil do professor virou um link
-   para a página de agendar aula. Este arquivo só arruma a aparência desse link. */
-
 .horario-link {
   display: flex;
   /* Distribui a descrição e o horário nas extremidades do link. */

@@ -18,11 +18,6 @@
 
   <div class="filtro__colunas">
 
-    <!--
-    Formulário de filtros.
-    Ele usa GET: os filtros vão para o endereço da página (ex.: ?modalidade=ONLINE&dia=2).
-    Por isso não precisa de csrf_token, porque não muda nada no banco.
-    -->
     {# O método GET mantém os critérios na URL, o que permite voltar à busca ou compartilhar o link. #}
     <form class="filtro__form" method="get" action="{% url 'filtro_professores' %}">
 
@@ -44,7 +39,7 @@
         <option value="PRESENCIAL" {% if filtros.modalidade == 'PRESENCIAL' %}selected{% endif %}>Presencial</option>
       </select>
 
-      <!-- Faixa de preço: dois campos lado a lado -->
+      <!-- Faixa de preço -->
       <p class="filtro__grupo">Preço por hora (R$)</p>
       <div class="filtro__linha">
         <div>
@@ -107,13 +102,11 @@
 
     <!-- Resultado da busca -->
     <section class="filtro__resultado">
-      <!-- professores|length conta quantos professores vieram da view -->
       <p class="filtro__contagem" role="status">
         {{ professores|length }} professor{{ professores|length|pluralize:'es' }} encontrado{{ professores|length|pluralize }}
       </p>
 
-      <!-- Reaproveita o card de professor que já existe na busca simples.
-           A parte "empty" aparece quando a lista está vazia (nenhum professor achado). -->
+      <!-- Usa o mesmo card da busca simples -->
       <div class="filtro__grade">
         {% for professor in professores %}
           {% include 'includes/professor_card.html' %}
