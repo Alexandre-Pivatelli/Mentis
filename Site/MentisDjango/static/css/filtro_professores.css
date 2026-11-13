@@ -1,8 +1,5 @@
 /* Organiza o formulário de busca avançada e a grade de resultados em diferentes larguras. */
-/* ========== FILTRO DE PROFESSORES (Sprint 9) ==========
-   Segue o mesmo jeito da página de agendar aula (agendar_aula.css).
-   As cores usam as variáveis do tema.css, assim a página funciona no modo claro e no escuro.
-   Os cards de professor já têm estilo próprio (favoritos.css), então aqui não mexemos neles. */
+/* ========== FILTRO DE PROFESSORES ========== */
 
 .filtro {
   padding: 24px 0 40px;
@@ -46,7 +43,7 @@
   border: 1px solid var(--separator);
   border-radius: 18px;
   /* Mantém o elemento junto ao limite definido quando o contêiner é rolado. */
-  position: sticky;   /* o formulário acompanha a rolagem da página */
+  position: sticky;
   top: 20px;
 }
 
@@ -74,7 +71,7 @@
   outline: none;
 }
 
-/* Título de um grupo de campos (ex.: "Preço por hora") */
+/* Título de grupo de campos */
 .filtro__grupo {
   margin-top: 16px;
   padding-top: 14px;
@@ -96,7 +93,7 @@
   margin-bottom: 6px;
 }
 
-/* Caixinha "Só professores verificados" */
+/* Caixa "Só verificados" */
 .filtro__check {
   display: flex;
   align-items: center;
@@ -149,7 +146,7 @@
 }
 
 .filtro__vazio {
-  grid-column: 1 / -1;   /* ocupa as duas colunas da grade */
+  grid-column: 1 / -1;   /* ocupa todas as colunas */
   padding: 48px 24px;
   text-align: center;
   background: var(--surface-subtle);

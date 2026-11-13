@@ -16,31 +16,23 @@ DIAS_DA_SEMANA = ['Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira
 
 def proxima_data(dia_semana, hora):
     '''
-    Sprint 9: recebe um dia da semana (0 = segunda ... 6 = domingo) e um horário,
-    e devolve a próxima data em que esse dia da semana acontece.
-    Exemplo: se hoje é quarta e o aluno clicou em "Sexta-feira", devolve a data desta sexta.
-    Se o dia for hoje, mas o horário já passou, pula para a semana seguinte.
+    Devolve a próxima data que cai no dia da semana pedido (0 = segunda).
     '''
     hoje = timezone.localdate()
     dias_ate_la = (dia_semana - hoje.weekday()) % 7
     dia = hoje + timedelta(days=dias_ate_la)
     if timezone.make_aware(datetime.combine(dia, hora)) <= timezone.now():
-        dia = dia + timedelta(days=7)
+        dia = dia + timedelta(days=7)    # horário de hoje já passou: vai para a semana seguinte
     return dia
 
 
 def horario_vindo_do_perfil(parametros):
     '''
-    Sprint 9: quando o aluno clica num horário do perfil do professor,
-    o link chega aqui com ?dia=4&hora=14:00 no endereço.
-    Esta função transforma isso nos dados que o formulário precisa (data e hora).
-    Se o link vier errado ou sem esses dados, devolve um dicionário vazio
-    e o formulário só aparece em branco.
+    Transforma o ?dia=4&hora=14:00 do link do perfil na data e hora do formulário.
     '''
     dia_texto = parametros.get('dia', '')
     hora_texto = parametros.get('hora', '')
 
-    # O dia só vale se for um dos textos '0', '1', ..., '6'.
     if dia_texto not in ['0', '1', '2', '3', '4', '5', '6']:
         return {}
     try:
@@ -69,7 +61,7 @@ def agendar_aula(request, professor_id):
     horarios = []
     for disponibilidade in disponibilidades:
         horarios.append({
-            'dia_semana': disponibilidade.dia_semana,   # Sprint 9: usado no link de cada horário
+            'dia_semana': disponibilidade.dia_semana,
             'dia': DIAS_DA_SEMANA[disponibilidade.dia_semana],
             'inicio': disponibilidade.hora_inicio,
             'fim': disponibilidade.hora_fim,
@@ -152,9 +144,7 @@ def agendar_aula(request, professor_id):
             dia_texto = dia.isoformat()
             return redirect(reverse('agenda_aluno') + '?mes=' + dia.replace(day=1).isoformat() + '&dia=' + dia_texto)
 
-    # O que vai aparecer já preenchido no formulário:
-    # - no POST (deu erro), é o que o aluno já tinha digitado, para não apagar;
-    # - no GET (Sprint 9), é o horário que o aluno clicou no perfil, se ele veio por esse link.
+    # Dados que aparecem preenchidos no formulário.
     if request.method == 'POST':
         dados = request.POST
     else:

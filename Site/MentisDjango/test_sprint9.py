@@ -16,7 +16,7 @@ def criar_professor(usuario, nome, valor, modalidade, verificado=False):
 
 
 class LinkHorarioPerfilTests(TestCase):
-    '''Sprint 9: horário do perfil leva para a página de agendar já preenchida.'''
+    '''Horário do perfil leva para a página de agendar já preenchida.'''
 
     def setUp(self):
         self.professor = criar_professor('prof', 'Helena', '90', 'ONLINE')
@@ -53,7 +53,7 @@ class LinkHorarioPerfilTests(TestCase):
 
 
 class FiltroProfessoresTests(TestCase):
-    '''Sprint 9: filtro mais abrangente de professores.'''
+    '''Filtro de professores.'''
 
     def setUp(self):
         self.url = reverse('filtro_professores')

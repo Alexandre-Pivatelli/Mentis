@@ -173,7 +173,7 @@
           <ul>
             {% for disponibilidade in disponibilidades %}
               <li>
-                <!-- Sprint 9: o horário leva para a página de agendar, já com o dia e a hora preenchidos -->
+                <!-- Link para agendar com o dia e a hora já preenchidos -->
                 <a class="horario-link" href="{% url 'agendar_aula' professor.pk %}?dia={{ disponibilidade.dia_semana }}&hora={{ disponibilidade.hora_inicio|time:'H:i' }}">
                 <span>
                   {% if disponibilidade.dia_semana == 0 %}Segunda-feira
