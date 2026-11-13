@@ -12,6 +12,8 @@
       {% if request.user.aluno %}
         <a class="directory-action" href="{% url 'favoritos_aluno' %}">Ver meus favoritos</a>
       {% endif %}
+      <!-- Sprint 9: link para a busca com mais filtros -->
+      <a class="directory-action" href="{% url 'filtro_professores' %}">Mais filtros</a>
     </header>
 
     {% include 'includes/professores_filtros.html' %}

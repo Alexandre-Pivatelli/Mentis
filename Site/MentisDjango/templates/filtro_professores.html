@@ -1,0 +1,129 @@
+{% extends 'area_estudante.html' %}
+{% load static %}
+
+{% block title %}Filtrar professores · Mentis{% endblock %}
+
+{% block student_content %}
+<link rel="stylesheet" href="{% static 'css/filtro_professores.css' %}">
+
+<div class="filtro">
+
+  <!-- Título da página -->
+  <header class="filtro__topo">
+    <a class="filtro__voltar" href="{% url 'professores' %}">‹ Voltar para a busca simples</a>
+    <h1>Filtrar professores</h1>
+    <p>Combine os filtros para achar o professor certo. Deixe em branco o que não importa para você.</p>
+  </header>
+
+  <div class="filtro__colunas">
+
+    <!--
+    Formulário de filtros.
+    Ele usa GET: os filtros vão para o endereço da página (ex.: ?modalidade=ONLINE&dia=2).
+    Por isso não precisa de csrf_token, porque não muda nada no banco.
+    -->
+    <form class="filtro__form" method="get" action="{% url 'filtro_professores' %}">
+
+      <label for="q">Nome ou disciplina</label>
+      <input type="search" id="q" name="q" value="{{ filtros.q }}" maxlength="200" placeholder="Ex.: Matemática">
+
+      <label for="disciplina">Disciplina</label>
+      <select id="disciplina" name="disciplina">
+        <option value="">Todas</option>
+        {% for disciplina in disciplinas %}
+          <option value="{{ disciplina.pk }}" {% if filtros.disciplina == disciplina.pk|stringformat:"s" %}selected{% endif %}>{{ disciplina.nome }}</option>
+        {% endfor %}
+      </select>
+
+      <label for="modalidade">Modalidade</label>
+      <select id="modalidade" name="modalidade">
+        <option value="">Tanto faz</option>
+        <option value="ONLINE" {% if filtros.modalidade == 'ONLINE' %}selected{% endif %}>Online</option>
+        <option value="PRESENCIAL" {% if filtros.modalidade == 'PRESENCIAL' %}selected{% endif %}>Presencial</option>
+      </select>
+
+      <!-- Faixa de preço: dois campos lado a lado -->
+      <p class="filtro__grupo">Preço por hora (R$)</p>
+      <div class="filtro__linha">
+        <div>
+          <label for="preco_min">De</label>
+          <input type="number" id="preco_min" name="preco_min" min="0" step="0.01" value="{{ filtros.preco_min }}" placeholder="0">
+        </div>
+        <div>
+          <label for="preco_max">Até</label>
+          <input type="number" id="preco_max" name="preco_max" min="0" step="0.01" value="{{ filtros.preco_max }}" placeholder="200">
+        </div>
+      </div>
+
+      <!-- Quando o professor atende -->
+      <p class="filtro__grupo">Quando você quer ter aula</p>
+      <div class="filtro__linha">
+        <div>
+          <label for="dia">Dia</label>
+          <select id="dia" name="dia">
+            <option value="">Qualquer</option>
+            {% for codigo, nome in dias_da_semana %}
+              <option value="{{ codigo }}" {% if filtros.dia == codigo %}selected{% endif %}>{{ nome }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div>
+          <label for="periodo">Período</label>
+          <select id="periodo" name="periodo">
+            <option value="">Qualquer</option>
+            <option value="manha" {% if filtros.periodo == 'manha' %}selected{% endif %}>Manhã (6h–12h)</option>
+            <option value="tarde" {% if filtros.periodo == 'tarde' %}selected{% endif %}>Tarde (12h–18h)</option>
+            <option value="noite" {% if filtros.periodo == 'noite' %}selected{% endif %}>Noite (depois das 18h)</option>
+          </select>
+        </div>
+      </div>
+
+      <label for="nota_min">Nota mínima</label>
+      <select id="nota_min" name="nota_min">
+        <option value="">Qualquer nota</option>
+        <option value="3" {% if filtros.nota_min == '3' %}selected{% endif %}>3 ou mais</option>
+        <option value="4" {% if filtros.nota_min == '4' %}selected{% endif %}>4 ou mais</option>
+        <option value="4.5" {% if filtros.nota_min == '4.5' %}selected{% endif %}>4,5 ou mais</option>
+      </select>
+
+      <label class="filtro__check">
+        <input type="checkbox" name="verificado" value="1" {% if filtros.verificado == '1' %}checked{% endif %}>
+        Só professores verificados
+      </label>
+
+      <label for="ordem">Ordenar por</label>
+      <select id="ordem" name="ordem">
+        <option value="nome" {% if ordem == 'nome' %}selected{% endif %}>Nome (A–Z)</option>
+        <option value="menor_preco" {% if ordem == 'menor_preco' %}selected{% endif %}>Menor preço</option>
+        <option value="maior_preco" {% if ordem == 'maior_preco' %}selected{% endif %}>Maior preço</option>
+        <option value="melhor_nota" {% if ordem == 'melhor_nota' %}selected{% endif %}>Melhor avaliação</option>
+      </select>
+
+      <button type="submit" class="filtro__botao">Aplicar filtros</button>
+      <a class="filtro__limpar" href="{% url 'filtro_professores' %}">Limpar filtros</a>
+    </form>
+
+    <!-- Resultado da busca -->
+    <section class="filtro__resultado">
+      <!-- professores|length conta quantos professores vieram da view -->
+      <p class="filtro__contagem" role="status">
+        {{ professores|length }} professor{{ professores|length|pluralize:'es' }} encontrado{{ professores|length|pluralize }}
+      </p>
+
+      <!-- Reaproveita o card de professor que já existe na busca simples.
+           A parte "empty" aparece quando a lista está vazia (nenhum professor achado). -->
+      <div class="filtro__grade">
+        {% for professor in professores %}
+          {% include 'includes/professor_card.html' %}
+        {% empty %}
+          <div class="filtro__vazio">
+            <h2>Nenhum professor com esses filtros</h2>
+            <p>Tente tirar algum filtro, como o dia ou a nota mínima.</p>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+
+  </div>
+</div>
+{% endblock %}
