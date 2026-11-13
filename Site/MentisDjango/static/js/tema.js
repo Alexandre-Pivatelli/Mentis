@@ -1,3 +1,4 @@
+// Aplica o tema salvo ou a preferência do sistema e sincroniza os controles da interface.
 (() => {
   const key = 'mentis-tema';
   const system = window.matchMedia('(prefers-color-scheme: dark)');
@@ -5,6 +6,7 @@
   try { preference = localStorage.getItem(key); } catch (_) { /* Navegação com armazenamento restrito. */ }
   if (!['light', 'dark'].includes(preference)) preference = null;
 
+  // Atualiza os atributos que as folhas de estilo e o controle de tema consultam.
   function apply(theme) {
     document.documentElement.dataset.theme = theme;
     document.querySelectorAll('[data-theme-toggle]').forEach(button => {

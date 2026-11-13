@@ -1,3 +1,4 @@
+/* Centraliza as variáveis de cor e as adaptações dos componentes aos temas claro e escuro. */
 /* Papéis compartilhados por todas as telas, inclusive as que usam CSS próprio. */
 :root {
   color-scheme: light;

@@ -1,3 +1,4 @@
+// Envia ações de favoritos sem recarregar a página e atualiza o estado visual do botão.
 (() => {
   const forms = document.querySelectorAll('[data-favorite-form]');
   if (!forms.length || !window.fetch) return;

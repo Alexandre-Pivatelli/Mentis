@@ -1,3 +1,4 @@
+{# Exibe nome, disciplinas, preço e avaliações de um professor nos resultados de busca. #}
 <article class="teacher-result">
   <a class="teacher-result__identity" href="{% url 'professor_detalhe' professor.pk %}">
     {% if professor.usuario.foto %}

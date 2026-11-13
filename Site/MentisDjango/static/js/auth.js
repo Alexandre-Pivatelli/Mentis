@@ -1,3 +1,4 @@
+// Liga os controles de autenticação aos formulários e às opções de visibilidade da senha.
 // Melhoria progressiva: cadastro e login funcionam também sem JavaScript.
 (() => {
   document.querySelectorAll('[data-password]').forEach((button) => {

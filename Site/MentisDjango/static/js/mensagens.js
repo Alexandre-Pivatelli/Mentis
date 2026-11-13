@@ -1,3 +1,4 @@
+// Consulta novas mensagens e atualiza a conversa enquanto a página está aberta.
 (() => {
   const search = document.querySelector('[data-contact-search]');
   const contacts = [...document.querySelectorAll('[data-contact]')];
@@ -34,6 +35,7 @@
 
   let running = false;
 
+  // Consulta o servidor pelo histórico mais recente e evita sobrepor requisições.
   async function poll() {
     if (document.hidden || running) return;
     running = true;

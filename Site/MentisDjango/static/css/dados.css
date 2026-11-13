@@ -1,3 +1,4 @@
+/* Padroniza espaçamento, texto e elementos visuais das páginas que exibem dados de perfil. */
 /* Ajustes dos componentes que agora recebem dados do banco. */
 .avatar { background: var(--action, #6430d8); }
 .profile__photo { overflow: hidden; }

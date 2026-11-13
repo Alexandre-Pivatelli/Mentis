@@ -1,3 +1,4 @@
+// Alterna as avaliações carregadas na página e controla quando a rotação automática pode ocorrer.
 // Rotação das avaliações da página atual, sem alterar o formulário ou a paginação.
 (() => {
   const root = document.querySelector('[data-review-carousel]');
@@ -15,6 +16,7 @@
   let timer;
   let animation;
 
+  // A troca circular permite voltar da última avaliação para a primeira.
   function show(index, animate = true) {
     animation?.cancel();
     current = (index + slides.length) % slides.length;
@@ -33,6 +35,7 @@
     }
   }
 
+  // Recalcula o temporizador quando a seção perde visibilidade ou recebe interação.
   function schedule() {
     clearTimeout(timer);
     pause.textContent = paused ? 'Reproduzir avaliações' : 'Pausar avaliações';

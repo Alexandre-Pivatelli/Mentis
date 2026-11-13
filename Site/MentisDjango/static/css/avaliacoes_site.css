@@ -1,3 +1,4 @@
+/* Define o layout das avaliações e mantém a altura do carrossel estável na troca de cartões. */
 /* Avaliações públicas da plataforma, independentes das avaliações de aulas. */
 .review-controls{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:20px}
 .review-controls button{min-width:44px;min-height:44px;padding:8px 14px;border:1px solid var(--separator,#d9cfee);border-radius:10px;background:var(--surface,#fff);color:var(--purple-dark);font:inherit;cursor:pointer}

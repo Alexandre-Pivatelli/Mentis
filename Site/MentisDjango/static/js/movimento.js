@@ -1,3 +1,4 @@
+// Coordena animações de entrada e de rolagem com suporte à preferência de movimento reduzido.
 // Animações compartilhadas pela página principal e pela página de informações.
 // Sem JavaScript ou suporte às APIs, todo o conteúdo continua visível.
 (() => {
@@ -54,6 +55,7 @@
     });
   }
 
+  // Cancela os efeitos pendentes e devolve a visibilidade original aos elementos.
   function showEverything() {
     observers.forEach(observer => observer.disconnect());
     animations.forEach(animation => animation.cancel());

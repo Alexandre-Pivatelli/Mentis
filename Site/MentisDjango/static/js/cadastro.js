@@ -1,3 +1,4 @@
+// Coordena as etapas do cadastro, a validação no navegador e os campos de cada perfil.
 // ==========================================================================
 //  Fluxo guiado de cadastro (Etapas 1 a 4 do Figma) + melhorias de UX
 //  - Navegação passo a passo com validação antes de avançar

@@ -1,3 +1,4 @@
+{# Envia a ação de salvar ou remover um professor e fornece os atributos usados pelo JavaScript. #}
 {% if request.user.aluno and request.user.pk != professor.pk %}
   <form class="favorite-form"
         method="post"

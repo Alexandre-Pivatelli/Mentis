@@ -1,3 +1,4 @@
+// Confere a sessão e atualiza o token CSRF antes de enviar formulários sensíveis.
 // Confirma a sessão atual antes de enviar um formulário aberto há algum tempo.
 (() => {
   const form = document.querySelector('form[data-session-url]');

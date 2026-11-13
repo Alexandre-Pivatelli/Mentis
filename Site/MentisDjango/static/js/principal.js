@@ -1,3 +1,4 @@
+// Controla a navegação do carrossel de professores e direciona o foco para erros de avaliação.
 // Carrossel manual: teclado, rolagem nativa e controles com limites visíveis.
 (() => {
   const root = document.querySelector('[data-carousel]');

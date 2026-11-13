@@ -1,3 +1,4 @@
+/* Define a apresentação das fotos de perfil, iniciais e controles de envio. */
 /* A imagem nunca participa do cálculo do tamanho do perfil. */
 .profile__photo {
   position: relative;
