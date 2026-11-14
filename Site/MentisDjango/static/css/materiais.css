@@ -30,6 +30,12 @@
 
 .materiais-page [hidden] { display: none !important; }
 
+.mat-contagem {
+  margin-block: 12px;
+  color: var(--texto-suave);
+  font-size: 0.875rem;
+}
+
 .mat-container {
   width: min(100% - 64px, 1200px);
   margin: 0 auto;

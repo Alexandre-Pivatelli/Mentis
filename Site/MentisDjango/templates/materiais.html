@@ -6,7 +6,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{% static 'css/materiais.css' %}?v=themes-2">
+  <link rel="stylesheet" href="{% static 'css/materiais.css' %}?v=themes-3">
 {% endblock %}
 {% block body_class %}materiais-page{% endblock %}
 {% block content %}
@@ -65,17 +65,19 @@
       <h2 class="mat-titulo">Por professor</h2>
       <div class="mat-busca">
         <span aria-hidden="true">🔍</span>
-        <input type="search" id="mat-busca" placeholder="Buscar por título, tipo, disciplina ou professor" aria-label="Buscar meus materiais por título, tipo, disciplina ou professor">
+        <input type="search" id="mat-busca" placeholder="Buscar por título" aria-label="Buscar materiais por título">
       </div>
+      <button type="button" class="mat-botao mat-botao--contorno" id="mat-limpar" hidden>Limpar filtros</button>
     </div>
 
     <div class="mat-chips" id="mat-disciplinas" role="group" aria-label="Filtrar por disciplina">
-      <button type="button" class="mat-chip is-ativo" data-disciplina="">Todas</button>
+      <button type="button" class="mat-chip is-ativo" data-disciplina="" aria-pressed="true">Todas as disciplinas</button>
     </div>
 
     <div class="mat-chips" id="mat-tipos" role="group" aria-label="Filtrar por tipo de material">
-      <button type="button" class="mat-chip is-ativo" data-tipo="">Todos os tipos</button>
+      <button type="button" class="mat-chip is-ativo" data-tipo="" aria-pressed="true">Todos os tipos</button>
     </div>
+    <p class="mat-contagem" id="mat-contagem" role="status" hidden></p>
 
     {% for grupo in por_professor %}
     <div class="mat-professor-bloco">
@@ -83,7 +85,7 @@
         <span class="mat-avatar">{{ grupo.grouper|stringformat:"s"|first|upper }}</span>
         <div>
           <h3>{{ grupo.grouper }}</h3>
-          <span>{{ grupo.list|length }} {{ grupo.list|length|pluralize:"material,materiais" }}</span>
+          <span data-mat-total>{{ grupo.list|length }} {{ grupo.list|length|pluralize:"material,materiais" }}</span>
         </div>
       </div>
 
@@ -92,7 +94,7 @@
         <article class="mat-card mat-card--{{ material.tipo }}"
                  data-disciplina="{{ material.disciplina|default:'Sem disciplina' }}"
                  data-tipo="{{ material.get_tipo_display }}"
-                 data-busca="{{ material.titulo|lower }} {{ material.descricao|lower }} {{ material.disciplina|default:''|lower }} {{ material.professor|lower }} {{ material.get_tipo_display|lower }}">
+                 data-titulo="{{ material.titulo }}">
           <div class="mat-card__topo">
             <span class="mat-card__icone" aria-hidden="true">{% if material.tipo == 'PDF' %}📄{% elif material.tipo == 'LISTA_EXERCICIOS' %}✏️{% elif material.tipo == 'VIDEO' %}🎬{% else %}🔗{% endif %}</span>
             <div class="mat-card__tags">
@@ -121,7 +123,6 @@
     <div class="mat-vazio mat-vazio--filtro" id="mat-sem-resultado" hidden>
       <h3>Nenhum material encontrado</h3>
       <p>Nada com esse filtro entre os seus materiais.</p>
-      <button type="button" class="mat-botao mat-botao--contorno" id="mat-limpar">Limpar filtros</button>
     </div>
   </section>
 
@@ -161,11 +162,13 @@
     const recentes = document.getElementById('mat-recentes');
     const semResultado = document.getElementById('mat-sem-resultado');
     const chipsTipo = document.getElementById('mat-tipos');
+    const limpar = document.getElementById('mat-limpar');
+    const contagem = document.getElementById('mat-contagem');
     let disciplina = '';
     let tipo = '';
 
     const disciplinas = [...new Set(cards.map(c => c.dataset.disciplina))].sort((a, b) => a.localeCompare(b, 'pt-BR'));
-    if (disciplinas.length < 2) {
+    if (!disciplinas.length) {
       chips.hidden = true;
     } else {
       disciplinas.forEach(nome => {
@@ -173,6 +176,7 @@
         botao.type = 'button';
         botao.className = 'mat-chip';
         botao.dataset.disciplina = nome;
+        botao.setAttribute('aria-pressed', 'false');
         botao.textContent = nome;
         chips.appendChild(botao);
       });
@@ -180,7 +184,7 @@
 
     // Monta os botões de tipo (PDF, Vídeo, Link, Lista de exercícios) a partir dos cartões.
     const tipos = [...new Set(cards.map(c => c.dataset.tipo))].sort((a, b) => a.localeCompare(b, 'pt-BR'));
-    if (tipos.length < 2) {
+    if (!tipos.length) {
       chipsTipo.hidden = true;
     } else {
       tipos.forEach(nome => {
@@ -188,6 +192,7 @@
         botao.type = 'button';
         botao.className = 'mat-chip';
         botao.dataset.tipo = nome;
+        botao.setAttribute('aria-pressed', 'false');
         botao.textContent = nome;
         chipsTipo.appendChild(botao);
       });
@@ -202,17 +207,33 @@
       cards.forEach(card => {
         const ok = (!disciplina || card.dataset.disciplina === disciplina)
           && (!tipo || card.dataset.tipo === tipo)
-          && (!termo || normalizar(card.dataset.busca).includes(termo));
+          && (!termo || normalizar(card.dataset.titulo).includes(termo));
         card.hidden = !ok;
         if (ok) total++;
       });
-      blocos.forEach(b => { b.hidden = !b.querySelector('.mat-card:not([hidden])'); });
-      recentes.hidden = Boolean(termo || disciplina || tipo);
+      blocos.forEach(bloco => {
+        const quantidade = bloco.querySelectorAll('.mat-card:not([hidden])').length;
+        bloco.hidden = quantidade === 0;
+        bloco.querySelector('[data-mat-total]').textContent = rotuloTotal(quantidade);
+      });
+      const filtrado = Boolean(termo || disciplina || tipo);
+      recentes.hidden = filtrado;
+      limpar.hidden = !filtrado;
+      contagem.hidden = !filtrado;
+      contagem.textContent = rotuloTotal(total) + (total === 1 ? ' encontrado' : ' encontrados');
       semResultado.hidden = total > 0;
     }
 
+    function rotuloTotal(total) {
+      return total + (total === 1 ? ' material' : ' materiais');
+    }
+
     function ativar(botao) {
-      botao.parentElement.querySelectorAll('.mat-chip').forEach(b => b.classList.toggle('is-ativo', b === botao));
+      botao.parentElement.querySelectorAll('.mat-chip').forEach(opcao => {
+        const ativa = opcao === botao;
+        opcao.classList.toggle('is-ativo', ativa);
+        opcao.setAttribute('aria-pressed', String(ativa));
+      });
     }
 
     chips.addEventListener('click', e => {
@@ -233,14 +254,16 @@
 
     busca.addEventListener('input', filtrar);
 
-    document.getElementById('mat-limpar').addEventListener('click', () => {
+    limpar.addEventListener('click', () => {
       busca.value = '';
       disciplina = '';
       tipo = '';
       ativar(chips.querySelector('.mat-chip'));
       ativar(chipsTipo.querySelector('.mat-chip'));
       filtrar();
+      busca.focus();
     });
+    filtrar();
   })();
 </script>
 {% endblock %}
