@@ -1,9 +1,10 @@
 from datetime import datetime
+from zoneinfo import ZoneInfo
 from django.test import TestCase, Client, override_settings
 from django.urls import reverse
 from django.utils import timezone
 from .forms import CadastroForm
-from .models import Aluno, Usuario, Professor, Conversa, Mensagem, Aula, Disciplina
+from .models import Aluno, Usuario, Professor, Conversa, Mensagem, Aula, Disciplina, StatusAula
 
 
 @override_settings(PASSWORD_HASHERS=['django.contrib.auth.hashers.MD5PasswordHasher'])
@@ -23,6 +24,38 @@ class AreaEstudanteTests(TestCase):
             password1='UmaSenha!82739', password2='UmaSenha!82739', nivel_estudo='MEDIO', serie='M2')
         data.update(changes)
         return CadastroForm(data)
+
+    def test_calendario_exporta_apenas_aula_confirmada_do_aluno(self):
+        disciplina = Disciplina.objects.create(nome='Matemática, revisão; final')
+        local = 'https://example.com/aula'
+        aula = Aula.objects.create(
+            aluno=self.aluno,
+            professor=self.prof,
+            disciplina=disciplina,
+            data_hora=datetime(2026, 11, 15, 14, 30, tzinfo=ZoneInfo('America/Sao_Paulo')),
+            duracao_min=60,
+            modalidade='ONLINE',
+            local_ou_link=local,
+            valor=50,
+            status=StatusAula.CONFIRMADA,
+        )
+        download = reverse('aula_calendario', args=[aula.pk])
+        agenda = reverse('agenda_aluno') + '?mes=2026-11-01&dia=2026-11-15'
+        self.assertContains(self.client.get(agenda), download)
+        response = self.client.get(download)
+        self.assertEqual(response['Content-Type'], 'text/calendar; charset=utf-8')
+        self.assertEqual(response['Content-Disposition'], f'attachment; filename="mentis-aula-{aula.pk}.ics"')
+        self.assertContains(response, 'DTSTART:20261115T173000Z\r\nDTEND:20261115T183000Z')
+        self.assertContains(response, r'SUMMARY:Matemática\, revisão\; final')
+        self.assertContains(response, f'LOCATION:{local}')
+        self.assertEqual(Client().get(download).status_code, 302)
+        self.client.force_login(self.outro)
+        self.assertEqual(self.client.get(download).status_code, 404)
+        self.client.force_login(self.user)
+        aula.status = StatusAula.CANCELADA
+        aula.save(update_fields=['status'])
+        self.assertNotContains(self.client.get(agenda), download)
+        self.assertEqual(self.client.get(download).status_code, 404)
 
     def test_niveis_series_e_periodos_validos_recebem_novato(self):
         for nivel, etapa, label in [('FUNDAMENTAL','F9','9º ano'),('MEDIO','M3','3º ano'),('GRADUACAO','G12','12º período')]:

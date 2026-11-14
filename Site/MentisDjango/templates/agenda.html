@@ -73,6 +73,9 @@
             <h3>{{ aula.disciplina.nome }}</h3>
             <p>{{ aula.professor.usuario.nome }}</p>
             <p class="quiet">{{ aula.modalidade }}</p>
+            {% if aula.status == 'CONFIRMADA' %}
+              <a class="text-button" href="{% url 'aula_calendario' aula.pk %}">Adicionar ao calendário</a>
+            {% endif %}
             <form method="post" action="{% url 'mensagens_aluno' %}">
               {% csrf_token %}
               <input type="hidden" name="acao" value="nova">

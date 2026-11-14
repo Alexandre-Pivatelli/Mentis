@@ -4,14 +4,30 @@ from datetime import date, datetime, time, timedelta
 from django import forms
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q, OuterRef, Subquery
-from django.http import HttpResponseForbidden, JsonResponse
+from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_http_methods, require_GET
 
-from .models import Aluno, Aula, Conversa, Mensagem, Professor
+from .calendario import aula_ics
+from .models import Aluno, Aula, Conversa, Mensagem, Professor, StatusAula
+
+
+@never_cache
+@login_required(login_url='login')
+@require_GET
+def aula_calendario_view(request, aula_id):
+    aula = get_object_or_404(
+        Aula.objects.select_related('disciplina'),
+        pk=aula_id,
+        aluno__usuario=request.user,
+        status=StatusAula.CONFIRMADA,
+    )
+    response = HttpResponse(aula_ics(aula, timezone.now()), content_type='text/calendar; charset=utf-8')
+    response['Content-Disposition'] = f'attachment; filename="mentis-aula-{aula.pk}.ics"'
+    return response
 
 
 class MensagemForm(forms.Form):
