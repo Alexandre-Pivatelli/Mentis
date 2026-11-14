@@ -1,4 +1,27 @@
 /* Define a estrutura visual compartilhada da área do estudante e seus componentes de navegação. */
+.lesson-review summary {
+  color: var(--accent, #6430d8);
+  cursor: pointer;
+  padding-block: 8px;
+}
+
+.lesson-review label {
+  display: block;
+}
+
+.lesson-review select,
+.lesson-review textarea {
+  box-sizing: border-box;
+  max-width: 100%;
+  font: inherit;
+  color: inherit;
+  background: var(--surface, #fff);
+}
+
+.lesson-review textarea {
+  width: 100%;
+  resize: vertical;
+}
 
 .student-area{margin:0;background:var(--page,#faf9fc);color:var(--foreground,#241b30);font-family:'Poppins',sans-serif}.student-area *{box-sizing:border-box}.student-area h1,.student-area h2,.student-area h3,.student-area p{margin:0}.student-area a{text-decoration:none}.student-area button,.student-area input,.student-area textarea,.student-area select{font:inherit}.student-area button,.student-area summary{cursor:pointer}.student-area :focus-visible{outline:3px solid var(--focus,#6430d8);outline-offset:3px}.student-shell{max-width:1440px;margin:auto;padding:0 32px 40px}.student-nav{display:flex;align-items:center;gap:24px;max-width:1440px;padding:20px 32px;margin:auto;font:500 14px 'Poppins',sans-serif}.student-shell .student-nav{padding-inline:0}.student-nav a{display:flex;align-items:center;min-height:44px;color:var(--secondary,#615769);text-decoration:none}.student-nav a[aria-current]{font-size:20px;font-weight:700;color:var(--foreground,#241b30)}.student-nav a:hover{color:var(--accent,#6430d8)}.quiet{color:var(--secondary,#756b80);font-size:12px;line-height:1.7}.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}.student-area [hidden]{display:none!important}
 .messenger{display:grid;grid-template-columns:280px minmax(0,1fr);height:calc(100dvh - 190px);min-height:540px;max-height:850px;gap:20px}.conversation-sidebar,.chat{min-width:0;border:1px solid var(--separator,#e9e3ef);border-radius:16px;background:var(--surface,#fff);overflow:hidden}.conversation-sidebar{padding:16px 0;overflow-y:auto}.conversation-sidebar input[type=search]{width:calc(100% - 32px);margin:0 16px 14px;padding:11px 12px;border:1px solid var(--separator,#e9e3ef);border-radius:10px;font-size:13px;background:var(--page,#fcfbfd);color:var(--foreground,#241b30)}.new-conversation{padding:0 16px 16px;font-size:12px}.new-conversation summary{color:var(--accent,#6430d8);min-height:30px}.new-conversation form{display:grid;gap:10px;padding-top:8px}.new-conversation select{width:100%;min-width:0;padding:10px;border:1px solid var(--separator,#ded4eb);border-radius:8px;background:var(--surface,#fff);color:var(--foreground,#241b30);font-size:12px}.purple-button{border:0;background:var(--action,#6430d8);color:#fff;border-radius:10px;min-height:40px;padding:10px 14px;font-weight:600}

@@ -2,9 +2,10 @@ import calendar
 from datetime import date, datetime, time, timedelta
 
 from django import forms
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q, OuterRef, Subquery
-from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
+from django.http import Http404, HttpResponse, HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
@@ -12,7 +13,7 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_http_methods, require_GET
 
 from .calendario import aula_ics
-from .models import Aluno, Aula, Conversa, Mensagem, Professor, StatusAula
+from .models import Aluno, Aula, Avaliacao, Conversa, Mensagem, Professor, StatusAula
 
 
 @never_cache
@@ -93,9 +94,22 @@ def mensagens_view(request):
         'professores_contato': Professor.objects.select_related('usuario').exclude(usuario=user).order_by('usuario__nome') if aluno else []})
 
 
+class AvaliacaoAulaForm(forms.Form):
+    nota = forms.TypedChoiceField(
+        label='Nota',
+        choices=[('', 'Selecione uma nota')] + [(nota, f'{nota}/5') for nota in range(1, 6)],
+        coerce=int,
+    )
+    comentario = forms.CharField(
+        label='Comentário',
+        max_length=1500,
+        widget=forms.Textarea(attrs={'rows': 3}),
+    )
+
+
 @never_cache
 @login_required(login_url='login')
-@require_GET
+@require_http_methods(['GET', 'POST'])
 def agenda_view(request):
     aluno = get_object_or_404(Aluno, usuario=request.user)
     hoje = timezone.localdate()
@@ -108,7 +122,8 @@ def agenda_view(request):
     seguinte = (mes.replace(day=28) + timedelta(days=4)).replace(day=1)
     anterior = (mes - timedelta(days=1)).replace(day=1)
     aulas = list(Aula.objects.filter(aluno=aluno, data_hora__gte=timezone.make_aware(datetime.combine(mes, time.min)),
-        data_hora__lt=timezone.make_aware(datetime.combine(seguinte, time.min))).select_related('professor__usuario', 'disciplina').order_by('data_hora', 'pk'))
+        data_hora__lt=timezone.make_aware(datetime.combine(seguinte, time.min))).select_related(
+            'professor__usuario', 'disciplina', 'avaliacao').order_by('data_hora', 'pk'))
     try:
         dia = date.fromisoformat(request.GET.get('dia', hoje.isoformat() if hoje.month == mes.month and hoje.year == mes.year else mes.isoformat()))
         if dia.month != mes.month or dia.year != mes.year:
@@ -120,5 +135,31 @@ def agenda_view(request):
         semanas.append([{'data': d, 'atual': d.month == mes.month, 'hoje': d == hoje, 'selecionado': d == dia,
             'quantidade': sum(timezone.localtime(a.data_hora).date() == d for a in aulas)} for d in semana])
     do_dia = [a for a in aulas if timezone.localtime(a.data_hora).date() == dia]
+    status_resposta = 200
+    for aula in do_dia:
+        recebeu_post = request.method == 'POST' and request.POST.get('aula_id') == str(aula.pk)
+        if aula.status != StatusAula.REALIZADA:
+            continue
+        if hasattr(aula, 'avaliacao'):
+            if recebeu_post:
+                return redirect(f"{reverse('agenda_aluno')}?mes={mes.isoformat()}&dia={dia.isoformat()}#aula-{aula.pk}")
+            continue
+        if recebeu_post:
+            form = AvaliacaoAulaForm(request.POST, prefix=f'aula-{aula.pk}')
+            if form.is_valid():
+                # A relação única com a aula também protege contra envios simultâneos.
+                _, criada = Avaliacao.objects.get_or_create(aula=aula, defaults=form.cleaned_data)
+                if criada:
+                    messages.success(request, 'Avaliação publicada.')
+                return redirect(f"{reverse('agenda_aluno')}?mes={mes.isoformat()}&dia={dia.isoformat()}#aula-{aula.pk}")
+            aula.form_avaliacao = form
+            status_resposta = 400
+        else:
+            aula.form_avaliacao = AvaliacaoAulaForm(prefix=f'aula-{aula.pk}')
+
+    if request.method == 'POST' and status_resposta != 400:
+        raise Http404
+
     return render(request, 'agenda.html', {'mes': mes, 'anterior': anterior, 'seguinte': seguinte,
-        'semanas': semanas, 'dia': dia, 'hoje': hoje, 'aulas_dia': do_dia, 'total_mes': len(aulas)})
+        'semanas': semanas, 'dia': dia, 'hoje': hoje, 'aulas_dia': do_dia, 'total_mes': len(aulas)},
+        status=status_resposta)

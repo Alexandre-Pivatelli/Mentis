@@ -63,7 +63,7 @@
       <p class="quiet">{{ dia|date:"l"|capfirst }}</p>
 
       {% for aula in aulas_dia %}
-        <article class="lesson">
+        <article class="lesson" id="aula-{{ aula.pk }}">
           <div class="lesson-time">
             <strong>{{ aula.data_hora|date:"H:i" }}</strong>
             <span>{{ aula.duracao_min }} min</span>
@@ -75,6 +75,21 @@
             <p class="quiet">{{ aula.modalidade }}</p>
             {% if aula.status == 'CONFIRMADA' %}
               <a class="text-button" href="{% url 'aula_calendario' aula.pk %}">Adicionar ao calendário</a>
+            {% endif %}
+            {% if aula.avaliacao %}
+              <p class="quiet">Sua avaliação: {{ aula.avaliacao.nota }}/5</p>
+              <p>{{ aula.avaliacao.comentario }}</p>
+            {% elif aula.form_avaliacao %}
+              <details class="lesson-review"{% if aula.form_avaliacao.errors %} open{% endif %}>
+                <summary>Avaliar aula</summary>
+                <form method="post" action="{% url 'agenda_aluno' %}?mes={{ mes|date:'Y-m-d' }}&amp;dia={{ dia|date:'Y-m-d' }}#aula-{{ aula.pk }}">
+                  {% csrf_token %}
+                  <input type="hidden" name="aula_id" value="{{ aula.pk }}">
+                  {{ aula.form_avaliacao.as_p }}
+                  <p class="quiet">A nota e o comentário aparecem no perfil do professor.</p>
+                  <button class="text-button" type="submit">Publicar avaliação</button>
+                </form>
+              </details>
             {% endif %}
             <form method="post" action="{% url 'mensagens_aluno' %}">
               {% csrf_token %}
