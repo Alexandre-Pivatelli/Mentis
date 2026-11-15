@@ -1,0 +1,33 @@
+{% load static %}
+<section class="relatos-wrap" aria-labelledby="relatos-sobre-titulo">
+  <p class="relatos-eyebrow">Bastidores da experiência</p>
+  <h2 id="relatos-sobre-titulo" class="relatos-titulo">Como é <span>estudar aqui</span></h2>
+  <p class="relatos-aviso">Personagens ilustrativos, criados para mostrar o uso da plataforma.</p>
+
+  <div class="relato-historia">
+    <div class="relato-historia__foto">
+      <img src="{% static 'img/luiza-2.png' %}" alt="Ilustração da Luiza com joinha" loading="lazy">
+    </div>
+    <div class="relato-historia__corpo">
+      <p class="relato-historia__texto">
+        Eu estava em Cálculo 1, com prova em duas semanas e sem saber por onde começar.
+        Escolhi um professor pela disciplina, fiz uma aula teste e saí com um plano de estudos.
+        Hoje reviso com o material que ele publicou.
+      </p>
+      <p class="relato-historia__autor"><strong>Luiza</strong> · Estudante de Engenharia</p>
+    </div>
+  </div>
+
+  <div class="relato-historia relato-historia--inverso">
+    <div class="relato-historia__foto">
+      <img src="{% static 'img/cadu.png' %}" alt="Ilustração do Cadu, tutor da Mentis" loading="lazy">
+    </div>
+    <div class="relato-historia__corpo">
+      <p class="relato-historia__texto">
+        Tutor não é só quem explica. É quem percebe quando o aluno travou e muda a estratégia
+        antes que a prova chegue. Por isso acompanhamos cada plano de perto.
+      </p>
+      <p class="relato-historia__autor"><strong>Cadu</strong> · Tutor</p>
+    </div>
+  </div>
+</section>

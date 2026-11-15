@@ -5,6 +5,7 @@
 {% block page_head %}
   <title>Mentis – Sobre nós</title>
   <link rel="stylesheet" href="{% static 'css/sobre.css' %}?v=4">
+  <link rel="stylesheet" href="{% static 'css/relatos.css' %}?v=3">
   <script src="{% static 'js/movimento.js' %}?v=2" defer></script>
 {% endblock %}
 
@@ -91,6 +92,8 @@
       </ol>
     </div>
   </section>
+
+  {% include 'includes/relatos_sobre.html' %}
 
   <section class="sobre-secao" id="galeria">
     <div class="sobre-container">
