@@ -1,24 +1,20 @@
+{% extends "base.html" %}
+{# Mostra o perfil público, os materiais e os horários que levam ao formulário de agendamento. #}
 {% load static %}
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+{% block page_head %}
   <title>Mentis – Perfil do professor</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{% static 'css/tema.css' %}">
-  <link rel="stylesheet" href="{% static 'css/header.css' %}">
 
   <link rel="stylesheet" href="{% static 'css/professor.css' %}">
   <link rel="stylesheet" href="{% static 'css/dados.css' %}">
-  <link rel="stylesheet" href="{% static 'css/header.css' %}">
   <link rel="stylesheet" href="{% static 'css/fotos_perfil.css' %}?v=3">
-</head>
-<body>
-  {% include 'includes/header.html' %}
+  <link rel="stylesheet" href="{% static 'css/horarios_perfil.css' %}">
+{% endblock %}
 
+{% block content %}
   <!-- ÍCONES (sprite) -->
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <symbol id="i-check" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></symbol>
@@ -34,9 +30,6 @@
     <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></symbol>
     <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
   </svg>
-
-  <!-- HEADER -->
-  
 
   <main>
 
@@ -54,7 +47,9 @@
 
           <div>
             <div class="tags">
-              {% if professor.verificado %}<span class="tag tag--verified">Verificado</span>{% endif %}
+              {% if professor.verificado %}
+                <span class="tag tag--verified">Verificado</span>
+              {% endif %}
             </div>
             <h1>{{ professor.nome_exibicao }}</h1>
 
@@ -78,17 +73,24 @@
         </div>
 
         <div class="book">
+          {% include 'includes/favorito_botao.html' %}
+
           {% if request.user.aluno %}
             <form method="post" action="{% url 'mensagens_aluno' %}">
+              {# O token permite que o Django verifique se o POST partiu de um formulário autorizado. #}
               {% csrf_token %}
               <input type="hidden" name="acao" value="nova">
               <input type="hidden" name="professor" value="{{ professor.pk }}">
               <button class="btn btn--primary btn--block" type="submit">Enviar mensagem</button>
             </form>
           {% endif %}
+
           <p class="book__label">Valor por hora · {{ professor.modalidade }}</p>
           <p class="book__price">R$ {{ professor.valor_hora|floatformat:2 }}</p>
-          <a class="btn btn--primary btn--block" href="{% url 'agendar_aula' professor.pk %}">Agendar aula</a>
+          {# Só estudantes e visitantes agendam aula; professores não veem o botão. #}
+          {% if not request.user.professor %}
+            <a class="btn btn--primary btn--block" href="{% url 'agendar_aula' professor.pk %}">Agendar aula</a>
+          {% endif %}
         </div>
       </div>
     </section>
@@ -111,23 +113,28 @@
               <article class="material">
                 <p class="material__kind">{{ material.get_tipo_display }}</p>
                 <h3>{{ material.titulo }}</h3>
-                {% if material.descricao %}<p>{{ material.descricao }}</p>{% endif %}
+                {% if material.descricao %}
+                  <p>{{ material.descricao }}</p>
+                {% endif %}
                 <div class="material__foot">
-                  {% if material.url %}
+                  {% if tem_acesso_materiais and material.url %}
                     <a href="{{ material.url }}" target="_blank" rel="noopener noreferrer">Abrir material</a>
+                  {% elif not tem_acesso_materiais %}
+                    <a href="{% url 'assinatura_professor' professor.pk %}">🔒 Assine para acessar</a>
                   {% endif %}
                   <span>{{ material.data_publicacao|date:"d/m/Y" }}</span>
                 </div>
               </article>
+            {# O Django usa este trecho quando a coleção do laço está vazia. #}
             {% empty %}
               <p>Nenhum material publicado.</p>
             {% endfor %}
           </div>
 
-          {% if not eh_dono %}
-            <a class="pf-botao" href="{% url 'assinatura_professor' professor.pk %}" target="_blank" rel="noopener">
+          {% if not eh_dono and not tem_acesso_materiais %}
+            <a class="pf-botao" href="{% url 'assinatura_professor' professor.pk %}">
               Assinar todos os materiais
-           </a>
+            </a>
           {% endif %}
 
           {% if eh_dono %}
@@ -171,6 +178,9 @@
           <ul>
             {% for disponibilidade in disponibilidades %}
               <li>
+                <!-- Link para agendar com o dia e a hora já preenchidos (professores só veem o horário) -->
+                {% if request.user.professor %}<div class="horario-link">{% else %}
+                <a class="horario-link" href="{% url 'agendar_aula' professor.pk %}?dia={{ disponibilidade.dia_semana }}&hora={{ disponibilidade.hora_inicio|time:'H:i' }}">{% endif %}
                 <span>
                   {% if disponibilidade.dia_semana == 0 %}Segunda-feira
                   {% elif disponibilidade.dia_semana == 1 %}Terça-feira
@@ -181,6 +191,7 @@
                   {% else %}Domingo{% endif %}
                 </span>
                 <strong>{{ disponibilidade.hora_inicio|time:"H:i" }}–{{ disponibilidade.hora_fim|time:"H:i" }}</strong>
+                {% if request.user.professor %}</div>{% else %}</a>{% endif %}
               </li>
             {% empty %}
               <li>Sem horários informados.</li>
@@ -201,5 +212,7 @@
     <div class="wrap footer__in">
       <strong>Mentis</strong>
       <span>Aprenda com quem entende de verdade.</span>
+      {% include 'includes/redes_sociais.html' %}
     </div>
   </footer>
+{% endblock %}

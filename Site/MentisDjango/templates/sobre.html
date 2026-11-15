@@ -1,9 +1,11 @@
 {% extends "base.html" %}
+{# Apresenta a proposta da Mentis, seus públicos, as etapas de uso e a equipe. #}
 {% load static %}
 
 {% block page_head %}
   <title>Mentis – Sobre nós</title>
   <link rel="stylesheet" href="{% static 'css/sobre.css' %}?v=4">
+  <script src="{% static 'js/movimento.js' %}?v=2" defer></script>
 {% endblock %}
 
 {% block body_class %}sobre-page{% endblock %}
@@ -51,6 +53,7 @@
   <section class="sobre-secao">
     <div class="sobre-container">
       <h2 class="sobre-titulo">Para quem é a <span>Mentis</span></h2>
+      {# O script de movimento observa cada cartão para revelá-lo quando entra na área visível. #}
       <div class="sobre-publicos">
         <article class="sobre-publico sobre-publico--aluno">
           <span class="sobre-publico__tag">Alunos</span>
@@ -93,6 +96,7 @@
     <div class="sobre-container">
       <h2 class="sobre-titulo">Por trás da <span>Mentis</span></h2>
       <p class="sobre-subtitulo">Um pouco da equipe e do caminho até aqui.</p>
+      {# Cada imagem é carregada sob demanda e o script revela os cartões conforme a rolagem. #}
       <div class="sobre-galeria">
         <figure class="sobre-foto">
           <img src="{% static 'img/foto1.png' %}" alt="Ilustração de integrante da equipe Mentis" loading="lazy">
@@ -121,6 +125,8 @@
       <h2>Pronto para estudar do seu jeito?</h2>
       <p>Encontre seu professor e marque sua aula teste gratuita.</p>
       <a class="sobre-botao sobre-botao--branco sobre-cta__btn" href="{% url 'principal' %}">Começar agora</a>
+      <p class="sobre-cta__redes">Acompanhe a Mentis nas redes:</p>
+      {% include 'includes/redes_sociais.html' with classe='redes-sociais--centro' %}
     </div>
   </section>
 

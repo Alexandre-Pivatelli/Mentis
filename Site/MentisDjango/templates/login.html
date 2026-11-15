@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{# Apresenta a seleção visual de perfil e envia as credenciais pelo formulário de autenticação. #}
 {% load static %}
 {% block page_head %}
   <title>Mentis - Entrar</title>
@@ -28,6 +29,7 @@
 
       <form class="register-form" method="post" action="{% url 'login' %}">
         {% csrf_token %}
+        {# O valor acompanha o POST para que o servidor possa retomar o destino após o login. #}
         <input type="hidden" name="next" value="{{ next }}">
         <!-- Campo oculto para enviar o tipo de perfil ao backend, se necessário -->
         <!-- Se o login falhar, a página volta na mesma aba (estudante ou professor) da tentativa anterior -->

@@ -1,5 +1,32 @@
+{# Compartilha os atalhos da área do estudante e indica a página atual. #}
 <nav class="student-nav" aria-label="Área do estudante">
-  <a href="{% url 'mensagens_aluno' %}"{% if active == 'mensagens' %} aria-current="page"{% endif %}>Mensagens</a>
-  {% if request.user.aluno %}<a href="{% url 'favoritos_aluno' %}"{% if active == 'favoritos' %} aria-current="page"{% endif %}>Favoritos</a>{% endif %}
-  {% if request.user.aluno %}<a href="{% url 'agenda_aluno' %}"{% if active == 'agenda' %} aria-current="page"{% endif %}>Agenda</a><a href="{% url 'perfil_aluno' %}"{% if active == 'sobre' %} aria-current="page"{% endif %}>Sobre</a>{% else %}<a href="{% url 'professor_detalhe' request.user.pk %}">Meu perfil</a>{% endif %}
+  {# O parâmetro active controla aria-current, que identifica a seção atual para tecnologias assistivas. #}
+  <a href="{% url 'mensagens_aluno' %}"{% if active == 'mensagens' %} aria-current="page"{% endif %}>
+    Mensagens
+  </a>
+
+  {% if request.user.aluno %}
+    <a href="{% url 'favoritos_aluno' %}"{% if active == 'favoritos' %} aria-current="page"{% endif %}>
+      Favoritos
+    </a>
+  {% endif %}
+
+  {% if request.user.aluno %}
+    <a href="{% url 'agenda_aluno' %}"{% if active == 'agenda' %} aria-current="page"{% endif %}>
+      Agenda
+    </a>
+    <a href="{% url 'materiais' %}">
+      Materiais
+    </a>
+    <a href="{% url 'ambiente_aluno' %}">
+      Meu ambiente
+    </a>
+    <a href="{% url 'perfil_aluno' %}"{% if active == 'sobre' %} aria-current="page"{% endif %}>
+      Meu perfil
+    </a>
+  {% else %}
+    <a href="{% url 'professor_detalhe' request.user.pk %}">
+      Meu perfil
+    </a>
+  {% endif %}
 </nav>

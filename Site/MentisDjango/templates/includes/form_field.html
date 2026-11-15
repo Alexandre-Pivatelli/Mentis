@@ -1,6 +1,12 @@
+{# Padroniza a apresentação de rótulo, campo, ajuda e erros dos formulários. #}
 <div class="input-group">
   {{ field.label_tag }}
   {{ field }}
-  {% if field.help_text %}<div class="field-help" id="{{ field.auto_id }}_helptext">{{ field.help_text }}</div>{% endif %}
+  {# A ajuda só ocupa espaço quando existe, e seu ID é derivado do ID do campo. #}
+  {% if field.help_text %}
+  <div class="field-help" id="{{ field.auto_id }}_helptext">
+    {{ field.help_text }}
+  </div>
+  {% endif %}
   {{ field.errors }}
 </div>

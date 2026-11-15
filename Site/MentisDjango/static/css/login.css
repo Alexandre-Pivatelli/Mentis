@@ -1,3 +1,4 @@
+/* Organiza o formulário de entrada e o painel visual da marca. */
 /* ==========================================================================
    Tela de login (Mentis)
    O cabeçalho vem de includes/header.html e é estilizado em header.css.
@@ -195,6 +196,7 @@ body {
 }
 
 /* ----- Responsividade ----- */
+/* Aplica as regras deste bloco somente quando a janela está dentro da largura indicada. */
 @media (max-width: 768px) {
   .container {
     flex-direction: column;
@@ -214,6 +216,7 @@ body {
   }
 }
 
+/* Aplica os ajustes abaixo quando o sistema solicita menos movimento. */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     transition: none !important;

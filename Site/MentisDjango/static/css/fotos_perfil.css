@@ -1,3 +1,4 @@
+/* Define a apresentação das fotos de perfil, iniciais e controles de envio. */
 /* A imagem nunca participa do cálculo do tamanho do perfil. */
 .profile__photo {
   position: relative;
@@ -11,6 +12,7 @@
   width: 100%;
   height: 100%;
   max-width: 100%;
+  /* Preenche a área disponível sem distorcer a imagem, recortando o excedente. */
   object-fit: cover;
   object-position: center;
 }

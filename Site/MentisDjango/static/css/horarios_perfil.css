@@ -1,0 +1,15 @@
+/* Define os estados visuais dos horários que funcionam como links para agendamento. */
+.horario-link {
+  display: flex;
+  /* Distribui a descrição e o horário nas extremidades do link. */
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+
+.horario-link:hover strong,
+.horario-link:focus-visible strong {
+  text-decoration: underline;
+}

@@ -1,3 +1,4 @@
+/* Organiza o formulário de edição e os controles de imagem da conta. */
 .edit-section {
   flex: 1;
   display: flex;
@@ -9,6 +10,7 @@
 
 .edit-form {
   width: 100%;
+  /* Limita a largura do formulário em telas grandes, mantendo os campos fluidos em telas menores. */
   max-width: 380px;
 }
 

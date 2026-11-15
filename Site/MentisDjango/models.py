@@ -94,6 +94,11 @@ class Professor(models.Model):
     modalidade = models.CharField(max_length=50)
     verificado = models.BooleanField(default=False)
     disciplinas = models.ManyToManyField(Disciplina, related_name='professores')  # leciona * — *
+    # Plano de assinatura dos materiais (preço mensal e chave PIX para o pagamento).
+    valor_assinatura = models.DecimalField('Valor da assinatura (R$/mês)', max_digits=8, decimal_places=2,
+                                           null=True, blank=True,
+                                           validators=[MinValueValidator(Decimal('0.01'))])
+    chave_pix = models.CharField('Chave PIX', max_length=120, blank=True)
 
     class Meta:
         constraints = [models.CheckConstraint(condition=models.Q(valor_hora__gt=0), name='professor_valor_positivo')]
@@ -224,12 +229,6 @@ class AvaliacaoSite(models.Model):
     def __str__(self):
         return f'{self.usuario} — {self.nota}/5'
 
-# Dentro de class Professor, junto dos outros campos:
-valor_assinatura = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
-chave_pix = models.CharField(max_length=120, blank=True)
-
-
-# Nova classe, no final do arquivo:
 class Assinatura(models.Model):
     class Status(models.TextChoices):
         AGUARDANDO = 'aguardando_pagamento', 'Aguardando pagamento'

@@ -1,5 +1,5 @@
-/* ========== AGENDAR AULA (Sprint 8) ==========
-   As cores usam as variáveis do tema.css, assim a página funciona no modo claro e no escuro. */
+/* Estiliza o formulário de reserva e os horários clicáveis vindos do perfil do professor. */
+/* ========== AGENDAR AULA ========== */
 
 .agendar {
   padding: 24px 0 40px;
@@ -144,7 +144,28 @@
   border-bottom: 0;
 }
 
+/* ---------- Horários clicáveis ---------- */
+.agendar__dica {
+  margin-top: 6px;
+  font-size: 13px;
+  opacity: 0.85;
+}
+
+.agendar__horario-link {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+
+.agendar__horario-link:hover strong {
+  text-decoration: underline;
+}
+
 /* ---------- Celular ---------- */
+/* Aplica as regras deste bloco somente quando a janela está dentro da largura indicada. */
 @media (max-width: 800px) {
   .agendar__colunas {
     grid-template-columns: 1fr;

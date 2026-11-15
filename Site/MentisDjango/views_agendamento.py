@@ -14,6 +14,36 @@ DIAS_DA_SEMANA = ['Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira
                   'Sexta-feira', 'Sábado', 'Domingo']
 
 
+def proxima_data(dia_semana, hora):
+    '''
+    Devolve a próxima data que cai no dia da semana pedido (0 = segunda).
+    '''
+    hoje = timezone.localdate()
+    dias_ate_la = (dia_semana - hoje.weekday()) % 7
+    dia = hoje + timedelta(days=dias_ate_la)
+    if timezone.make_aware(datetime.combine(dia, hora)) <= timezone.now():
+        dia = dia + timedelta(days=7)    # horário de hoje já passou: vai para a semana seguinte
+    return dia
+
+
+def horario_vindo_do_perfil(parametros):
+    '''
+    Transforma o ?dia=4&hora=14:00 do link do perfil na data e hora do formulário.
+    '''
+    dia_texto = parametros.get('dia', '')
+    hora_texto = parametros.get('hora', '')
+
+    if dia_texto not in ['0', '1', '2', '3', '4', '5', '6']:
+        return {}
+    try:
+        hora = time.fromisoformat(hora_texto)
+    except ValueError:
+        return {}
+
+    dia = proxima_data(int(dia_texto), hora)
+    return {'data': dia.isoformat(), 'hora': hora.strftime('%H:%M')}
+
+
 @login_required(login_url='login')
 def agendar_aula(request, professor_id):
     '''
@@ -31,6 +61,7 @@ def agendar_aula(request, professor_id):
     horarios = []
     for disponibilidade in disponibilidades:
         horarios.append({
+            'dia_semana': disponibilidade.dia_semana,
             'dia': DIAS_DA_SEMANA[disponibilidade.dia_semana],
             'inicio': disponibilidade.hora_inicio,
             'fim': disponibilidade.hora_fim,
@@ -113,13 +144,19 @@ def agendar_aula(request, professor_id):
             dia_texto = dia.isoformat()
             return redirect(reverse('agenda_aluno') + '?mes=' + dia.replace(day=1).isoformat() + '&dia=' + dia_texto)
 
+    # Dados que aparecem preenchidos no formulário.
+    if request.method == 'POST':
+        dados = request.POST
+    else:
+        dados = horario_vindo_do_perfil(request.GET)
+
     contexto = {
         'professor': professor,
         'nome_professor': professor.usuario.nome or professor.usuario.username,
         'disciplinas': disciplinas,
         'horarios': horarios,
         'erro': erro,
-        'dados': request.POST,   # para não apagar o que o aluno já preencheu quando dá erro
+        'dados': dados,
         'hoje': timezone.localdate().isoformat(),
     }
     return render(request, 'agendar_aula.html', contexto)

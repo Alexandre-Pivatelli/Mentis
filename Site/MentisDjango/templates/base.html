@@ -1,16 +1,23 @@
+{# Centraliza os estilos, o cabeçalho e os blocos que as páginas filhas personalizam. #}
 {% load static %}
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="{% static 'css/header.css' %}?v=themes-2">
-  <link rel="stylesheet" href="{% static 'css/fotos_perfil.css' %}?v=themes-2">
-  {% block page_head %}{% endblock %}
-  {% include 'includes/tema.html' %}
-</head>
-<body class="{% block body_class %}{% endblock %}">
-  {% include 'includes/header.html' %}
-  {% block content %}{% endblock %}
-</body>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="{% static 'css/header.css' %}?v=themes-2">
+    <link rel="stylesheet" href="{% static 'css/fotos_perfil.css' %}?v=themes-2">
+
+    {# Cada tela pode declarar título, estilos e scripts próprios neste ponto. #}
+    {% block page_head %}{% endblock %}
+
+    {% include 'includes/tema.html' %}
+  </head>
+  <body class="{% block body_class %}{% endblock %}">
+    {% include 'includes/header.html' %}
+
+    {# O conteúdo específico entra depois do cabeçalho compartilhado. #}
+    {% block content %}{% endblock %}
+  </body>
 </html>
