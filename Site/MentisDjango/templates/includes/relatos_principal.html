@@ -1,0 +1,25 @@
+{% load static %}
+<section class="relatos-wrap" aria-labelledby="relatos-principal-titulo">
+  <p class="relatos-eyebrow">Faça parte da Mentis</p>
+  <h2 id="relatos-principal-titulo" class="relatos-titulo">Escolha <span>seu caminho</span></h2>
+
+  <div class="relatos-grid">
+    <article class="relato-mini relato-mini--promo">
+      <div class="relato-mini__foto">
+        <img src="{% static 'img/luiza-1.png' %}" alt="Ilustração da Luiza acenando" loading="lazy">
+      </div>
+      <h3 class="relato-promo__titulo">Seja sua melhor versão</h3>
+      <p class="relato-mini__texto">Estude com professores que combinam com você, no seu ritmo e na sua rotina.</p>
+      <a class="relato-promo__botao" href="{% url 'cadastro' %}">Começar como estudante</a>
+    </article>
+
+    <article class="relato-mini relato-mini--promo relato-mini--tutor">
+      <div class="relato-mini__foto">
+        <img src="{% static 'img/cadu.png' %}" alt="Ilustração do Cadu, tutor da Mentis" loading="lazy">
+      </div>
+      <h3 class="relato-promo__titulo">Venha ser um tutor como o Cadu!</h3>
+      <p class="relato-mini__texto">Ajude alunos a montar planos de estudo e ganhe com o que você sabe ensinar.</p>
+      <a class="relato-promo__botao" href="{% url 'cadastro' %}?tipo=professor">Quero ser tutor</a>
+    </article>
+  </div>
+</section>

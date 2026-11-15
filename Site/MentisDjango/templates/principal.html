@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {# Combina busca de professores, explicação da plataforma, avaliações e chamadas para cadastro. #}
 {% load static i18n %}
+
 {% block page_head %}
   <title>Mentis – Sua aula, do seu jeito</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -8,16 +9,19 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="{% static 'css/principal.css' %}?v=themes-3">
+  <link rel="stylesheet" href="{% static 'css/relatos.css' %}?v=3">
+  <link rel="stylesheet" href="{% static 'css/avaliacoes_site.css' %}?v=themes-3">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <meta name="description" content="Encontre professores particulares de qualquer disciplina, a qualquer distância.">
   <meta name="theme-color" content="#6430D8">
   <script src="{% static 'js/principal.js' %}?v=themes-2" defer></script>
   <script src="{% static 'js/movimento.js' %}?v=2" defer></script>
   <script src="{% static 'js/avaliacoes.js' %}?v=1" defer></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="{% static 'css/avaliacoes_site.css' %}?v=themes-3">
   {% if request.user.is_authenticated %}<script src="{% static 'js/editar_perfil.js' %}?v=themes-2" defer></script>{% endif %}
 {% endblock %}
+
 {% block body_class %}principal-page{% endblock %}
+
 {% block content %}
 {% language 'pt-br' %}
   <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
@@ -51,34 +55,35 @@
       </h2>
       {% endif %}
 
-{# Os atributos data permitem ao script identificar a faixa rolável e seus controles. #}
-<div class="carousel" data-carousel>
-  <button class="carousel__arrow carousel__arrow--prev" type="button" aria-label="Professores anteriores" data-prev>‹</button>
-  <div class="cards" id="professores" tabindex="0" aria-label="Professores em destaque" data-track>
-  {% for professor in professores %}
-  <article class="card">
-    <a href="{% url 'professor_detalhe' professor.pk %}" class="card__link" aria-label="Ver perfil de {{ professor.nome_exibicao }}">
-      <div class="card__photo">{% if professor.usuario.foto %}<img class="card__image" src="{{ professor.usuario.foto.url }}" alt="" loading="lazy">{% else %}<span class="card__initials" aria-hidden="true">{{ professor.iniciais }}</span>{% endif %}<span class="card__name">{{ professor.nome_exibicao }}</span></div>
-    </a>
-    <div class="card__info"><strong>R$ {{ professor.valor_hora|floatformat:2 }} / h</strong>
-    <span class="card__rating">{% if professor.nota_media != None %}{{ professor.nota_media|floatformat:1 }} <i aria-hidden="true">★</i>{% else %}Sem avaliações{% endif %}</span></div>
-    <p class="card__subjects">{% for disciplina in professor.disciplinas.all %}{{ disciplina.nome }}{% if not forloop.last %} · {% endif %}{% empty %}Professor particular{% endfor %}</p>
-    <p class="card__text">{{ professor.bio|default:'Conheça o perfil e saiba mais sobre as aulas deste professor.'|truncatechars:130 }}</p>
-    {% include 'includes/favorito_botao.html' %}
-  </article>
-  {% empty %}<div class="cards__empty"><h3>Nenhum professor encontrado</h3><p>Tente outro nome ou disciplina, ou remova os filtros para explorar os perfis.</p><a class="btn btn--ghost" href="{% url 'principal' %}#resultados">Ver professores</a></div>{% endfor %}
-  </div>
-  <button class="carousel__arrow carousel__arrow--next" type="button" aria-label="Próximos professores" data-next>›</button>
-</div>
-<div class="dots" data-dots></div>
-{# A paginação preserva o termo da busca e a disciplina selecionada nos links. #}
-{% if professores.has_other_pages %}
-<nav class="pagination" aria-label="Páginas de professores">
-  {% if professores.has_previous %}<a class="page-btn" href="?q={{ busca|urlencode }}&amp;disciplina={{ disciplina_selecionada|urlencode }}&amp;page={{ professores.previous_page_number }}#resultados">Anterior</a>{% endif %}
-  <span>Página {{ professores.number }} de {{ professores.paginator.num_pages }}</span>
-  {% if professores.has_next %}<a class="page-btn" href="?q={{ busca|urlencode }}&amp;disciplina={{ disciplina_selecionada|urlencode }}&amp;page={{ professores.next_page_number }}#resultados">Próxima</a>{% endif %}
-</nav>
-{% endif %}
+      <div class="carousel" data-carousel>
+        <button class="carousel__arrow carousel__arrow--prev" type="button" aria-label="Professores anteriores" data-prev>‹</button>
+        <div class="cards" id="professores" tabindex="0" aria-label="Professores em destaque" data-track>
+          {% for professor in professores %}
+          <article class="card">
+            <a href="{% url 'professor_detalhe' professor.pk %}" class="card__link" aria-label="Ver perfil de {{ professor.nome_exibicao }}">
+              <div class="card__photo">{% if professor.usuario.foto %}<img class="card__image" src="{{ professor.usuario.foto.url }}" alt="" loading="lazy">{% else %}<span class="card__initials" aria-hidden="true">{{ professor.iniciais }}</span>{% endif %}<span class="card__name">{{ professor.nome_exibicao }}</span></div>
+            </a>
+            <div class="card__info"><strong>R$ {{ professor.valor_hora|floatformat:2 }} / h</strong>
+            <span class="card__rating">{% if professor.nota_media != None %}{{ professor.nota_media|floatformat:1 }} <i aria-hidden="true">★</i>{% else %}Sem avaliações{% endif %}</span></div>
+            <p class="card__subjects">{% for disciplina in professor.disciplinas.all %}{{ disciplina.nome }}{% if not forloop.last %} · {% endif %}{% empty %}Professor particular{% endfor %}</p>
+            <p class="card__text">{{ professor.bio|default:'Conheça o perfil e saiba mais sobre as aulas deste professor.'|truncatechars:130 }}</p>
+            {% include 'includes/favorito_botao.html' %}
+          </article>
+          {% empty %}
+          <div class="cards__empty"><h3>Nenhum professor encontrado</h3><p>Tente outro nome ou disciplina, ou remova os filtros para explorar os perfis.</p><a class="btn btn--ghost" href="{% url 'principal' %}#resultados">Ver professores</a></div>
+          {% endfor %}
+        </div>
+        <button class="carousel__arrow carousel__arrow--next" type="button" aria-label="Próximos professores" data-next>›</button>
+      </div>
+      <div class="dots" data-dots></div>
+
+      {% if professores.has_other_pages %}
+      <nav class="pagination" aria-label="Páginas de professores">
+        {% if professores.has_previous %}<a class="page-btn" href="?q={{ busca|urlencode }}&amp;disciplina={{ disciplina_selecionada|urlencode }}&amp;page={{ professores.previous_page_number }}#resultados">Anterior</a>{% endif %}
+        <span>Página {{ professores.number }} de {{ professores.paginator.num_pages }}</span>
+        {% if professores.has_next %}<a class="page-btn" href="?q={{ busca|urlencode }}&amp;disciplina={{ disciplina_selecionada|urlencode }}&amp;page={{ professores.next_page_number }}#resultados">Próxima</a>{% endif %}
+      </nav>
+      {% endif %}
     </section>
 
     <!-- COMO FUNCIONA -->
@@ -104,6 +109,8 @@
       </div>
     </section>
 
+    {% include 'includes/relatos_principal.html' %}
+
     {% include 'includes/avaliacoes_site.html' %}
 
     <!-- CTA -->
@@ -111,15 +118,20 @@
       <h2>Venha fazer parte da Mentis</h2>
       <div class="cta__buttons">
         {% if request.user.is_authenticated %}
-        <a href="{% url 'principal' %}#resultados" class="btn btn--white">Encontrar um professor</a>
-        {% if request.user.professor %}<a href="{% url 'professor_detalhe' request.user.pk %}" class="btn btn--outline">Meu perfil</a>{% else %}<a href="{% url 'perfil_aluno' %}" class="btn btn--outline">Meu perfil</a>{% endif %}
+          <a href="{% url 'principal' %}#resultados" class="btn btn--white">Encontrar um professor</a>
+          {% if request.user.professor %}
+            <a href="{% url 'professor_detalhe' request.user.professor.pk %}" class="btn btn--outline">Meu perfil</a>
+          {% else %}
+            <a href="{% url 'perfil_aluno' %}" class="btn btn--outline">Meu perfil</a>
+          {% endif %}
         {% else %}
-        <a href="{% url 'cadastro' %}" class="btn btn--white"><i class="fa-regular fa-user" aria-hidden="true"></i> Começar como estudante</a>
-        <a href="{% url 'cadastro' %}?tipo=professor" class="btn btn--outline"><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i> Sou professor</a>
+          <a href="{% url 'cadastro' %}" class="btn btn--white"><i class="fa-regular fa-user" aria-hidden="true"></i> Começar como estudante</a>
+          <a href="{% url 'cadastro' %}?tipo=professor" class="btn btn--outline"><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i> Sou professor</a>
         {% endif %}
       </div>
     </section>
   </main>
+
   <footer class="principal-footer">
     <div class="principal-footer__inner">
       <small>© {% now 'Y' %} Mentis</small>

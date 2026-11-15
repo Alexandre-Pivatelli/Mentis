@@ -1,0 +1,159 @@
+/* Relatos e anúncios (principal e sobre). Usa os tokens do tema.css. */
+
+.relatos-wrap {
+  width: min(100% - 64px, 1200px);
+  margin: 0 auto;
+  padding: 56px 0;
+  border-top: 1px solid var(--separator, #e6defb);
+  text-align: center;
+  overflow: hidden;
+}
+
+.relatos-eyebrow {
+  color: var(--accent, #6430d8);
+  font-size: .75rem;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.relatos-titulo {
+  margin-top: 8px;
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -.02em;
+}
+
+.relatos-titulo span { color: var(--accent, #6430d8); }
+
+/* ----- Principal: anúncios centralizados, sem fundo ----- */
+.relatos-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 320px));
+  justify-content: center;
+  gap: 48px;
+  margin-top: 40px;
+}
+
+.relato-mini {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: center;
+}
+
+/* Quadrado com o personagem ocupando quase tudo, sem moldura nem fundo */
+.relato-mini__foto {
+  width: 280px;
+  height: 280px;
+  overflow: hidden;
+  background: none;
+}
+
+.relato-mini__foto img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center bottom;
+}
+
+.relato-promo__titulo {
+  color: var(--foreground, #241b30);
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.relato-mini__texto {
+  max-width: 34ch;
+  color: var(--secondary, #645a70);
+  font-size: .95rem;
+  line-height: 1.6;
+}
+
+.relato-promo__botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  margin-top: 4px;
+  padding: 10px 22px;
+  border-radius: 12px;
+  background: var(--action, #6430d8);
+  color: #fff;
+  font-weight: 600;
+  font-size: .9rem;
+  text-decoration: none;
+  transition: background-color .2s ease, transform .15s ease;
+}
+
+.relato-promo__botao:hover {
+  background: var(--action-hover, #4a1fa3);
+  transform: translateY(-2px);
+}
+
+/* ----- Sobre: bloco de história ----- */
+.relato-historia {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 36px;
+  align-items: center;
+  max-width: 900px;
+  margin: 28px auto 0;
+  padding: 28px;
+  border: 1px solid var(--separator, #e7e3f1);
+  border-radius: 20px;
+  background: var(--surface, #fff);
+  text-align: left;
+}
+
+.relato-historia__foto {
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 16px;
+  background: var(--action, #6430d8);
+}
+
+.relato-historia__foto img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.relato-historia__texto {
+  color: var(--foreground, #241b30);
+  font-size: 1.05rem;
+  line-height: 1.75;
+}
+
+.relato-historia__autor {
+  margin-top: 16px;
+  color: var(--secondary, #645a70);
+  font-size: .875rem;
+}
+
+.relato-historia__autor strong { color: var(--accent-hover, #4a1fa3); }
+
+/* ----- Responsivo ----- */
+@media (max-width: 900px) {
+  .relatos-grid { grid-template-columns: minmax(0, 320px); gap: 40px; }
+}
+
+@media (max-width: 700px) {
+  .relatos-wrap { width: calc(100% - 40px); padding: 44px 0; }
+  .relato-mini__foto { width: 220px; height: 220px; }
+  .relato-historia { grid-template-columns: minmax(0, 1fr); gap: 20px; padding: 20px; }
+  .relato-historia__foto { width: 140px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .relato-mini, .relato-historia { transition: none; }
+}
