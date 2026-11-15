@@ -26,8 +26,8 @@
 
 body {
   font-family: "Plus Jakarta Sans", sans-serif;
-  background: var(--bg);
-  color: var(--ink);
+  background: var(--page, #fafafa);
+  color: var(--foreground, #241b30);
   line-height: 1.5;
 }
 
