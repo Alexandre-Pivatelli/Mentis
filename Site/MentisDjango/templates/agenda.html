@@ -76,6 +76,16 @@
             {% if aula.status == 'CONFIRMADA' %}
               <a class="text-button" href="{% url 'aula_calendario' aula.pk %}">Adicionar ao calendário</a>
             {% endif %}
+            {# Botão de cancelar: só para aulas agendadas ou confirmadas que ainda não aconteceram #}
+            {% now "Y-m-d H:i" as agora %}
+            {% if aula.status == 'AGENDADA' or aula.status == 'CONFIRMADA' %}
+              {% if aula.data_hora|date:"Y-m-d H:i" > agora %}
+                <form method="post" action="{% url 'cancelar_aula' aula.pk %}" onsubmit="return confirm('Tem certeza que quer cancelar esta aula?')">
+                  {% csrf_token %}
+                  <button class="text-button" type="submit" style="color: var(--danger, #a32435)">Cancelar aula</button>
+                </form>
+              {% endif %}
+            {% endif %}
             {% if aula.avaliacao %}
               <p class="quiet">Sua avaliação: {{ aula.avaliacao.nota }}/5</p>
               <p>{{ aula.avaliacao.comentario }}</p>

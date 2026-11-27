@@ -2,6 +2,7 @@ from django.urls import path
 from . import views
 from .views_agendamento import agendar_aula
 from .views_aulas_professor import aulas_professor, responder_aula
+from .views_cancelar_aula import cancelar_aula
 from .views_aluno import ambiente_aluno_view, avaliar_aula_view
 from .views_estudante import agenda_view, aula_calendario_view, mensagens_view
 from .views_favoritos import favoritos_view, favorito_professor_view
@@ -30,6 +31,7 @@ urlpatterns = [
     path('mensagens/', mensagens_view, name='mensagens_aluno'),
     path('agenda/', agenda_view, name='agenda_aluno'),
     path('agenda/aulas/<int:aula_id>/calendario.ics', aula_calendario_view, name='aula_calendario'),
+    path('agenda/aulas/<int:aula_id>/cancelar/', cancelar_aula, name='cancelar_aula'),
     path('ambiente-aluno/', ambiente_aluno_view, name='ambiente_aluno'),
     path('aula/<int:pk>/avaliar/', avaliar_aula_view, name='avaliar_aula'),
     path('materiais/', views.materiais_view, name='materiais'),
