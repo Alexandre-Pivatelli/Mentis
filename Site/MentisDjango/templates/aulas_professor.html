@@ -1,0 +1,84 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mentis – Pedidos de aula</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="{% static 'css/header.css' %}">
+  <link rel="stylesheet" href="{% static 'css/painel_professor.css' %}">
+  <link rel="stylesheet" href="{% static 'css/aulas_professor.css' %}">
+</head>
+<body class="pp-page">
+
+  {% include 'includes/header.html' %}
+
+  <main class="pp-main">
+
+    <header class="pp-hero">
+      <div class="pp-container">
+        <span class="pp-badge">Painel do professor</span>
+        <h1 class="pp-hero__titulo">Pedidos de aula</h1>
+        <p class="pp-hero__texto">Confirme ou recuse as aulas que os alunos marcaram com você.</p>
+        <a class="ap-voltar" href="{% url 'painel_professor' %}">‹ Voltar para o painel</a>
+      </div>
+    </header>
+
+    {% if messages %}
+    <div class="pp-container">
+      {% for message in messages %}
+        <p class="pp-alerta pp-alerta--{{ message.tags }}">{{ message }}</p>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- ===== PEDIDOS ESPERANDO RESPOSTA ===== -->
+    <section class="pp-container ap-secao">
+      <h2>Esperando sua resposta</h2>
+
+      {% for aula in pedidos %}
+        <div class="pp-card ap-aula">
+          <div class="ap-aula__dados">
+            <p class="ap-aula__aluno">{{ aula.aluno.usuario.nome|default:aula.aluno.usuario.username }}</p>
+            <p>{{ aula.disciplina.nome }}</p>
+            <p>{{ aula.data_hora|date:"d/m/Y" }} às {{ aula.data_hora|time:"H:i" }} · {{ aula.duracao_min }} min</p>
+            <p>{{ aula.modalidade }} · R$ {{ aula.valor }}</p>
+          </div>
+
+          <form class="ap-aula__botoes" method="post" action="{% url 'responder_aula' aula.id %}">
+            {% csrf_token %}
+            <button type="submit" name="acao" value="confirmar" class="ap-botao ap-botao--confirmar">Confirmar</button>
+            <button type="submit" name="acao" value="recusar" class="ap-botao ap-botao--recusar">Recusar</button>
+          </form>
+        </div>
+      {% empty %}
+        <p class="ap-vazio">Nenhum pedido novo por enquanto.</p>
+      {% endfor %}
+    </section>
+
+    <!-- ===== AULAS JÁ CONFIRMADAS ===== -->
+    <section class="pp-container ap-secao">
+      <h2>Aulas confirmadas</h2>
+
+      {% for aula in confirmadas %}
+        <div class="pp-card ap-aula">
+          <div class="ap-aula__dados">
+            <p class="ap-aula__aluno">{{ aula.aluno.usuario.nome|default:aula.aluno.usuario.username }}</p>
+            <p>{{ aula.disciplina.nome }}</p>
+            <p>{{ aula.data_hora|date:"d/m/Y" }} às {{ aula.data_hora|time:"H:i" }} · {{ aula.duracao_min }} min</p>
+            <p>{{ aula.modalidade }} · R$ {{ aula.valor }}</p>
+          </div>
+          <span class="ap-etiqueta">Confirmada</span>
+        </div>
+      {% empty %}
+        <p class="ap-vazio">Você ainda não tem aulas confirmadas.</p>
+      {% endfor %}
+    </section>
+
+  </main>
+</body>
+</html>
