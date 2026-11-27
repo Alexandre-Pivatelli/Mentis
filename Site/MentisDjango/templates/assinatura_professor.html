@@ -12,7 +12,7 @@
 
   <link rel="stylesheet" href="{% static 'css/tema.css' %}">
   <link rel="stylesheet" href="{% static 'css/header.css' %}">
-  <link rel="stylesheet" href="{% static 'css/assinatura.css' %}?v=1">
+  <link rel="stylesheet" href="{% static 'css/assinatura.css' %}?v=2">
 </head>
 <body class="as-page">
 
@@ -46,10 +46,36 @@
         <h2>Sua assinatura</h2>
         {% if eh_dono %}
           <p class="as-texto">Esta é a sua página. Os alunos veem o preço e os materiais por aqui.</p>
-        {% elif tem_acesso %}
-          <p class="as-status as-status--ativa">Assinatura ativa. Você tem acesso a todos os materiais.</p>
         {% elif assinatura %}
-          <p class="as-status as-status--pendente">Pedido registrado. Assim que o pagamento for confirmado, o acesso é liberado.</p>
+          {% if assinatura.status == 'ativa' %}
+            <p class="as-status as-status--ativa">Assinatura ativa. Você tem acesso a todos os materiais.</p>
+          {% else %}
+            <p class="as-status as-status--pendente">Pedido registrado. Assim que o pagamento for confirmado, o acesso é liberado.</p>
+          {% endif %}
+
+          {# Cancelamento em duas etapas: o botão abre a confirmação, que é quem envia o POST. #}
+          <details class="as-cancelar">
+            <summary class="as-botao as-botao--secundario">
+              {% if assinatura.status == 'ativa' %}Cancelar assinatura{% else %}Cancelar pedido{% endif %}
+            </summary>
+            <div class="as-cancelar__caixa" role="group" aria-label="Confirmar cancelamento">
+              <p class="as-cancelar__titulo">Tem certeza?</p>
+              <p class="as-texto">
+                {% if assinatura.status == 'ativa' %}
+                  Você perde o acesso aos materiais de {{ professor.nome_exibicao }} na hora. Para voltar, é preciso assinar e pagar de novo.
+                {% else %}
+                  Seu pedido de assinatura será desfeito. Se você já fez o PIX, fale com o professor antes de cancelar.
+                {% endif %}
+              </p>
+              <form method="post" action="{% url 'cancelar_assinatura' professor.pk %}" class="as-cancelar__acoes">
+                {% csrf_token %}
+                <button type="submit" class="as-botao as-botao--perigo">Sim, cancelar</button>
+                <a class="as-link" href="{% url 'historico_pagamentos' %}">Ver meus pagamentos</a>
+              </form>
+            </div>
+          </details>
+        {% elif tem_acesso %}
+          <p class="as-status as-status--ativa">Você já tem acesso aos materiais porque teve aula com este professor.</p>
         {% elif aluno %}
           <form method="post" action="{% url 'assinatura_professor' professor.pk %}">
             {# O token permite que o Django verifique se o POST partiu de um formulário autorizado. #}

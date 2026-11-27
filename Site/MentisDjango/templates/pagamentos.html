@@ -1,0 +1,117 @@
+{# Histórico de pagamento do aluno: totais, filtro por status, lista de pagamentos e assinaturas. #}
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mentis – Meus pagamentos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="{% static 'css/tema.css' %}">
+  <link rel="stylesheet" href="{% static 'css/header.css' %}">
+  <link rel="stylesheet" href="{% static 'css/pagamentos.css' %}?v=1">
+</head>
+<body class="pg-page">
+
+  {% include 'includes/header.html' %}
+
+  <main class="pg-main">
+    <div class="pg-container">
+
+      {% include 'includes/navegacao_aluno.html' with active='pagamentos' %}
+
+      {% for message in messages %}
+        <p class="pg-alerta" role="status">{{ message }}</p>
+      {% endfor %}
+
+      <section class="pg-hero">
+        <span class="pg-badge">Área do estudante</span>
+        <h1>Meus pagamentos</h1>
+        <p class="pg-texto">Acompanhe o que você já pagou e o que ainda está pendente nas suas aulas.</p>
+
+        <div class="pg-totais">
+          <div class="pg-total">
+            <span>Total pago</span>
+            <strong>R$ {{ total_pago|floatformat:2 }}</strong>
+          </div>
+          <div class="pg-total pg-total--pendente">
+            <span>Pendente</span>
+            <strong>R$ {{ total_pendente|floatformat:2 }}</strong>
+          </div>
+          <div class="pg-total">
+            <span>Pagamentos</span>
+            <strong>{{ quantidade }}</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="pg-card" aria-labelledby="titulo-historico">
+        <div class="pg-card__topo">
+          <h2 id="titulo-historico">Histórico</h2>
+          <nav class="pg-filtros" aria-label="Filtrar pagamentos">
+            <a href="{% url 'historico_pagamentos' %}"{% if not filtro %} aria-current="page"{% endif %}>Todos</a>
+            <a href="{% url 'historico_pagamentos' %}?status=pago"{% if filtro == 'pago' %} aria-current="page"{% endif %}>Pagos</a>
+            <a href="{% url 'historico_pagamentos' %}?status=pendente"{% if filtro == 'pendente' %} aria-current="page"{% endif %}>Pendentes</a>
+          </nav>
+        </div>
+
+        <ul class="pg-lista">
+          {% for pagamento in pagamentos %}
+            <li class="pg-item">
+              <div class="pg-item__info">
+                <strong>{{ pagamento.aula.disciplina.nome }} com {{ pagamento.aula.professor.usuario.nome|default:pagamento.aula.professor.usuario.username }}</strong>
+                <span>Aula em {{ pagamento.aula.data_hora|date:"d/m/Y, H:i" }} · {{ pagamento.metodo|title }} · registrado em {{ pagamento.data|date:"d/m/Y" }}</span>
+              </div>
+              <div class="pg-item__valor">
+                <strong>R$ {{ pagamento.valor|floatformat:2 }}</strong>
+                {% if pagamento.status == 'PAGO' %}
+                  <span class="pg-status pg-status--pago">Pago</span>
+                {% elif pagamento.status == 'PENDENTE' %}
+                  <span class="pg-status pg-status--pendente">Pendente</span>
+                {% else %}
+                  <span class="pg-status">{{ pagamento.status|lower|capfirst }}</span>
+                {% endif %}
+              </div>
+            </li>
+          {% empty %}
+            <li class="pg-vazio">
+              {% if filtro %}Nenhum pagamento com este status.{% else %}Você ainda não tem pagamentos registrados.{% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      </section>
+
+      <section class="pg-card" aria-labelledby="titulo-assinaturas">
+        <h2 id="titulo-assinaturas">Assinaturas de materiais</h2>
+        <ul class="pg-lista">
+          {% for assinatura in assinaturas %}
+            <li class="pg-item">
+              <div class="pg-item__info">
+                <strong>{{ assinatura.professor.usuario.nome|default:assinatura.professor.usuario.username }}</strong>
+                <span>
+                  {% if assinatura.professor.valor_assinatura %}R$ {{ assinatura.professor.valor_assinatura|floatformat:2 }} / mês · {% endif %}desde {{ assinatura.criado_em|date:"d/m/Y" }}
+                </span>
+              </div>
+              <div class="pg-item__valor">
+                {% if assinatura.status == 'ativa' %}
+                  <span class="pg-status pg-status--pago">Ativa</span>
+                {% else %}
+                  <span class="pg-status pg-status--pendente">{{ assinatura.get_status_display }}</span>
+                {% endif %}
+                <a class="pg-link" href="{% url 'assinatura_professor' assinatura.professor.pk %}">Gerenciar</a>
+              </div>
+            </li>
+          {% empty %}
+            <li class="pg-vazio">Você não tem assinaturas. Elas aparecem aqui quando você assina os materiais de um professor.</li>
+          {% endfor %}
+        </ul>
+      </section>
+
+    </div>
+  </main>
+
+</body>
+</html>

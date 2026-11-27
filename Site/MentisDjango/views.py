@@ -21,6 +21,7 @@ from .auth_limits import permitir_tentativa
 from .forms import AvaliacaoSiteForm, CadastroForm, EditarPerfilForm, LoginForm, RedefinirSenhaForm
 from .models import (Aluno, Assinatura, Aula, Avaliacao, AvaliacaoSite, Disciplina,
                      Favorito, Material, Professor, StatusAula, TipoMaterial, Usuario)
+from .painel_resumo import resumo_professor
 
 
 DIAS = [(0, 'Segunda'), (1, 'Terça'), (2, 'Quarta'), (3, 'Quinta'),
@@ -416,6 +417,7 @@ def painel_professor_view(request):
         'dias': dias,
         'disciplinas': professor.disciplinas.all(),
         'materiais': professor.materiais.select_related('disciplina').order_by('-data_publicacao'),
+        'resumo': resumo_professor(professor),
     })
 
 

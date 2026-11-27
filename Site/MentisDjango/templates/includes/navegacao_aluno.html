@@ -18,6 +18,9 @@
     <a href="{% url 'materiais' %}">
       Materiais
     </a>
+    <a href="{% url 'historico_pagamentos' %}"{% if active == 'pagamentos' %} aria-current="page"{% endif %}>
+      Pagamentos
+    </a>
     <a href="{% url 'ambiente_aluno' %}">
       Meu ambiente
     </a>

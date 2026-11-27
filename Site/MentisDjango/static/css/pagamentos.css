@@ -1,0 +1,94 @@
+/* Página "Meus pagamentos" do aluno (Sprint 10). Usa os tokens do tema.css. */
+
+.pg-page {
+  margin: 0;
+  font-family: 'Poppins', system-ui, sans-serif;
+  color: var(--foreground, #241b30);
+  background: var(--page, #fafafa);
+  line-height: 1.6;
+}
+
+.pg-page h1, .pg-page h2, .pg-page p { margin: 0; }
+.pg-page :focus-visible { outline: 3px solid var(--focus, #6430d8); outline-offset: 3px; }
+
+.pg-container { width: min(100% - 64px, 960px); margin: 0 auto; padding: 8px 0 80px; }
+
+/* Menu da área do estudante (mesmo visual das outras páginas do aluno). */
+.pg-page .student-nav { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 24px; padding: 12px 0; font: 500 14px 'Poppins', sans-serif; }
+.pg-page .student-nav a { display: flex; align-items: center; min-height: 44px; color: var(--secondary, #645a70); text-decoration: none; }
+.pg-page .student-nav a[aria-current] { font-size: 20px; font-weight: 700; color: var(--foreground, #241b30); }
+.pg-page .student-nav a:hover { color: var(--accent, #6430d8); }
+
+.pg-alerta {
+  margin-top: 12px; padding: 14px 18px; border-radius: 12px;
+  background: var(--success-bg, #e9f5ee); color: var(--success, #23613e); font-weight: 500;
+}
+
+.pg-hero {
+  margin-top: 12px; padding: 32px;
+  border: 1px solid var(--separator, #e6defb); border-radius: 18px;
+  background: var(--surface-subtle, #f0ebfd);
+}
+
+.pg-badge {
+  display: inline-block; margin-bottom: 12px; padding: 6px 14px;
+  border-radius: 999px; background: var(--surface, #fff);
+  color: var(--accent-hover, #4a1fa3); font-size: .8rem; font-weight: 600;
+}
+
+.pg-hero h1 { font-size: clamp(1.8rem, 4vw, 2.4rem); font-weight: 800; line-height: 1.2; }
+.pg-texto { margin-top: 6px; color: var(--secondary, #645a70); font-size: .95rem; }
+
+.pg-totais { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 24px; }
+.pg-total {
+  display: grid; gap: 2px; padding: 16px 18px;
+  border-radius: 14px; background: var(--surface, #fff);
+}
+.pg-total span { font-size: .8rem; color: var(--secondary, #645a70); }
+.pg-total strong { font-size: 1.5rem; font-weight: 800; color: var(--accent, #6430d8); font-variant-numeric: tabular-nums; }
+.pg-total--pendente strong { color: var(--warning, #885400); }
+
+.pg-card {
+  margin-top: 20px; padding: 28px;
+  border: 1px solid var(--separator, #e7e3f1); border-radius: 18px;
+  background: var(--surface, #fff);
+}
+.pg-card h2 { margin-bottom: 14px; font-size: 1.25rem; font-weight: 700; }
+.pg-card__topo { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+.pg-card__topo h2 { margin: 0; }
+
+.pg-filtros { display: flex; gap: 6px; }
+.pg-filtros a {
+  display: inline-flex; align-items: center; min-height: 40px; padding: 6px 16px;
+  border: 1px solid var(--separator, #d9cfee); border-radius: 999px;
+  color: var(--foreground, #241b30); font-size: .875rem; font-weight: 500; text-decoration: none;
+}
+.pg-filtros a:hover { border-color: var(--accent, #6430d8); }
+.pg-filtros a[aria-current] { background: var(--action, #6430d8); border-color: var(--action, #6430d8); color: #fff; }
+
+.pg-lista { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
+.pg-item {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 14px 16px; border: 1px solid var(--separator, #e7e3f1); border-radius: 12px;
+}
+.pg-item__info { display: grid; gap: 2px; min-width: 0; }
+.pg-item__info span { font-size: .8rem; color: var(--secondary, #645a70); }
+.pg-item__valor { display: flex; align-items: center; gap: 12px; white-space: nowrap; }
+.pg-item__valor strong { font-variant-numeric: tabular-nums; }
+
+.pg-status {
+  padding: 4px 12px; border-radius: 999px; font-size: .75rem; font-weight: 600;
+  background: var(--surface-subtle, #f0ebfd); color: var(--secondary, #645a70);
+}
+.pg-status--pago { background: var(--success-bg, #e9f5ee); color: var(--success, #23613e); }
+.pg-status--pendente { background: var(--warning-bg, #fff3cf); color: var(--warning, #885400); }
+
+.pg-link { display: inline-flex; align-items: center; min-height: 40px; color: var(--accent, #6430d8); font-weight: 600; font-size: .875rem; }
+.pg-vazio { color: var(--secondary, #645a70); }
+
+@media (max-width: 600px) {
+  .pg-container { width: calc(100% - 32px); }
+  .pg-hero, .pg-card { padding: 22px; }
+  .pg-totais { grid-template-columns: 1fr; }
+  .pg-item { flex-direction: column; align-items: flex-start; }
+}

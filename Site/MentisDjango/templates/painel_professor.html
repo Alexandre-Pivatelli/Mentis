@@ -11,7 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="{% static 'css/header.css' %}">
-  <link rel="stylesheet" href="{% static 'css/painel_professor.css' %}?v=1">
+  <link rel="stylesheet" href="{% static 'css/painel_professor.css' %}?v=2">
 </head>
 <body class="pp-page">
 
@@ -26,6 +26,7 @@
         <p class="pp-hero__texto">Mantenha sua agenda atualizada e publique materiais para seus alunos.</p>
 
         <nav class="pp-tabs" aria-label="Seções do painel">
+          <a class="pp-tab" href="#resumo">Resumo</a>
           <a class="pp-tab" href="#agenda">Agenda</a>
           <a class="pp-tab" href="{% url 'aulas_professor' %}">Pedidos de aula</a>
           <a class="pp-tab" href="#materiais">Materiais</a>
@@ -42,6 +43,49 @@
       {% endfor %}
     </div>
     {% endif %}
+
+    <!-- ===== RESUMO: GANHOS E HORAS (Sprint 10) ===== -->
+    <section class="pp-container pp-secao" id="resumo" aria-labelledby="titulo-resumo">
+      <div class="pp-secao__cabecalho">
+        <span class="pp-rotulo">Resumo</span>
+        <h2 id="titulo-resumo">Seus ganhos e horas</h2>
+        <p class="pp-texto-suave">Contamos as aulas marcadas como realizadas. Valores em reais, mês de {{ resumo.nome_mes }}.</p>
+      </div>
+
+      <div class="pp-resumo">
+        <article class="pp-resumo__item pp-resumo__item--destaque">
+          <span class="pp-resumo__rotulo">Ganhos no mês</span>
+          <strong class="pp-resumo__valor">R$ {{ resumo.mes.ganhos|floatformat:2 }}</strong>
+          <span class="pp-resumo__detalhe">Mês passado: R$ {{ resumo.mes_passado.ganhos|floatformat:2 }}</span>
+        </article>
+
+        <article class="pp-resumo__item">
+          <span class="pp-resumo__rotulo">Horas de aula no mês</span>
+          <strong class="pp-resumo__valor">{{ resumo.mes.horas|floatformat:"-1" }} h</strong>
+          <span class="pp-resumo__detalhe">{{ resumo.mes.aulas }} aula{{ resumo.mes.aulas|pluralize }} realizada{{ resumo.mes.aulas|pluralize }}</span>
+        </article>
+
+        <article class="pp-resumo__item">
+          <span class="pp-resumo__rotulo">Próximas aulas</span>
+          <strong class="pp-resumo__valor">{{ resumo.proximas.aulas }}</strong>
+          <span class="pp-resumo__detalhe">{{ resumo.proximas.horas|floatformat:"-1" }} h · R$ {{ resumo.proximas.ganhos|floatformat:2 }} previstos</span>
+        </article>
+
+        <article class="pp-resumo__item">
+          <span class="pp-resumo__rotulo">Assinantes ativos</span>
+          <strong class="pp-resumo__valor">{{ resumo.assinantes }}</strong>
+          <span class="pp-resumo__detalhe">
+            {% if resumo.tem_preco_assinatura %}R$ {{ resumo.receita_assinaturas|floatformat:2 }} por mês{% else %}<a href="#assinatura">Defina o preço da assinatura</a>{% endif %}
+          </span>
+        </article>
+      </div>
+
+      <p class="pp-resumo__total">
+        Desde o início: <strong>R$ {{ resumo.total.ganhos|floatformat:2 }}</strong> em
+        <strong>{{ resumo.total.aulas }} aula{{ resumo.total.aulas|pluralize }}</strong>
+        ({{ resumo.total.horas|floatformat:"-1" }} h).
+      </p>
+    </section>
 
     <!-- ===== AGENDA ===== -->
     <section class="pp-container pp-secao" id="agenda" aria-labelledby="titulo-agenda">

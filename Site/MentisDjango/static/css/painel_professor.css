@@ -438,3 +438,48 @@
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; }
 }
+/* ----- Resumo: ganhos e horas (Sprint 10) ----- */
+.pp-resumo {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.pp-resumo__item {
+  display: grid;
+  gap: 4px;
+  align-content: start;
+  padding: 20px 22px;
+  border: 1px solid var(--pp-borda);
+  border-radius: var(--pp-raio);
+  background: #fff;
+}
+
+.pp-resumo__item--destaque {
+  border-color: var(--pp-roxo);
+  background: var(--pp-lavanda);
+}
+
+.pp-resumo__rotulo { font-size: .85rem; font-weight: 500; color: var(--pp-suave); }
+
+.pp-resumo__valor {
+  font-size: 1.75rem;
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--pp-roxo-escuro);
+  font-variant-numeric: tabular-nums;
+}
+
+.pp-resumo__detalhe { font-size: .8rem; color: var(--pp-suave); }
+.pp-resumo__detalhe a { color: var(--pp-roxo); font-weight: 600; }
+
+.pp-secao .pp-resumo__total { margin: 20px 0 0; color: var(--pp-suave); font-size: .95rem; }
+.pp-secao .pp-resumo__total strong { color: var(--pp-texto); }
+
+@media (max-width: 900px) {
+  .pp-resumo { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 520px) {
+  .pp-resumo { grid-template-columns: 1fr; }
+}

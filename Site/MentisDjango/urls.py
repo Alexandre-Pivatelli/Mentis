@@ -7,6 +7,7 @@ from .views_aluno import ambiente_aluno_view, avaliar_aula_view
 from .views_estudante import agenda_view, aula_calendario_view, mensagens_view
 from .views_favoritos import favoritos_view, favorito_professor_view
 from .views_filtro import filtro_professores
+from .views_pagamentos import cancelar_assinatura_view, historico_pagamentos_view
 
 urlpatterns = [
     path('professor/<int:professor_id>/agendar/', agendar_aula, name='agendar_aula'),
@@ -46,5 +47,7 @@ urlpatterns = [
     path('painel/professor/materiais/novo/', views.painel_professor_material_criar, name='painel_professor_material_criar'),
     path('painel/professor/materiais/<int:pk>/excluir/', views.painel_professor_material_excluir, name='painel_professor_material_excluir'),
     path('professor/<int:pk>/assinatura/', views.assinatura_professor_view, name='assinatura_professor'),
+    path('professor/<int:pk>/assinatura/cancelar/', cancelar_assinatura_view, name='cancelar_assinatura'),
+    path('pagamentos/', historico_pagamentos_view, name='historico_pagamentos'),
 ]
 
