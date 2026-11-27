@@ -1,0 +1,80 @@
+/* Pedidos de aula do professor. As cores (--pp-...) vêm do painel_professor.css. */
+
+.ap-voltar {
+  display: inline-block;
+  margin: 16px 0 24px;
+  color: var(--pp-roxo);
+  font-weight: 600;
+}
+
+.ap-secao {
+  margin-top: 32px;
+  margin-bottom: 32px;
+}
+
+.ap-secao h2 {
+  margin-bottom: 16px;
+}
+
+.ap-aula {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.ap-aula__dados p {
+  color: var(--pp-suave);
+}
+
+.ap-aula__aluno {
+  color: var(--pp-texto);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.ap-aula__botoes {
+  display: flex;
+  gap: 8px;
+}
+
+.ap-botao {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 999px;
+  color: #fff;
+  font-weight: 600;
+}
+
+.ap-botao--confirmar {
+  background: var(--pp-verde);
+}
+
+.ap-botao--recusar {
+  background: var(--pp-vermelho);
+}
+
+.ap-botao:hover {
+  opacity: 0.85;
+}
+
+.ap-etiqueta {
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: #e3f4ea;
+  color: var(--pp-verde);
+  font-weight: 600;
+}
+
+.ap-vazio {
+  color: var(--pp-suave);
+}
+
+/* Celular: botões embaixo dos dados */
+@media (max-width: 600px) {
+  .ap-aula {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

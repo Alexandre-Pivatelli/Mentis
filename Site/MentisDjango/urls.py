@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 from .views_agendamento import agendar_aula
+from .views_aulas_professor import aulas_professor, responder_aula
 from .views_aluno import ambiente_aluno_view, avaliar_aula_view
 from .views_estudante import agenda_view, aula_calendario_view, mensagens_view
 from .views_favoritos import favoritos_view, favorito_professor_view
@@ -36,6 +37,8 @@ urlpatterns = [
 
     # Painel do professor
     path('painel/professor/', views.painel_professor_view, name='painel_professor'),
+    path('painel/professor/aulas/', aulas_professor, name='aulas_professor'),
+    path('painel/professor/aulas/<int:aula_id>/responder/', responder_aula, name='responder_aula'),
     path('painel/professor/agenda/', views.painel_professor_agenda, name='painel_professor_agenda'),
     path('painel/professor/assinatura/', views.painel_professor_assinatura, name='painel_professor_assinatura'),
     path('painel/professor/materiais/novo/', views.painel_professor_material_criar, name='painel_professor_material_criar'),
