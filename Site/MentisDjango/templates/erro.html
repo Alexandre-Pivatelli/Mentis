@@ -1,0 +1,25 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ titulo }} · Mentis</title>
+    <link rel="stylesheet" href="{% static 'css/tema.css' %}">
+    <link rel="stylesheet" href="{% static 'css/erro.css' %}">
+    <script src="{% static 'js/tema.js' %}"></script>
+  </head>
+  <body class="erro-page">
+    <header class="erro-header">
+      <a href="{% url 'principal' %}" aria-label="Mentis — página inicial">
+        <img src="{% static 'img/logo-r.png' %}" alt="Mentis" width="104" height="40">
+      </a>
+    </header>
+    <main class="erro-conteudo">
+      <p class="erro-codigo" aria-label="Erro {{ codigo }}">{{ codigo }}</p>
+      <h1>{{ titulo }}</h1>
+      <p class="erro-descricao">{{ descricao }}</p>
+      <a class="erro-botao" href="{% url 'principal' %}">Ir para a página inicial</a>
+    </main>
+  </body>
+</html>

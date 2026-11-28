@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .views_erros import pagina_erro
 from .views_agendamento import agendar_aula
 from .views_aulas_professor import aulas_professor, responder_aula
 from .views_cancelar_aula import cancelar_aula
@@ -10,6 +11,7 @@ from .views_filtro import filtro_professores
 from .views_pagamentos import cancelar_assinatura_view, historico_pagamentos_view
 
 urlpatterns = [
+    path('erro/', pagina_erro, name='pagina_erro'),
     path('professor/<int:professor_id>/agendar/', agendar_aula, name='agendar_aula'),
     path('', views.principal_view, name='principal'),
     path('login/', views.login_view, name='login'),
