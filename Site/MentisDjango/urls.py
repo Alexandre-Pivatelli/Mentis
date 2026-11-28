@@ -48,6 +48,7 @@ urlpatterns = [
     path('painel/professor/assinatura/', views.painel_professor_assinatura, name='painel_professor_assinatura'),
     path('painel/professor/materiais/novo/', views.painel_professor_material_criar, name='painel_professor_material_criar'),
     path('painel/professor/materiais/<int:pk>/excluir/', views.painel_professor_material_excluir, name='painel_professor_material_excluir'),
+    path('painel/professor/materiais/<int:pk>/editar/', views.painel_professor_material_editar, name='painel_professor_material_editar'),
     path('professor/<int:pk>/assinatura/', views.assinatura_professor_view, name='assinatura_professor'),
     path('professor/<int:pk>/assinatura/cancelar/', cancelar_assinatura_view, name='cancelar_assinatura'),
     path('pagamentos/', historico_pagamentos_view, name='historico_pagamentos'),

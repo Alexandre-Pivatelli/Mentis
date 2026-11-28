@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load static %}
+{% block page_head %}
+  <title>Editar material · Mentis</title>
+  <link rel="stylesheet" href="{% static 'css/painel_professor.css' %}?v=2">
+{% endblock %}
+{% block body_class %}pp-page{% endblock %}
+{% block content %}
+  <main class="pp-main">
+    <section class="pp-container pp-secao" aria-labelledby="editar-material-titulo">
+      <h1 id="editar-material-titulo">Editar material</h1>
+      <form class="pp-card pp-form" method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        {% for campo in form %}
+          <div class="pp-campo-grupo">
+            {{ campo.label_tag }}
+            {{ campo }}
+            {{ campo.errors }}
+          </div>
+        {% endfor %}
+        <div class="pp-acoes">
+          <a class="pp-botao pp-botao--contorno" href="{% url 'painel_professor' %}#materiais">Cancelar</a>
+          <button class="pp-botao" type="submit">Salvar alterações</button>
+        </div>
+      </form>
+    </section>
+  </main>
+{% endblock %}

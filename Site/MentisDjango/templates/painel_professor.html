@@ -197,6 +197,7 @@
               <h4>{{ material.titulo }}</h4>
               <p class="pp-texto-suave">{{ material.disciplina }} · {{ material.data_publicacao|date:"d/m/Y" }}</p>
             </div>
+            <a class="pp-botao" href="{% url 'painel_professor_material_editar' material.pk %}" aria-label="Editar {{ material.titulo }}">Editar</a>
             {# O identificador na URL vincula a ação de remoção ao material deste cartão. #}
             <form method="post" action="{% url 'painel_professor_material_excluir' material.pk %}"
                   onsubmit="return confirm('Excluir este material?');">

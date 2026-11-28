@@ -4,7 +4,27 @@ from django import forms
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm, UserCreationForm
 from django.db import transaction
 
-from .models import Aluno, Disciplina, Professor, Usuario, AvaliacaoSite
+from .models import Aluno, Disciplina, Material, Professor, Usuario, AvaliacaoSite
+
+
+class EditarMaterialForm(forms.ModelForm):
+    # Mantém a opção vazia para materiais antigos sem disciplina associada.
+    url = forms.URLField(
+        label='Link do material', max_length=200,
+        widget=forms.URLInput(attrs={'placeholder': 'https://'}),
+    )
+
+    class Meta:
+        model = Material
+        fields = ('disciplina', 'titulo', 'tipo', 'url', 'descricao')
+        labels = {'titulo': 'Título', 'descricao': 'Descrição (opcional)'}
+        widgets = {'descricao': forms.Textarea(attrs={'rows': 4})}
+
+    def clean_url(self):
+        url = self.cleaned_data['url']
+        if not url.lower().startswith(('https://', 'http://')):
+            raise forms.ValidationError('Informe um link HTTP ou HTTPS.')
+        return url
 
 
 class FotoPerfilInput(forms.ClearableFileInput):

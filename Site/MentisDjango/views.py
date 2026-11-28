@@ -18,7 +18,7 @@ from django.views.decorators.debug import sensitive_post_parameters
 from django.views.decorators.http import require_GET, require_POST, require_http_methods
 
 from .auth_limits import permitir_tentativa
-from .forms import AvaliacaoSiteForm, CadastroForm, EditarPerfilForm, LoginForm, RedefinirSenhaForm
+from .forms import AvaliacaoSiteForm, CadastroForm, EditarMaterialForm, EditarPerfilForm, LoginForm, RedefinirSenhaForm
 from .models import (Aluno, Assinatura, Aula, Avaliacao, AvaliacaoSite, Disciplina,
                      Favorito, Material, Professor, StatusAula, TipoMaterial, Usuario)
 from .painel_resumo import resumo_professor
@@ -536,6 +536,25 @@ def painel_professor_material_excluir(request, pk):
     get_object_or_404(Material, pk=pk, professor=professor).delete()
     messages.success(request, 'Material excluído.')
     return redirect(reverse('painel_professor') + '#materiais')
+
+
+@never_cache
+@login_required(login_url='login')
+@require_http_methods(['GET', 'POST'])
+def painel_professor_material_editar(request, pk):
+    professor = _professor_logado(request)
+    if professor is None:
+        return HttpResponseForbidden('Esta área é só para professores.')
+    # A propriedade é conferida tanto ao abrir quanto ao enviar o formulário.
+    material = get_object_or_404(Material, pk=pk, professor=professor)
+    form = EditarMaterialForm(
+        request.POST if request.method == 'POST' else None, instance=material,
+    )
+    if request.method == 'POST' and form.is_valid():
+        form.save()
+        messages.success(request, 'Material atualizado.')
+        return redirect(reverse('painel_professor') + '#materiais')
+    return render(request, 'editar_material.html', {'form': form, 'material': material})
 
 from .models import (Aluno, Aula, Assinatura, Avaliacao, AvaliacaoSite, Disciplina,
                      Material, Professor, StatusAula, Usuario)
